@@ -7,13 +7,6 @@
 <%@ page import="javax.servlet.http.HttpServletRequest" %>
 <%@ page import="javax.servlet.http.HttpServletResponse" %>
 
-<%@ page import="com.google.appengine.api.datastore.DatastoreService" %>
-<%@ page import="com.google.appengine.api.datastore.DatastoreServiceFactory" %>
-<%@ page import="com.google.appengine.api.datastore.Entity" %>
-<%@ page import="com.google.appengine.api.datastore.FetchOptions" %>
-<%@ page import="com.google.appengine.api.datastore.Key" %>
-<%@ page import="com.google.appengine.api.datastore.KeyFactory" %>
-<%@ page import="com.google.appengine.api.datastore.Query" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 

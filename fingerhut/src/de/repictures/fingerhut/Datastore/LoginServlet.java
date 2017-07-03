@@ -33,12 +33,25 @@ public class LoginServlet extends HttpServlet{
             Entity account = accountList.get(0);
             String accountPassword = account.getProperty("password").toString();
             if(accountPassword.equals(inputPassword)){
-                resp.getWriter().println(URLEncoder.encode("2ò" + KeyFactory.keyToString(account.getKey()), "UTF-8"));
+                String response = "2ò" + KeyFactory.keyToString(account.getKey()) + "ò" + getAccounts(datastore);
+                resp.getWriter().println(URLEncoder.encode(response, "UTF-8"));
             } else {
                 resp.getWriter().println("1");
             }
         } else {
             resp.getWriter().println("0");
         }
+    }
+
+    private String getAccounts(DatastoreService datastore){
+        StringBuilder output = new StringBuilder();
+        Query query = new Query("Account");
+        for (Entity entity : datastore.prepare(query).asIterable()) {
+            output.append(entity.getProperty("accountnumber"));
+            output.append("ĵ");
+            output.append(entity.getProperty("owner"));
+            output.append("ň");
+        }
+        return output.toString();
     }
 }
