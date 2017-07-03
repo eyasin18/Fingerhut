@@ -2,7 +2,7 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>LoginServlet</servlet-class>
+        <servlet-class>de.repictures.fingerhut.Datastore.LoginServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
@@ -10,7 +10,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>AddAccount</servlet-name>
-        <servlet-class>AddAccount</servlet-class>
+        <servlet-class>de.repictures.fingerhut.Datastore.AddAccount</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>AddAccount</servlet-name>
@@ -18,7 +18,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>PostFinancialStatus</servlet-name>
-        <servlet-class>PostFinancialStatus</servlet-class>
+        <servlet-class>de.repictures.fingerhut.Datastore.PostFinancialStatus</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>PostFinancialStatus</servlet-name>
@@ -26,7 +26,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>TransferMoney</servlet-name>
-        <servlet-class>TransferMoney</servlet-class>
+        <servlet-class>de.repictures.fingerhut.Datastore.TransferMoney</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>TransferMoney</servlet-name>
@@ -34,7 +34,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>PostTransfers</servlet-name>
-        <servlet-class>PostTransfers</servlet-class>
+        <servlet-class>de.repictures.fingerhut.Datastore.PostTransfers</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>PostTransfers</servlet-name>
