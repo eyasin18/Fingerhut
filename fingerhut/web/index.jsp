@@ -16,6 +16,9 @@
 <%@ page import="com.google.appengine.api.datastore.Query" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%-- Toller Kommentar --%>
+
 <html>
   <head>
     <meta charset="utf-8">
