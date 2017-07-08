@@ -7,6 +7,7 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import de.repictures.fingerhut.Cryptor;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -29,13 +30,15 @@ public class TransferMoney extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        datastore = DatastoreServiceFactory.getDatastoreService();
+        Cryptor cryptor = new Cryptor();
+
         String receiverAccountnumber = URLDecoder.decode(req.getParameter("receiveraccountnumber"), "UTF-8");
         String senderAccountnumber = URLDecoder.decode(req.getParameter("senderaccountnumber"), "UTF-8");
         String intendedPurpose = URLDecoder.decode(req.getParameter("intendedpurpose"), "UTF-8");
         float amount = Float.parseFloat(URLDecoder.decode(req.getParameter("amount"), "UTF-8"));
         SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", req.getLocale());
         Calendar calendar = Calendar.getInstance();
-        datastore = DatastoreServiceFactory.getDatastoreService();
 
         try {
             Key transferKey = KeyFactory.createKey("dateandtime", f.format(calendar.getTime()));
@@ -54,7 +57,7 @@ public class TransferMoney extends HttpServlet {
                 transfer.setProperty("receiver", receiver.getKey());
                 transfer.setProperty("amount", amount);
                 transfer.setProperty("datetime", f.format(calendar.getTime()));
-                transfer.setProperty("purpose", intendedPurpose);
+                transfer.setProperty("purpose", encryptPurpose(cryptor, sender, intendedPurpose));
                 transfer.setProperty("type", "Überweisung");
                 datastore.put(transfer);
 
@@ -82,6 +85,12 @@ public class TransferMoney extends HttpServlet {
             log.warning(e.toString());
             resp.getWriter().println("0");
         }
+    }
+
+    private String encryptPurpose(Cryptor cryptor, Entity sender, String intendedPurpose) {
+        String password = (String) sender.getProperty("password");
+        byte[] encryptedBytePurpose = cryptor.encrypt(intendedPurpose, cryptor.hashToByte(password));
+        return cryptor.bytesToHex(encryptedBytePurpose);
     }
 
     private Entity getEntity(String kind, String name, String entityTitle){

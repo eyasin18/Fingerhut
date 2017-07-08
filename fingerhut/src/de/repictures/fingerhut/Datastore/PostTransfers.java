@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import de.repictures.fingerhut.Cryptor;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -28,6 +29,7 @@ public class PostTransfers extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         datastore = DatastoreServiceFactory.getDatastoreService();
+        Cryptor cryptor = new Cryptor();
 
         String accountnumber = req.getParameter("accountnumber");
 
@@ -48,10 +50,10 @@ public class PostTransfers extends HttpServlet {
                 String senderAccountnumber = sender.getProperty("accountnumber").toString();
                 char plusminus = '+';
                 if (Objects.equals(senderAccountnumber, accountnumber)) plusminus = '-';
-                output += receiver.getProperty("owner").toString() + "ò";
+                output += decryptString(cryptor, (String) receiver.getProperty("owner"), (String) receiver.getProperty("password")) + "ò";
                 output += receiver.getProperty("accountnumber").toString() + "ò";
                 output += transfer.getProperty("type").toString() + "ò";
-                output += transfer.getProperty("purpose").toString() + "ò";
+                output += decryptString(cryptor, (String) transfer.getProperty("purpose"), (String) sender.getProperty("password")) + "ò";
                 output += plusminus;
                 output += transfer.getProperty("amount").toString() + "ň";
             }
@@ -72,5 +74,11 @@ public class PostTransfers extends HttpServlet {
             log.warning("Entity " + kind + " " + name + " " + entityTitle + " was not found!");
             return null;
         }
+    }
+
+    private String decryptString(Cryptor cryptor, String encryptedInputStr, String encryptedHexPasswordStr){
+        byte[] encryptedInput = cryptor.hexToBytes(encryptedInputStr);
+        byte[] encryptedPassword = cryptor.hexToBytes(encryptedHexPasswordStr);
+        return cryptor.decrypt(encryptedInput, encryptedPassword);
     }
 }

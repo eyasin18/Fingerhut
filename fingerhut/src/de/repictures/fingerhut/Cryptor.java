@@ -14,14 +14,23 @@ import java.util.Random;
 
 public class Cryptor {
 
-    private byte[] hashKey = {36,-102,83,95,87,-91,-38,118,-16,20,52,-42,18,-70,-75,-69,-61,-6,40,-121,-118,-4,-113,-57,96,126,37,-88,-123,98,61,31}; //Schlüssel zum Hashen.
-
-    public byte[] hash(String input) {
+    public String hashToString(String input){
         try {
-            KeySpec spec = new PBEKeySpec(input.toCharArray(), hashKey, 65536, 256); //Specifikationen des Schlüssels werden festgelegt. (input [zu verschlüsselnder string als chararray], salt [beliebige nummernfolge die dem verschlüsselten bytearray einfach angehängt wird], iterationCount [wie oft wird hintereinander verschlüsselt], keyLength [wie lang soll der schlüssel werden])
-            SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1"); //Wir initialisieren die KeyFactory. Wir wollen die "Password-Based Key Derivation Function 2" mit dem "HmacSHA1" Algorythmus verwenden
-            return f.generateSecret(spec).getEncoded(); //Mache den Schlüssel aus den Spezifikationen
-        }catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");//Wir wollen auf SHA-256 verschlüsseln
+            messageDigest.update(input.getBytes()); //Input wird verschlüsselt
+            return bytesToHex(messageDigest.digest()); //Hash wird als Hexadezimalzahl ausgegeben
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public byte[] hashToByte(String input){
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");//Wir wollen auf SHA-256 verschlüsseln
+            messageDigest.update(input.getBytes()); //Input wird verschlüsselt
+            return messageDigest.digest(); //Hash wird als Hexadezimalzahl ausgegeben
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
         }
@@ -52,9 +61,24 @@ public class Cryptor {
         }
     }
 
-    private AlgorithmParameterSpec getIV(Cipher cipher){ //sinnlose methode die wir vielleicht mal wieder gebrauchen könnten. Ich vermute dass hier der Punkt von der Kreisbahn abgelesen wird.
-        byte[] iv = new byte[cipher.getBlockSize()];
-        new SecureRandom().nextBytes(iv);
-        return new IvParameterSpec(iv);
+    public String bytesToHex(byte[] bytes) {
+        final char[] hexArray = "0123456789ABCDEF".toCharArray();
+        StringBuilder output = new StringBuilder();
+        for (byte aByte : bytes) {
+            int v = aByte & 0xFF;
+            output.append(hexArray[v >>> 4]);
+            output.append(hexArray[v & 0x0F]);
+        }
+        return output.toString();
+    }
+
+    public byte[] hexToBytes(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
     }
 }
