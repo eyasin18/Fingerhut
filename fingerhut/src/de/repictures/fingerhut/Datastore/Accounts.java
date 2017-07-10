@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class Accounts {
 
-    private Entity account;
+    Entity account;
     private DatastoreService datastore;
     private Cryptor cryptor;
     private Logger log = Logger.getLogger(Accounts.class.getName());
@@ -46,7 +46,7 @@ public class Accounts {
         account.setProperty("accountnumber", accountnumber);
         account.setProperty("password", encryptedPassword);
         account.setProperty("owner", name);
-        account.setProperty("balance", 100.00);
+        account.setProperty("balance", 15.00);
         account.setProperty("transferarray", new ArrayList<String>());
 
         datastore.put(account);
