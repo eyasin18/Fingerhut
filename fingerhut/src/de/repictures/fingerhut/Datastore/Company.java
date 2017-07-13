@@ -80,4 +80,36 @@ public class Company extends Accounts {
         products.add(KeyFactory.keyToString(product.getKey()));
         account.setProperty("products", products);
     }
+
+    public List<Entity> getProducts(Entity passedEntity){
+        try {
+            ArrayList<Entity> products = new ArrayList<>();
+            if (passedEntity.getProperty("products") != null) {
+                ArrayList<String> productsStr = (ArrayList<String>) passedEntity.getProperty("products");
+                for (String productStr : productsStr) {
+                    products.add(datastore.get(KeyFactory.stringToKey(productStr)));
+                }
+            }
+            return products;
+        } catch (EntityNotFoundException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Entity> getProducts(){
+        try {
+            ArrayList<Entity> products = new ArrayList<>();
+            if (company.getProperty("products") != null) {
+                ArrayList<String> productsStr = (ArrayList<String>) company.getProperty("products");
+                for (String productStr : productsStr) {
+                    products.add(datastore.get(KeyFactory.stringToKey(productStr)));
+                }
+            }
+            return products;
+        } catch (EntityNotFoundException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

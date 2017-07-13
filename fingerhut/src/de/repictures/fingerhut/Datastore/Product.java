@@ -26,8 +26,8 @@ public class Product {
         return createdProduct;
     }
 
-    public Entity getProduct(String accountnumber){
-        Key loginKey = KeyFactory.createKey("code", accountnumber);
+    public Entity getProduct(String code){
+        Key loginKey = KeyFactory.createKey("code", code);
         Query loginQuery = new Query("Product", loginKey);
         List<Entity> accountList = datastore.prepare(loginQuery).asList(FetchOptions.Builder.withDefaults());
         if (accountList.size() > 0){
@@ -37,18 +37,18 @@ public class Product {
         }
     }
 
-    public Entity getProduct(Key accountKey){
+    public Entity getProduct(Key productKey){
         try {
-            return datastore.get(accountKey);
+            return datastore.get(productKey);
         } catch (EntityNotFoundException e) {
             return null;
         }
     }
 
-    public List<Entity> getProducts(String accountnumber){
-        Key loginKey = KeyFactory.createKey("code", accountnumber);
-        Query loginQuery = new Query("Product", loginKey);
-        List<Entity> products = datastore.prepare(loginQuery).asList(FetchOptions.Builder.withDefaults());
+    public List<Entity> getProducts(String code){
+        Key productKey = KeyFactory.createKey("code", code);
+        Query productQuery = new Query("Product", productKey);
+        List<Entity> products = datastore.prepare(productQuery).asList(FetchOptions.Builder.withDefaults());
         if (products != null) return products;
         else return new ArrayList<>();
     }

@@ -40,6 +40,38 @@
         <servlet-name>PostTransfers</servlet-name>
         <url-pattern>/posttransfers</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>CompanyLogin</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.CompanyLogin</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CompanyLogin</servlet-name>
+        <url-pattern>/companylogin</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>SaveCompany</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.SaveCompany</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SaveCompany</servlet-name>
+        <url-pattern>/savecompany</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>PostProducts</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.PostProducts</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PostProducts</servlet-name>
+        <url-pattern>/postproducts</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>GetProduct</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.GetProduct</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetProduct</servlet-name>
+        <url-pattern>/getproduct</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
