@@ -19,8 +19,9 @@ public class Product {
     public Entity addProduct(String code, String name, Entity company, String priceStr){
         Key key = KeyFactory.createKey("code", code);
         Entity createdProduct = new Entity("Product", key);
+        createdProduct.setProperty("code", code);
         createdProduct.setProperty("name", name);
-        createdProduct.setProperty("selling company", KeyFactory.keyToString(company.getKey()));
+        createdProduct.setProperty("selling_company", KeyFactory.keyToString(company.getKey()));
         double price = Double.parseDouble(priceStr);
         createdProduct.setProperty("price", price);
         return createdProduct;

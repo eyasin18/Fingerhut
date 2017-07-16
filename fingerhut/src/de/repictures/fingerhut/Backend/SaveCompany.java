@@ -24,7 +24,7 @@ public class SaveCompany extends HttpServlet{
 
         //Company wird erstellt
         Company company = new Company();
-        company.postAccount(accountnumber, password, name);
+        company.postAccount(accountnumber, name, password);
         Entity createdCompany = company.getAccount(accountnumber);
 
         resp.getWriter().println("Kontonummer: " + company.getAccountnumber(createdCompany)

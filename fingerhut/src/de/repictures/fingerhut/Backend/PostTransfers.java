@@ -2,6 +2,7 @@ package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.*;
 import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Transfers;
 
 import javax.servlet.ServletException;
@@ -19,8 +20,10 @@ public class PostTransfers extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String accountnumber = req.getParameter("accountnumber");
 
+        Company companyGetter = new Company();
         Accounts accountGetter = new Accounts();
         Entity account = accountGetter.getAccount(accountnumber);
+
         if (account != null){
             StringBuilder output = new StringBuilder();
             List<String> transferList = accountGetter.getTransfers(account);
@@ -38,12 +41,20 @@ public class PostTransfers extends HttpServlet {
                     if (Objects.equals(senderAccountnumber, accountnumber)){
                         plusminus = '-';
                         output.append("ò");
-                        output.append(accountGetter.getOwner(receiver));
+                        try {
+                            output.append(accountGetter.getOwner(receiver));
+                        } catch (StringIndexOutOfBoundsException e){
+                            output.append(companyGetter.getOwner(receiver));
+                        }
                         output.append("ò");
                         output.append(accountGetter.getAccountnumber(receiver));
                     } else {
                         output.append("ò");
-                        output.append(accountGetter.getOwner(sender));
+                        try {
+                            output.append(accountGetter.getOwner(sender));
+                        } catch (StringIndexOutOfBoundsException e){
+                            output.append(companyGetter.getOwner(sender));
+                        }
                         output.append("ò");
                         output.append(accountGetter.getAccountnumber(sender));
                     }

@@ -31,8 +31,6 @@ public class Company extends Accounts {
             password = String.format("%04d", rand.nextInt(10000));
         }
         String encryptedPassword = cryptor.hashToString(password);
-        byte[] encryptedByteName = cryptor.encrypt(name, cryptor.hashToByte(password));
-        name = cryptor.bytesToHex(encryptedByteName);
 
         Key loginKey = KeyFactory.createKey("accountnumber", accountnumber);
         Entity company = new Entity("Company", loginKey);
@@ -78,7 +76,15 @@ public class Company extends Accounts {
         if (passedEntity.getProperty("products") != null)
             products = (ArrayList<String>) passedEntity.getProperty("products");
         products.add(KeyFactory.keyToString(product.getKey()));
-        account.setProperty("products", products);
+        passedEntity.setProperty("products", products);
+    }
+
+    public String getOwner(){
+        return (String) account.getProperty("owner");
+    }
+
+    public String getOwner(Entity passedEntity){
+        return (String) passedEntity.getProperty("owner");
     }
 
     public List<Entity> getProducts(Entity passedEntity){

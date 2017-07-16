@@ -43,7 +43,7 @@ public class CompanyLogin extends HttpServlet{
         StringBuilder output = new StringBuilder();
         output.append(companyGetter.getOwner(company));
         output.append("ò");
-        output.append(companyGetter.getBalance());
+        output.append(companyGetter.getBalance(company));
         return URLEncoder.encode(output.toString(), "UTF-8");
     }
 }

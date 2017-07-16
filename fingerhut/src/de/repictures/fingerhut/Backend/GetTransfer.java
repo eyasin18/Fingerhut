@@ -2,6 +2,7 @@ package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.Entity;
 import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Transfers;
 
 import javax.servlet.ServletException;
@@ -28,9 +29,19 @@ public class GetTransfer extends HttpServlet {
         float amount = Float.parseFloat(URLDecoder.decode(req.getParameter("amount"), "UTF-8"));
 
         Accounts receiverBuilder = new Accounts();
-        Entity receiver = receiverBuilder.getAccount(receiverAccountnumber);
         Accounts senderBuilder = new Accounts();
+        Entity receiver = receiverBuilder.getAccount(receiverAccountnumber);
         Entity sender = senderBuilder.getAccount(senderAccountnumber);
+
+        if (receiver == null){
+            receiverBuilder = new Company();
+            receiver = receiverBuilder.getAccount(receiverAccountnumber);
+        }
+        if (sender == null){
+            senderBuilder = new Company();
+            sender = senderBuilder.getAccount(senderAccountnumber);
+        }
+
         float senderBalance = sender != null ? Float.parseFloat(senderBuilder.getBalance(sender)) : 0;
         float receiverBalance = receiver != null ? Float.parseFloat(receiverBuilder.getBalance(receiver)) : 0;
 

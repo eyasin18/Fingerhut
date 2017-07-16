@@ -31,7 +31,8 @@ public class PostProducts extends HttpServlet{
             for (Entity product : products){
                 output.append(product.getProperty("name"));
                 output.append("ò");
-                Key companyKey = KeyFactory.stringToKey((String) product.getProperty("selling company"));
+                String companyKeyStr = (String) product.getProperty("selling_company");
+                Key companyKey = KeyFactory.stringToKey(companyKeyStr);
                 Entity company = companyGetter.getAccount(companyKey);
                 output.append(companyGetter.getOwner(company));
                 output.append("ò");
