@@ -3,12 +3,13 @@ package de.repictures.fingerhut.Datastore;
 import com.google.appengine.api.datastore.*;
 import de.repictures.fingerhut.Cryptor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Logger;
 
+@SuppressWarnings("unchecked")
 public class Accounts {
+
+    private static int featureCount = 25;
 
     Entity account;
     private DatastoreService datastore;
@@ -48,6 +49,7 @@ public class Accounts {
         account.setProperty("owner", name);
         account.setProperty("balance", 15.00);
         account.setProperty("transferarray", new ArrayList<String>());
+        setFeature(account,0, true);
 
         datastore.put(account);
     }
@@ -230,6 +232,38 @@ public class Accounts {
         } catch (EntityNotFoundException e) {
             return null;
         }
+    }
+
+    public void setFeature(Entity passedEntity, long featureNumber, boolean add){
+        ArrayList<Long> featureList = new ArrayList<>();
+        if (passedEntity.getProperty("feature_list") != null)
+            featureList = (ArrayList<Long>) passedEntity.getProperty("feature_list");
+        if (add) featureList.add(featureNumber);
+        else featureList.remove(featureNumber);
+        passedEntity.setProperty("feature_list", featureList);
+    }
+
+    public void setFeature(long featureNumber, boolean add){
+        ArrayList<Long> featureList = new ArrayList<>();
+        if (account.getProperty("feature_list") != null)
+            featureList = (ArrayList<Long>) account.getProperty("feature_list");
+        if (add) featureList.add(featureNumber);
+        else featureList.remove(featureNumber);
+        account.setProperty("feature_list", featureList);
+    }
+
+    public ArrayList<Long> getFeatures(){
+        ArrayList<Long> featureList = new ArrayList<>();
+        if (account.getProperty("feature_list") != null)
+            featureList = (ArrayList<Long>) account.getProperty("feature_list");
+        return featureList;
+    }
+
+    public ArrayList<Long> getFeatures(Entity passedEntity){
+        ArrayList<Long> featureList = new ArrayList<>();
+        if (passedEntity.getProperty("feature_list") != null)
+            featureList = (ArrayList<Long>) passedEntity.getProperty("feature_list");
+        return featureList;
     }
 
     public void saveAll(){

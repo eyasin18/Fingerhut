@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,14 +34,20 @@ public class Login extends HttpServlet {
         if (queriedAccounts.size() > 0){
             String savedPassword = accounts.getPassword(queriedAccounts.get(0));
             if (Objects.equals(savedPassword, inputPassword)){
-                StringBuilder accountsListStrB = new StringBuilder();
+                StringBuilder output = new StringBuilder();
                 for (Entity entity : accounts.getAllAccounts()){
-                    accountsListStrB.append(accounts.getAccountnumber(entity));
-                    accountsListStrB.append("ĵ");
-                    accountsListStrB.append(accounts.getOwner(entity));
-                    accountsListStrB.append("ň");
+                    output.append(accounts.getAccountnumber(entity));
+                    output.append("ĵ");
+                    output.append(accounts.getOwner(entity));
+                    output.append("ň");
                 }
-                String response = "2ò" + accounts.getKey(queriedAccounts.get(0)) + "ò" + accountsListStrB.toString();
+                output.append("ò");
+                ArrayList<Long> featuresList = accounts.getFeatures(queriedAccounts.get(0));
+                for (Long feature : featuresList){
+                    output.append(feature);
+                    output.append("ň");
+                }
+                String response = "2ò" + accounts.getKey(queriedAccounts.get(0)) + "ò" + output.toString();
                 resp.getWriter().println(URLEncoder.encode(response, "UTF-8"));
             } else {
                 resp.getWriter().println("1");
