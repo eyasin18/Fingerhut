@@ -3,6 +3,8 @@ package de.repictures.fingerhut.Datastore;
 import com.google.appengine.api.datastore.*;
 import de.repictures.fingerhut.Cryptor;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -38,7 +40,7 @@ public class Accounts {
             password = String.format("%04d", rand.nextInt(10000));
         }
         String encryptedPassword = cryptor.hashToString(password);
-        byte[] encryptedByteName = cryptor.encrypt(name, cryptor.hashToByte(password));
+        byte[] encryptedByteName = cryptor.encryptSymetric(name, cryptor.hashToByte(password));
         name = cryptor.bytesToHex(encryptedByteName);
 
         Key loginKey = KeyFactory.createKey("accountnumber", accountnumber);
@@ -136,20 +138,20 @@ public class Accounts {
 
     public void setOwner(String owner){
         String password = (String) account.getProperty("password");
-        byte[] encryptedByteName = cryptor.encrypt(owner, cryptor.hashToByte(password));
+        byte[] encryptedByteName = cryptor.encryptSymetric(owner, cryptor.hashToByte(password));
         String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
         account.setProperty("owner", encryptedOwner);
     }
 
     public void setOwner(String owner, Entity accountEntity){
         String password = (String) accountEntity.getProperty("password");
-        byte[] encryptedByteName = cryptor.encrypt(owner, cryptor.hashToByte(password));
+        byte[] encryptedByteName = cryptor.encryptSymetric(owner, cryptor.hashToByte(password));
         String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
         accountEntity.setProperty("owner", encryptedOwner);
     }
 
     public void setOwner(String owner, String password){
-        byte[] encryptedByteName = cryptor.encrypt(owner, cryptor.hashToByte(password));
+        byte[] encryptedByteName = cryptor.encryptSymetric(owner, cryptor.hashToByte(password));
         String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
         account.setProperty("owner", encryptedOwner);
     }
@@ -159,7 +161,7 @@ public class Accounts {
         byte[] encryptedName = cryptor.hexToBytes(encryptedNameStr);
         String encryptedHexPasswordStr = (String) account.getProperty("password");
         byte[] encryptedPassword = cryptor.hexToBytes(encryptedHexPasswordStr);
-        return cryptor.decrypt(encryptedName, encryptedPassword);
+        return cryptor.decryptSymetric(encryptedName, encryptedPassword);
     }
 
     public String getOwner(Entity passedEntity){
@@ -167,7 +169,7 @@ public class Accounts {
         byte[] encryptedName = cryptor.hexToBytes(encryptedNameStr);
         String encryptedHexPasswordStr = (String) passedEntity.getProperty("password");
         byte[] encryptedPassword = cryptor.hexToBytes(encryptedHexPasswordStr);
-        return cryptor.decrypt(encryptedName, encryptedPassword);
+        return cryptor.decryptSymetric(encryptedName, encryptedPassword);
     }
 
     public void setPassword(String password){
@@ -264,6 +266,35 @@ public class Accounts {
         if (passedEntity.getProperty("feature_list") != null)
             featureList = (ArrayList<Long>) passedEntity.getProperty("feature_list");
         return featureList;
+    }
+
+    public String createAuthString(){
+        SecureRandom sr = new SecureRandom();
+        return new BigInteger(130, sr).toString(32);
+    }
+
+    public void saveAuthString(String authString){
+        account.setProperty("authString", authString);
+    }
+
+    public void saveAuthString(){
+        account.setProperty("authString", createAuthString());
+    }
+
+    public void saveAuthString(String authString, Entity passedEntity){
+        passedEntity.setProperty("authString", authString);
+    }
+
+    public void saveAuthString(Entity passedEntity){
+        passedEntity.setProperty("authString", createAuthString());
+    }
+
+    public String getAuthString(){
+        return (String) account.getProperty("authString");
+    }
+
+    public String getAuthString(Entity passedEntity){
+        return (String) passedEntity.getProperty("authString");
     }
 
     public void saveAll(){

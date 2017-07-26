@@ -72,6 +72,14 @@
         <servlet-name>GetProduct</servlet-name>
         <url-pattern>/getproduct</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>BlobstoreSaveImage</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Blobstore.SaveImage</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BlobstoreSaveImage</servlet-name>
+        <url-pattern>/saveimage</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
