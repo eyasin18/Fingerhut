@@ -101,13 +101,13 @@ public class Transfers {
 
     public void setPurpose(Entity sender, String purpose){
         String password = (String) sender.getProperty("password");
-        byte[] encryptedBytePurpose = cryptor.encryptSymetric(purpose, cryptor.hexToBytes(password));
+        byte[] encryptedBytePurpose = cryptor.encryptSymetricFromString(purpose, cryptor.hexToBytes(password));
         transfer.setProperty("purpose", cryptor.bytesToHex(encryptedBytePurpose));
     }
 
     public void setPurpose(Entity passedEntity, Entity sender ,String purpose){
         String password = (String) sender.getProperty("password");
-        byte[] encryptedBytePurpose = cryptor.encryptSymetric(purpose, cryptor.hexToBytes(password));
+        byte[] encryptedBytePurpose = cryptor.encryptSymetricFromString(purpose, cryptor.hexToBytes(password));
         passedEntity.setProperty("purpose", cryptor.bytesToHex(encryptedBytePurpose));
     }
 
@@ -116,7 +116,7 @@ public class Transfers {
         byte[] encryptedPassword = cryptor.hexToBytes(encyptedPasswordStr);
         String encryptedPurposeStr = (String) transfer.getProperty("purpose");
         byte[] encryptedPurpose = cryptor.hexToBytes(encryptedPurposeStr);
-        return cryptor.decryptSymetric(encryptedPurpose, encryptedPassword);
+        return cryptor.decryptSymetricToString(encryptedPurpose, encryptedPassword);
     }
 
     public String getPurpose(Entity passedEntity, Entity sender){
@@ -124,7 +124,7 @@ public class Transfers {
         byte[] encryptedPassword = cryptor.hexToBytes(encyptedPasswordStr);
         String encryptedPurposeStr = (String) passedEntity.getProperty("purpose");
         byte[] encryptedPurpose = cryptor.hexToBytes(encryptedPurposeStr);
-        return cryptor.decryptSymetric(encryptedPurpose, encryptedPassword);
+        return cryptor.decryptSymetricToString(encryptedPurpose, encryptedPassword);
     }
 
     public void setReceiver(Entity receiver){

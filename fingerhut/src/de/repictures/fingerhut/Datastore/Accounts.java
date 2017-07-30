@@ -29,6 +29,12 @@ public class Accounts {
         this.account = account;
     }
 
+    public Accounts(String accountnumber){
+        datastore = DatastoreServiceFactory.getDatastoreService();
+        cryptor = new Cryptor();
+        this.account = getAccount(accountnumber);
+    }
+
     public Entity createAccount(String accountnumber){
         Key key = KeyFactory.createKey("accountnumber", accountnumber);
         return new Entity("Account", key);
@@ -40,7 +46,7 @@ public class Accounts {
             password = String.format("%04d", rand.nextInt(10000));
         }
         String encryptedPassword = cryptor.hashToString(password);
-        byte[] encryptedByteName = cryptor.encryptSymetric(name, cryptor.hashToByte(password));
+        byte[] encryptedByteName = cryptor.encryptSymetricFromString(name, cryptor.hashToByte(password));
         name = cryptor.bytesToHex(encryptedByteName);
 
         Key loginKey = KeyFactory.createKey("accountnumber", accountnumber);
@@ -138,20 +144,20 @@ public class Accounts {
 
     public void setOwner(String owner){
         String password = (String) account.getProperty("password");
-        byte[] encryptedByteName = cryptor.encryptSymetric(owner, cryptor.hashToByte(password));
+        byte[] encryptedByteName = cryptor.encryptSymetricFromString(owner, cryptor.hashToByte(password));
         String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
         account.setProperty("owner", encryptedOwner);
     }
 
     public void setOwner(String owner, Entity accountEntity){
         String password = (String) accountEntity.getProperty("password");
-        byte[] encryptedByteName = cryptor.encryptSymetric(owner, cryptor.hashToByte(password));
+        byte[] encryptedByteName = cryptor.encryptSymetricFromString(owner, cryptor.hashToByte(password));
         String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
         accountEntity.setProperty("owner", encryptedOwner);
     }
 
     public void setOwner(String owner, String password){
-        byte[] encryptedByteName = cryptor.encryptSymetric(owner, cryptor.hashToByte(password));
+        byte[] encryptedByteName = cryptor.encryptSymetricFromString(owner, cryptor.hashToByte(password));
         String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
         account.setProperty("owner", encryptedOwner);
     }
@@ -161,7 +167,7 @@ public class Accounts {
         byte[] encryptedName = cryptor.hexToBytes(encryptedNameStr);
         String encryptedHexPasswordStr = (String) account.getProperty("password");
         byte[] encryptedPassword = cryptor.hexToBytes(encryptedHexPasswordStr);
-        return cryptor.decryptSymetric(encryptedName, encryptedPassword);
+        return cryptor.decryptSymetricToString(encryptedName, encryptedPassword);
     }
 
     public String getOwner(Entity passedEntity){
@@ -169,7 +175,7 @@ public class Accounts {
         byte[] encryptedName = cryptor.hexToBytes(encryptedNameStr);
         String encryptedHexPasswordStr = (String) passedEntity.getProperty("password");
         byte[] encryptedPassword = cryptor.hexToBytes(encryptedHexPasswordStr);
-        return cryptor.decryptSymetric(encryptedName, encryptedPassword);
+        return cryptor.decryptSymetricToString(encryptedName, encryptedPassword);
     }
 
     public void setPassword(String password){
@@ -273,19 +279,19 @@ public class Accounts {
         return new BigInteger(130, sr).toString(32);
     }
 
-    public void saveAuthString(String authString){
+    public void setAuthString(String authString){
         account.setProperty("authString", authString);
     }
 
-    public void saveAuthString(){
+    public void setAuthString(){
         account.setProperty("authString", createAuthString());
     }
 
-    public void saveAuthString(String authString, Entity passedEntity){
+    public void setAuthString(String authString, Entity passedEntity){
         passedEntity.setProperty("authString", authString);
     }
 
-    public void saveAuthString(Entity passedEntity){
+    public void setAuthString(Entity passedEntity){
         passedEntity.setProperty("authString", createAuthString());
     }
 
@@ -295,6 +301,30 @@ public class Accounts {
 
     public String getAuthString(Entity passedEntity){
         return (String) passedEntity.getProperty("authString");
+    }
+
+    public void setGeneric(String propertyName, Object value){
+        account.setProperty(propertyName, value);
+    }
+
+    public void setGeneric(Entity passedEntity, String propertyName, Object value){
+        passedEntity.setProperty(propertyName, value);
+    }
+
+    public void setQRBlob(Entity passedEntity, Blob image){
+        passedEntity.setProperty("qrBlob", image);
+    }
+
+    public void setQRBlob(Blob image){
+        account.setProperty("qrBlob", image);
+    }
+
+    public Blob getQRBlob(){
+        return (Blob) account.getProperty("qrBlob");
+    }
+
+    public Blob getQRBlob(Entity passedEntity){
+        return (Blob) passedEntity.getProperty("qrBlob");
     }
 
     public void saveAll(){

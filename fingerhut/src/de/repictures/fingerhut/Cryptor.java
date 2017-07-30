@@ -37,7 +37,7 @@ public class Cryptor {
         }
     }
 
-    public byte[] encryptSymetric(String input, byte[] key){
+    public byte[] encryptSymetricFromString(String input, byte[] key){
         try{
             Cipher cipher = Cipher.getInstance("AES"); //Cipher Objekt wird erzeugt. Wir wollen auf AES verschlüsseln.
             SecretKey originalKey = new SecretKeySpec(key, 0, key.length, "AES"); //bytearray wir zum "SecretKey" gemacht (key [benutzter Schlüssel als bytearray], offset, [wie lang unser Schlüssel sein soll], algorithm [welchen verschlüsselungsargorythums verwenden wir?])
@@ -49,13 +49,37 @@ public class Cryptor {
         }
     }
 
-    public String decryptSymetric(byte[] encryptedInput, byte[] key){
+    public byte[] encryptSymetricFromByte(byte[] input, byte[] key){
+        try{
+            Cipher cipher = Cipher.getInstance("AES"); //Cipher Objekt wird erzeugt. Wir wollen auf AES verschlüsseln.
+            SecretKey originalKey = new SecretKeySpec(key, 0, key.length, "AES"); //bytearray wir zum "SecretKey" gemacht (key [benutzter Schlüssel als bytearray], offset, [wie lang unser Schlüssel sein soll], algorithm [welchen verschlüsselungsargorythums verwenden wir?])
+            cipher.init(Cipher.ENCRYPT_MODE, originalKey); //Cipher wird initialisiert
+            return cipher.doFinal(input); //Input wird verschlüsselt
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String decryptSymetricToString(byte[] encryptedInput, byte[] key){
         try {
             Cipher cipher = Cipher.getInstance("AES"); //Cipher Objekt wird erzeugt. Wir wollen auf AES entschlüsseln.
             SecretKey originalKey = new SecretKeySpec(key, 0, key.length, "AES"); //bytearray wir zum "SecretKey" gemacht (key [benutzter Schlüssel als bytearray], offset, [wie lang unser Schlüssel sein soll], algorithm [welchen verschlüsselungsargorythums verwenden wir?])
             cipher.init(Cipher.DECRYPT_MODE, originalKey); //cipher wird initialisiert
             byte[] decryptedBytes = cipher.doFinal(encryptedInput); //input wird entschlüsselt
             return new String(decryptedBytes); //bytearray wird zum string gemacht
+        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public byte[] decryptSymetricToByte(byte[] encryptedInput, byte[] key){
+        try {
+            Cipher cipher = Cipher.getInstance("AES"); //Cipher Objekt wird erzeugt. Wir wollen auf AES entschlüsseln.
+            SecretKey originalKey = new SecretKeySpec(key, 0, key.length, "AES"); //bytearray wir zum "SecretKey" gemacht (key [benutzter Schlüssel als bytearray], offset, [wie lang unser Schlüssel sein soll], algorithm [welchen verschlüsselungsargorythums verwenden wir?])
+            cipher.init(Cipher.DECRYPT_MODE, originalKey); //cipher wird initialisiert
+            return cipher.doFinal(encryptedInput); //input wird entschlüsselt
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
             return null;

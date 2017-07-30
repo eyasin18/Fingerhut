@@ -73,12 +73,28 @@
         <url-pattern>/getproduct</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>SaveQR</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.SaveQR</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SaveQR</servlet-name>
+        <url-pattern>/saveqr</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>BlobstoreSaveImage</servlet-name>
         <servlet-class>de.repictures.fingerhut.Blobstore.SaveImage</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>BlobstoreSaveImage</servlet-name>
-        <url-pattern>/saveimage</url-pattern>
+        <url-pattern>/blob/saveimage</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>GetQR</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.GetQR</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetQR</servlet-name>
+        <url-pattern>/getqr</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
