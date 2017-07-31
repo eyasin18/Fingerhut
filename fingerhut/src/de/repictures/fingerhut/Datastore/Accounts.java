@@ -204,6 +204,16 @@ public class Accounts {
         return (String) passedEntity.getProperty("password");
     }
 
+    public String getSaltetPassword(String salt){
+        String password = (String) account.getProperty("password");
+        return cryptor.hashToString(password + salt);
+    }
+
+    public String getSaltedPassword(Entity passedEntity, String salt){
+        String password = (String) passedEntity.getProperty("password");
+        return cryptor.hashToString(password + salt);
+    }
+
     public void addTransfer(Entity transfer){
         ArrayList<String> transfersList = new ArrayList<>();
         if (account.getProperty("transferarray") != null)

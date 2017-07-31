@@ -96,6 +96,14 @@
         <servlet-name>GetQR</servlet-name>
         <url-pattern>/getqr</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>Authentificate</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.Authentificate</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Authentificate</servlet-name>
+        <url-pattern>/auth</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
