@@ -1,5 +1,7 @@
 package de.repictures.fingerhut;
 
+import de.repictures.fingerhut.Datastore.Accounts;
+
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
@@ -10,8 +12,10 @@ import java.security.*;
 import java.security.spec.*;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.logging.Logger;
 
 public class Cryptor {
+    private Logger log = Logger.getLogger(Cryptor.class.getName());
 
     public String hashToString(String input){
         try {
@@ -80,6 +84,7 @@ public class Cryptor {
             return cipher.doFinal(encryptedInput); //input wird entschlüsselt
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
+            log.warning(e.toString());
             return null;
         }
     }
