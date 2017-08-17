@@ -16,19 +16,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class Login extends HttpServlet {
 
-    private String serverTimeStamp;
+    private Logger log = Logger.getLogger(Accounts.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Authentificate authentificate = new Authentificate();
+        Authenticate authenticate = new Authenticate();
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        authentificate.serverTimeStamp = "~" + dateFormat.format(cal.getTime());
-        serverTimeStamp = dateFormat.format(cal.getTime());
-        authentificate.doGet(req, resp);
+        String serverTimeStamp = dateFormat.format(cal.getTime());
+        authenticate.serverTimeStamp = "ò" + serverTimeStamp;
+        authenticate.doGet(req, resp);
     }
 
     @Override
@@ -38,11 +39,13 @@ public class Login extends HttpServlet {
         String accountnumber = req.getParameter("accountnumber");
         if (accountnumber != null) accountnumber = URLDecoder.decode(accountnumber, "UTF-8");
         String inputPassword = req.getParameter("password");
+        String serverTimeStamp = req.getParameter("servertimestamp");
 
         Accounts accounts = new Accounts();
         List<Entity> queriedAccounts = accounts.getAccounts(accountnumber);
         if (queriedAccounts.size() > 0){
             String savedPassword = accounts.getSaltedPassword(queriedAccounts.get(0), serverTimeStamp);
+            log.info("Input Password: " + inputPassword + "\nSavedPassword: " + savedPassword + "\nKlarpasswort: " + accounts.getHashedPassword(queriedAccounts.get(0)));
             if (Objects.equals(savedPassword, inputPassword)){
                 StringBuilder output = new StringBuilder();
                 for (Entity entity : accounts.getAllAccounts()){

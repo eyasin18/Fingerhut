@@ -7,10 +7,8 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.*;
-import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.InvalidParameterSpecException;
-import java.security.spec.KeySpec;
+import java.security.spec.*;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Cryptor {
@@ -112,9 +110,65 @@ public class Cryptor {
     public KeyPair generateKeyPair(){ // Generiert Schlüsselpaar zur asymetrischen Verschlüsselung
         try {
             KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-            kpg.initialize(2048);
+            SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG", "SUN");
+            kpg.initialize(1024, secureRandom);
             return kpg.generateKeyPair();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public PrivateKey stringToPrivateKey(String keyString) {
+        try {
+            byte[] clear = hexToBytes(keyString);
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(clear);
+            KeyFactory fact = KeyFactory.getInstance("RSA");
+            PrivateKey privateKey = fact.generatePrivate(keySpec);
+            Arrays.fill(clear, (byte) 0);
+            return privateKey;
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public PublicKey stringToPublicKey(String keyString) {
+        try {
+            byte[] data = hexToBytes(keyString);
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(data);
+            KeyFactory fact = KeyFactory.getInstance("RSA");
+            return fact.generatePublic(spec);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String privateKeyToString(PrivateKey privateKey) {
+        try {
+            KeyFactory fact = KeyFactory.getInstance("RSA");
+            PKCS8EncodedKeySpec spec = fact.getKeySpec(privateKey,
+                    PKCS8EncodedKeySpec.class);
+            byte[] packed = spec.getEncoded();
+            String keyString = bytesToHex(packed);
+            Arrays.fill(packed, (byte) 0);
+            return keyString;
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public String publicKeyToString(PublicKey publicKey) {
+        try {
+            KeyFactory fact = KeyFactory.getInstance("RSA");
+            X509EncodedKeySpec spec = fact.getKeySpec(publicKey,
+                    X509EncodedKeySpec.class);
+            return bytesToHex(spec.getEncoded());
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
             return null;
         }

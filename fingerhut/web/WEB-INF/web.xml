@@ -90,7 +90,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>GetQR</servlet-name>
-        <servlet-class>de.repictures.fingerhut.Backend.GetQR</servlet-class>
+        <servlet-class>de.repictures.fingerhut.Backend.PostQR</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>GetQR</servlet-name>
@@ -98,7 +98,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>Authentificate</servlet-name>
-        <servlet-class>de.repictures.fingerhut.Backend.Authentificate</servlet-class>
+        <servlet-class>de.repictures.fingerhut.Backend.Authenticate</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Authentificate</servlet-name>

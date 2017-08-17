@@ -18,10 +18,6 @@ public class SaveQR extends HttpServlet {
 
     private Logger log = Logger.getLogger(Accounts.class.getName());
     private Cryptor cryptor = new Cryptor();
-    private Accounts accountsBuilder;
-    private int byteLength;
-    private String authCode;
-    private byte[] password;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,19 +25,30 @@ public class SaveQR extends HttpServlet {
         String byteSizeStr = req.getParameter("bytelength");
         String encryptedAuthCodeHex = req.getParameter("authcode");
 
-
-        accountsBuilder = new Accounts(accountnumber);
-        password = cryptor.hexToBytes(accountsBuilder.getPassword());
+        Accounts accountsBuilder = new Accounts(accountnumber);
+        byte[] password = cryptor.hexToBytes(accountsBuilder.getHashedPassword());
 
         byte[] encryptedAuthCode = cryptor.hexToBytes(encryptedAuthCodeHex);
-        authCode = cryptor.decryptSymetricToString(encryptedAuthCode, password);
+        String authCode = cryptor.decryptSymetricToString(encryptedAuthCode, password);
         log.info(authCode);
-        byteLength = Integer.parseInt(byteSizeStr);
+        int byteLength = Integer.parseInt(byteSizeStr);
         resp.getWriter().println("ready");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String accountnumber = req.getParameter("accountnumber");
+        String byteSizeStr = req.getParameter("bytelength");
+        String encryptedAuthCodeHex = req.getParameter("authcode");
+
+        Accounts accountsBuilder = new Accounts(accountnumber);
+        byte[] password = cryptor.hexToBytes(accountsBuilder.getHashedPassword());
+
+        byte[] encryptedAuthCode = cryptor.hexToBytes(encryptedAuthCodeHex);
+        String authCode = cryptor.decryptSymetricToString(encryptedAuthCode, password);
+        log.info(authCode);
+        int byteLength = Integer.parseInt(byteSizeStr);
+
         DataInputStream dis = new DataInputStream(req.getInputStream());
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int nRead;
@@ -61,7 +68,6 @@ public class SaveQR extends HttpServlet {
         accountsBuilder.saveAll();
 
         resp.setStatus(HttpServletResponse.SC_OK);
-        resp.setContentType("application/json");
 
         PrintWriter out = resp.getWriter();
         out.println("success");

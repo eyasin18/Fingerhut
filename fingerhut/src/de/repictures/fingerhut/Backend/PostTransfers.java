@@ -61,7 +61,13 @@ public class PostTransfers extends HttpServlet {
                     output.append("ò");
                     output.append(transfersGetter.getType(transfer));
                     output.append("ò");
-                    output.append(transfersGetter.getPurpose(transfer, sender));
+                    if (Objects.equals(accountnumber, senderAccountnumber)){
+                        output.append(transfersGetter.getSenderPurpose(transfer, sender));
+                    } else if(Objects.equals(accountGetter.getAccountnumber(receiver), accountnumber)){
+                        output.append(transfersGetter.getReceiverPurpose(transfer, receiver));
+                    } else {
+                        output.append("You were nor involved in this transfer!");
+                    }
                     output.append("ò");
                     output.append(plusminus);
                     output.append(transfersGetter.getAmount(transfer));

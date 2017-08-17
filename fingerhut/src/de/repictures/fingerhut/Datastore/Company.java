@@ -3,6 +3,7 @@ package de.repictures.fingerhut.Datastore;
 import com.google.appengine.api.datastore.*;
 import de.repictures.fingerhut.Cryptor;
 
+import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,6 +26,12 @@ public class Company extends Accounts {
         cryptor = new Cryptor();
     }
 
+    public Company(String accountnumber){
+        datastore = DatastoreServiceFactory.getDatastoreService();
+        cryptor = new Cryptor();
+        this.account = getAccount(accountnumber);
+    }
+
     public void postAccount(String accountnumber, String name, String password){
         if (password == null){
             Random rand = new Random();
@@ -32,16 +39,22 @@ public class Company extends Accounts {
         }
         String encryptedPassword = cryptor.hashToString(password);
 
+        KeyPair securityKeyPair = cryptor.generateKeyPair();
+        String privateKeyStr = cryptor.privateKeyToString(securityKeyPair.getPrivate());
+        String publicKeyStr = cryptor.publicKeyToString(securityKeyPair.getPublic());
+
         Key loginKey = KeyFactory.createKey("accountnumber", accountnumber);
         Entity company = new Entity("Company", loginKey);
 
-        company.setProperty("accountnumber", accountnumber);
-        company.setProperty("password", encryptedPassword);
-        company.setProperty("owner", name);
-        company.setProperty("balance", 0.0);
+        setAccountnumber(company, accountnumber);
+        setPassword(company, encryptedPassword);
+        setOwner(company, name);
+        setBalance(company, 0.0f);
         company.setProperty("transferarray", new ArrayList<String>());
+        setPrivateKeyStr(company, privateKeyStr);
+        setPublicKeyStr(company, publicKeyStr);
 
-        datastore.put(company);
+        saveAll(company);
     }
 
     public Entity createAccount(String accountnumber){
@@ -77,6 +90,14 @@ public class Company extends Accounts {
             products = (ArrayList<String>) passedEntity.getProperty("products");
         products.add(KeyFactory.keyToString(product.getKey()));
         passedEntity.setProperty("products", products);
+    }
+
+    public void setOwner(String owner){
+        account.setProperty("owner", owner);
+    }
+
+    public void setOwner(Entity accountEntity, String owner){
+        accountEntity.setProperty("owner", owner);
     }
 
     public String getOwner(){

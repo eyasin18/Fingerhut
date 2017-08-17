@@ -3,7 +3,6 @@ package de.repictures.fingerhut.Backend;
 import com.google.appengine.api.datastore.Entity;
 import de.repictures.fingerhut.Cryptor;
 import de.repictures.fingerhut.Datastore.Company;
-import de.repictures.fingerhut.Datastore.Transfers;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.List;
 import java.util.Objects;
 
 public class CompanyLogin extends HttpServlet{
@@ -30,7 +28,7 @@ public class CompanyLogin extends HttpServlet{
         Company companyGetter = new Company();
         Entity company = companyGetter.getAccount(accountnumber);
 
-        String savedPassword = companyGetter.getPassword(company);
+        String savedPassword = companyGetter.getHashedPassword(company);
 
         if (Objects.equals(inputPassword, savedPassword)){
             resp.getWriter().println("1ò" + getCompanyInfo(company, companyGetter));

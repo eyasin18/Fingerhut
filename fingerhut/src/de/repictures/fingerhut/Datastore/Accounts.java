@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.*;
 import de.repictures.fingerhut.Cryptor;
 
 import java.math.BigInteger;
+import java.security.KeyPair;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.logging.Logger;
@@ -13,7 +14,7 @@ public class Accounts {
 
     private static int featureCount = 25;
 
-    Entity account;
+    public Entity account;
     private DatastoreService datastore;
     private Cryptor cryptor;
     private Logger log = Logger.getLogger(Accounts.class.getName());
@@ -49,17 +50,23 @@ public class Accounts {
         byte[] encryptedByteName = cryptor.encryptSymetricFromString(name, cryptor.hashToByte(password));
         name = cryptor.bytesToHex(encryptedByteName);
 
+        KeyPair securityKeyPair = cryptor.generateKeyPair();
+        String privateKeyStr = cryptor.privateKeyToString(securityKeyPair.getPrivate());
+        String publicKeyStr = cryptor.publicKeyToString(securityKeyPair.getPublic());
+
         Key loginKey = KeyFactory.createKey("accountnumber", accountnumber);
         Entity account = new Entity("Account", loginKey);
 
-        account.setProperty("accountnumber", accountnumber);
-        account.setProperty("password", encryptedPassword);
-        account.setProperty("owner", name);
-        account.setProperty("balance", 15.00);
+        setAccountnumber(account, accountnumber);
+        setHashedPassword(account, encryptedPassword);
+        setOwner(account, name);
+        setBalance(account, 15.00f);
         account.setProperty("transferarray", new ArrayList<String>());
         setFeature(account,0, true);
+        setPrivateKeyStr(account, privateKeyStr);
+        setPublicKeyStr(account, publicKeyStr);
 
-        datastore.put(account);
+        saveAll(account);
     }
 
     public Entity getAccount(String accountnumber){
@@ -149,7 +156,7 @@ public class Accounts {
         account.setProperty("owner", encryptedOwner);
     }
 
-    public void setOwner(String owner, Entity accountEntity){
+    public void setOwner(Entity accountEntity, String owner){
         String password = (String) accountEntity.getProperty("password");
         byte[] encryptedByteName = cryptor.encryptSymetricFromString(owner, cryptor.hashToByte(password));
         String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
@@ -196,12 +203,20 @@ public class Accounts {
         passedEntity.setProperty("password", encryptedPassword);
     }
 
-    public String getPassword(){
+    public String getHashedPassword(){
         return (String) account.getProperty("password");
     }
 
-    public String getPassword(Entity passedEntity){
+    public String getHashedPassword(Entity passedEntity){
         return (String) passedEntity.getProperty("password");
+    }
+
+    public void setHashedPassword(Entity passedEntity, String hashedPassword){
+        if (hashedPassword == null){
+            Random rand = new Random();
+            hashedPassword = String.format("%04d", rand.nextInt(10000));
+        }
+        passedEntity.setProperty("password", hashedPassword);
     }
 
     public String getSaltetPassword(String salt){
@@ -335,6 +350,38 @@ public class Accounts {
 
     public Blob getQRBlob(Entity passedEntity){
         return (Blob) passedEntity.getProperty("qrBlob");
+    }
+
+    public String getPrivateKeyStr(){
+        return (String) account.getProperty("privateKey");
+    }
+
+    public String getPrivateKeyStr(Entity passedEntity){
+        return (String) passedEntity.getProperty("privateKey");
+    }
+
+    public void setPrivateKeyStr(String privateKeyStr){
+        account.setProperty("privateKey", privateKeyStr);
+    }
+
+    public void setPrivateKeyStr(Entity passedEntity, String privateKeyStr){
+        passedEntity.setProperty("privateKey", privateKeyStr);
+    }
+
+    public String getPublicKeyStr(){
+        return (String) account.getProperty("publicKey");
+    }
+
+    public String getPublicKeyStr(Entity passedEntity){
+        return (String) passedEntity.getProperty("publicKey");
+    }
+
+    public void setPublicKeyStr(String publicKeyStr){
+        account.setProperty("publicKey", publicKeyStr);
+    }
+
+    public void setPublicKeyStr(Entity passedEntity, String publicKeyStr){
+        passedEntity.setProperty("publicKey", publicKeyStr);
     }
 
     public void saveAll(){
