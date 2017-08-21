@@ -244,7 +244,7 @@ public class Accounts {
         ArrayList<String> transfersList = new ArrayList<>();
         if (account.getProperty("transferarray") != null)
             transfersList = (ArrayList<String>) account.getProperty("transferarray");
-        transfersList.add(KeyFactory.keyToString(transfer.getKey()));
+        transfersList.add(0, KeyFactory.keyToString(transfer.getKey()));
         account.setProperty("transferarray", transfersList);
     }
 
@@ -252,7 +252,7 @@ public class Accounts {
         ArrayList<String> transfersList = new ArrayList<>();
         if (passedEntity.getProperty("transferarray") != null)
             transfersList = (ArrayList<String>) passedEntity.getProperty("transferarray");
-        transfersList.add(KeyFactory.keyToString(transfer.getKey()));
+        transfersList.add(0, KeyFactory.keyToString(transfer.getKey()));
         passedEntity.setProperty("transferarray", transfersList);
     }
 
