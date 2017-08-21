@@ -112,6 +112,14 @@
         <servlet-name>SendMessage</servlet-name>
         <url-pattern>/message</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>AccountSetter</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Debug.AccountSetter</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AccountSetter</servlet-name>
+        <url-pattern>/setaccount</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>

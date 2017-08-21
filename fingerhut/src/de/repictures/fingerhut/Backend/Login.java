@@ -40,13 +40,41 @@ public class Login extends HttpServlet {
         if (accountnumber != null) accountnumber = URLDecoder.decode(accountnumber, "UTF-8");
         String inputPassword = req.getParameter("password");
         String serverTimeStamp = req.getParameter("servertimestamp");
+        String authPart = req.getParameter("authPart");
+        String deviceToken = req.getParameter("token");
+        if (deviceToken != null) deviceToken = URLDecoder.decode(deviceToken, "UTF-8");
 
+        //Überprüfe ob alle Parameter empfangen wurden
+        if (accountnumber == null || inputPassword == null || serverTimeStamp == null || authPart == null || deviceToken == null){
+            resp.getWriter().println("-1");
+            return;
+        }
+
+        //Finde Account mit dieser Accountnummber
         Accounts accounts = new Accounts();
         List<Entity> queriedAccounts = accounts.getAccounts(accountnumber);
+        //Wenn du einen gefunden hast, dann...
         if (queriedAccounts.size() > 0){
+
+            //Vergleiche den empfangenen Authentifizierungspart mit dem auf der Datenbank
+            String authCode = accounts.getAuthString(queriedAccounts.get(0));
+            int accountnumberlength = accountnumber.length();
+            String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength+8), authCode.substring(accountnumberlength+8, accountnumberlength+16)};
+            if (!authParts[0].equals(authPart)){
+                resp.getWriter().println("3");
+                return;
+            }
+
+            //Vergleiche salte das gespeicherte Passwort und vergleiche es mit dem empfangenem Passwort
             String savedPassword = accounts.getSaltedPassword(queriedAccounts.get(0), serverTimeStamp);
-            log.info("Input Password: " + inputPassword + "\nSavedPassword: " + savedPassword + "\nKlarpasswort: " + accounts.getHashedPassword(queriedAccounts.get(0)));
+            log.info("InputPassword: " + inputPassword + "\nSavedSaltedPassword: " + savedPassword + "\nSavedHashedPassword: " + accounts.getHashedPassword(queriedAccounts.get(0)));
             if (Objects.equals(savedPassword, inputPassword)){
+
+                //Speichere das DeviceToken
+                accounts.setFirebaseDeviceToken(queriedAccounts.get(0), deviceToken);
+                accounts.saveAll(queriedAccounts.get(0));
+
+                //Gebe alle Kontonummern und die verschlüsselten Namen hinter den Kontonummern zurück
                 StringBuilder output = new StringBuilder();
                 for (Entity entity : accounts.getAllAccounts()){
                     output.append(accounts.getAccountnumber(entity));
@@ -55,6 +83,7 @@ public class Login extends HttpServlet {
                     output.append("ň");
                 }
                 output.append("ò");
+                //Gebe zurück, welche Berechtigungen der Nutzer hat
                 ArrayList<Long> featuresList = accounts.getFeatures(queriedAccounts.get(0));
                 for (Long feature : featuresList){
                     output.append(feature);

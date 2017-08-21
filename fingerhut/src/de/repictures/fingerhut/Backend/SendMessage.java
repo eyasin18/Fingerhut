@@ -11,9 +11,10 @@ import java.util.logging.Logger;
 
 public class SendMessage extends HttpServlet{
 
-    private Logger log = Logger.getLogger(SendMessage.class.getName());
+    private final static String AUTHENTIFICATION_KEY = "AAAATqpEAqE:APA91bHDNQ6rnzBLpMgpuM_FZyrArDP5Fdu8nYtlEwIJ6PIAKxzaaoEcp4X0NYMok3A-BCjbRrLoCMZWZauGjkZ1wyx7NuQxliu08cZUPz1CvK5JFp3U72IrBWWNqGNxJMljc6e6vlQD";
+
     private int response = 0;
-    private String authentificationKey = "AAAATqpEAqE:APA91bHDNQ6rnzBLpMgpuM_FZyrArDP5Fdu8nYtlEwIJ6PIAKxzaaoEcp4X0NYMok3A-BCjbRrLoCMZWZauGjkZ1wyx7NuQxliu08cZUPz1CvK5JFp3U72IrBWWNqGNxJMljc6e6vlQD";
+    private Logger log = Logger.getLogger(SendMessage.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -27,12 +28,12 @@ public class SendMessage extends HttpServlet{
         try{
             URL firebaseUrl = new URL("https://fcm.googleapis.com/fcm/send");
 
-            String message = "{ \"to\": \"" + registrationToken + "\", \"data\" : { \"message\" : \"" + messageBody + "\"}}";
+            String message = "{ \"to\": \"" + registrationToken + "\", \"data\" : {\"message\" : \"" + messageBody + "\"}}";
 
             HttpURLConnection urlConnection = (HttpURLConnection) firebaseUrl.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.addRequestProperty("Content-Type", "application/json");
-            urlConnection.addRequestProperty("Authorization", "key=" + authentificationKey);
+            urlConnection.addRequestProperty("Authorization", "key=" + AUTHENTIFICATION_KEY);
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
 

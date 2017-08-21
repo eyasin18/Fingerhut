@@ -150,21 +150,24 @@ public class Accounts {
     }
 
     public void setOwner(String owner){
-        String password = (String) account.getProperty("password");
-        byte[] encryptedByteName = cryptor.encryptSymetricFromString(owner, cryptor.hashToByte(password));
+        String encryptedPasswordHex = (String) account.getProperty("password");
+        byte[] encryptedPassword = cryptor.hexToBytes(encryptedPasswordHex);
+        byte[] encryptedByteName = cryptor.encryptSymetricFromString(owner, encryptedPassword);
         String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
         account.setProperty("owner", encryptedOwner);
     }
 
     public void setOwner(Entity accountEntity, String owner){
-        String password = (String) accountEntity.getProperty("password");
-        byte[] encryptedByteName = cryptor.encryptSymetricFromString(owner, cryptor.hashToByte(password));
+        String encryptedPasswordHex = (String) accountEntity.getProperty("password");
+        byte[] encryptedPassword = cryptor.hexToBytes(encryptedPasswordHex);
+        byte[] encryptedByteName = cryptor.encryptSymetricFromString(owner, encryptedPassword);
         String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
         accountEntity.setProperty("owner", encryptedOwner);
     }
 
-    public void setOwner(String owner, String password){
-        byte[] encryptedByteName = cryptor.encryptSymetricFromString(owner, cryptor.hashToByte(password));
+    public void setOwner(String owner, String encryptedPasswordHex){
+        byte[] encryptedPassword = cryptor.hexToBytes(encryptedPasswordHex);
+        byte[] encryptedByteName = cryptor.encryptSymetricFromString(owner, encryptedPassword);
         String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
         account.setProperty("owner", encryptedOwner);
     }
@@ -183,6 +186,14 @@ public class Accounts {
         String encryptedHexPasswordStr = (String) passedEntity.getProperty("password");
         byte[] encryptedPassword = cryptor.hexToBytes(encryptedHexPasswordStr);
         return cryptor.decryptSymetricToString(encryptedName, encryptedPassword);
+    }
+
+    public String getEncryptedOwner(){
+        return (String) account.getProperty("owner");
+    }
+
+    public String getEncryptedOwner(Entity passedEntity){
+        return (String) passedEntity.getProperty("owner");
     }
 
     public void setPassword(String password){
@@ -382,6 +393,22 @@ public class Accounts {
 
     public void setPublicKeyStr(Entity passedEntity, String publicKeyStr){
         passedEntity.setProperty("publicKey", publicKeyStr);
+    }
+
+    public String getFirebaseDeviceToken(){
+        return (String) account.getProperty("firebaseDeviceToken");
+    }
+
+    public String getFirebaseDeviceToken(Entity passedEntity){
+        return (String) passedEntity.getProperty("firebaseDeviceToken");
+    }
+
+    public void setFirebaseDeviceToken(String deviceToken){
+        account.setProperty("firebaseDeviceToken", deviceToken);
+    }
+
+    public void setFirebaseDeviceToken(Entity passedEntity, String deviceToken){
+        passedEntity.setProperty("firebaseDeviceToken", deviceToken);
     }
 
     public void saveAll(){
