@@ -12,8 +12,6 @@ import java.util.logging.Logger;
 @SuppressWarnings("unchecked")
 public class Accounts {
 
-    private static int featureCount = 25;
-
     public Entity account;
     private DatastoreService datastore;
     private Cryptor cryptor;
@@ -62,6 +60,7 @@ public class Accounts {
         setOwner(account, name);
         setBalance(account, 15.00f);
         account.setProperty("transferarray", new ArrayList<String>());
+        setGroup(account, 7);
         setFeature(account,0, true);
         setPrivateKeyStr(account, privateKeyStr);
         setPublicKeyStr(account, publicKeyStr);
@@ -278,6 +277,13 @@ public class Accounts {
         }
     }
 
+
+    /**
+     * Liste der Features:
+     * 0 = Produkt hinzufügen
+     * 1 = Authentifizierungs QR-Codes lesen und schreiben
+     */
+
     public void setFeature(Entity passedEntity, long featureNumber, boolean add){
         ArrayList<Long> featureList = new ArrayList<>();
         if (passedEntity.getProperty("feature_list") != null)
@@ -308,6 +314,35 @@ public class Accounts {
         if (passedEntity.getProperty("feature_list") != null)
             featureList = (ArrayList<Long>) passedEntity.getProperty("feature_list");
         return featureList;
+    }
+
+
+    /**
+     * Liste der Groups:
+     * 0 = Beamter der Zentralbank
+     * 1 = Beamter des Finanzministeriums
+     * 2 = Beamter des Wirtschaftsministeriums
+     * 3 = Beamter des Ministeriums für Kultus und Soziales
+     * 4 = Beamter des Umweltministeriums
+     * 5 = Beamter des Innen-/Justizministeriums
+     * 6 = Angestellter eines Unternehmens
+     * 7 = Arbeitslos
+     */
+
+    public void setGroup(Entity passedEntity, int groupNumber){
+        passedEntity.setProperty("group", groupNumber);
+    }
+
+    public void setGroup(int groupNumber){
+        account.setProperty("group", groupNumber);
+    }
+
+    public int getGroup(){
+        return (int) account.getProperty("group");
+    }
+
+    public int getGroup(Entity passedEntity){
+        return (int) passedEntity.getProperty("group");
     }
 
     public String createAuthString(){

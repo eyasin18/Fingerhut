@@ -1,6 +1,7 @@
 package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Text;
 import de.repictures.fingerhut.Datastore.Accounts;
 import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Transfers;
@@ -40,11 +41,15 @@ public class GetTransfer extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String senderPurpose = URLDecoder.decode(req.getParameter("senderpurpose"), "UTF-8");
-        String receiverPurpose = URLDecoder.decode(req.getParameter("receiverpurpose"), "UTF-8");
+        String senderPurposeStr = URLDecoder.decode(req.getParameter("senderpurpose"), "UTF-8");
+        Text senderPurpose = new Text(senderPurposeStr);
+        String receiverPurposeStr = URLDecoder.decode(req.getParameter("receiverpurpose"), "UTF-8");
+        Text receiverPurpose = new Text(receiverPurposeStr);
         float amount = Float.parseFloat(URLDecoder.decode(req.getParameter("amount"), "UTF-8"));
         String receiverAccountnumber = URLDecoder.decode(req.getParameter("receiveraccountnumber"), "UTF-8");
         String senderAccountnumber = URLDecoder.decode(req.getParameter("senderaccountnumber"), "UTF-8");
+        String senderAesKey = URLDecoder.decode(req.getParameter("senderkey"), "UTF-8");
+        String receiverAesKey = URLDecoder.decode(req.getParameter("receiverkey"), "UTF-8");
 
         Accounts receiverBuilder = new Accounts(receiverAccountnumber);
         Accounts senderBuilder = new Accounts(senderAccountnumber);
@@ -73,8 +78,10 @@ public class GetTransfer extends HttpServlet {
             transferBuilder.setReceiver(receiverBuilder.account);
             transferBuilder.setAmount(amount);
             transferBuilder.setDateTime();
-            transferBuilder.setSenderPurpose(senderBuilder.account, senderPurpose);
-            transferBuilder.setReceiverPurpose(receiverBuilder.account, receiverPurpose);
+            transferBuilder.setSenderPurpose(senderPurpose);
+            transferBuilder.setSenderAesKey(senderAesKey);
+            transferBuilder.setReceiverPurpose(receiverPurpose);
+            transferBuilder.setReceiverAesKey(receiverAesKey);
             transferBuilder.setType("Überweisung");
             transferBuilder.saveAll();
 

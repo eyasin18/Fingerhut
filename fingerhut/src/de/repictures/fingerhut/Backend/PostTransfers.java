@@ -111,11 +111,27 @@ public class PostTransfers extends HttpServlet {
                     output.append("ò");
                     //Ist derjenige, der gerade die Daten abfragt der Auftraggeber oder der Empfänger dieser Überweisung?
                     if (Objects.equals(accountnumber, senderAccountnumber)){
-                        //Lese den Verwendungszweck der mit dem öffentlichen Schlüssel des Auftraggebers verschlüsselt ist
-                        output.append(transfersGetter.getSenderPurpose(transfer, sender));
+                        //Lese den Verwendungszweck der mit einem zufälligem Schlüssel verschlüsselt ist, der asymetrisch verschlüsselt auf dem Server liegt
+                        output.append(transfersGetter.getSenderPurpose(transfer).getValue());
+                        output.append("ò");
+
+                        //Lese den Schlüssel mit dem der Verwendungszweck verschlüsselt wurde
+                        output.append(transfersGetter.getSenderAesKey(transfer));
+                        output.append("ò");
+
+                        //Gebe dem Backend zurück, dass der Nutzer der Auftraggeber war
+                        output.append("true");
                     } else if(Objects.equals(accountGetter.getAccountnumber(receiver), accountnumber)){
-                        //Lese den Verwendungszweck der mit dem öffentlichen Schlüssel des Empfängers verschlüsselt ist
-                        output.append(transfersGetter.getReceiverPurpose(transfer, receiver));
+                        //Lese den Verwendungszweck der mit einem zufälligem Schlüssel verschlüsselt ist, der asymetrisch verschlüsselt auf dem Server liegt
+                        output.append(transfersGetter.getReceiverPurpose(transfer).getValue());
+                        output.append("ò");
+
+                        //Lese den Schlüssel mit dem der Verwendungszweck verschlüsselt wurde
+                        output.append(transfersGetter.getReceiverAesKey(transfer));
+                        output.append("ò");
+
+                        //Gebe dem Backend zurück, dass der Nutzer der Empfänger war
+                        output.append("false");
                     } else {
                         output.append("You were not involved in this transfer!");
                     }
