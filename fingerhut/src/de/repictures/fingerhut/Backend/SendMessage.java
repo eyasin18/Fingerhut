@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class SendMessage extends HttpServlet{
@@ -20,15 +22,38 @@ public class SendMessage extends HttpServlet{
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String message = req.getParameter("message");
         String registrationToken = req.getParameter("token");
-        sendMessage(message, registrationToken);
+        Map<String, String> map = new HashMap<>();
+        map.put("message", message);
+        sendMessage(map, registrationToken);
         resp.getWriter().println(getResonse());
     }
 
-    public void sendMessage(String messageBody, String registrationToken){
+    public void sendMessage(Map<String, String> dataBody, String registrationToken){
         try{
             URL firebaseUrl = new URL("https://fcm.googleapis.com/fcm/send");
 
-            String message = "{ \"to\": \"" + registrationToken + "\", \"data\" : {\"message\" : \"" + messageBody + "\"}}";
+            StringBuilder messageBuilder = new StringBuilder();
+            messageBuilder.append("{ \"to\": \"")
+                    .append(registrationToken)
+                    .append("\", \"data\" : {");
+
+            int counter = 0;
+            for (Map.Entry<String, String> entry : dataBody.entrySet()){
+                if (counter > 0){
+                    messageBuilder.append(",");
+                }
+                messageBuilder
+                        .append("\"")
+                        .append(entry.getKey())
+                        .append("\"")
+                        .append(": ")
+                        .append("\"")
+                        .append(entry.getValue())
+                        .append("\"");
+                counter++;
+            }
+
+            messageBuilder.append("}}");
 
             HttpURLConnection urlConnection = (HttpURLConnection) firebaseUrl.openConnection();
             urlConnection.setRequestMethod("POST");
@@ -38,7 +63,7 @@ public class SendMessage extends HttpServlet{
             urlConnection.setDoOutput(true);
 
             OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
-            writer.write(message);
+            writer.write(messageBuilder.toString());
             writer.close();
 
             InputStream postInputStream = new BufferedInputStream(urlConnection.getInputStream());

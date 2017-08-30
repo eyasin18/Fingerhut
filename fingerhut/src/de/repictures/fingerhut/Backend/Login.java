@@ -1,6 +1,7 @@
 package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query;
 import de.repictures.fingerhut.Datastore.Accounts;
 
 import javax.servlet.ServletException;
@@ -28,6 +29,7 @@ public class Login extends HttpServlet {
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         String serverTimeStamp = dateFormat.format(cal.getTime());
+        serverTimeStamp = URLEncoder.encode(serverTimeStamp, "UTF-8");
         authenticate.serverTimeStamp = "ò" + serverTimeStamp;
         authenticate.doGet(req, resp);
     }
@@ -40,6 +42,7 @@ public class Login extends HttpServlet {
         if (accountnumber != null) accountnumber = URLDecoder.decode(accountnumber, "UTF-8");
         String inputPassword = req.getParameter("password");
         String serverTimeStamp = req.getParameter("servertimestamp");
+        if (serverTimeStamp != null) serverTimeStamp = URLDecoder.decode(serverTimeStamp, "UTF-8");
         String authPart = req.getParameter("authPart");
         String deviceToken = req.getParameter("token");
         if (deviceToken != null) deviceToken = URLDecoder.decode(deviceToken, "UTF-8");
@@ -67,10 +70,12 @@ public class Login extends HttpServlet {
 
             //Vergleiche salte das gespeicherte Passwort und vergleiche es mit dem empfangenem Passwort
             String savedPassword = accounts.getSaltedPassword(queriedAccounts.get(0), serverTimeStamp);
-            log.info("InputPassword: " + inputPassword + "\nSavedSaltedPassword: " + savedPassword + "\nSavedHashedPassword: " + accounts.getHashedPassword(queriedAccounts.get(0)));
+            log.info("\nInputPassword: " + inputPassword + "\nSavedSaltedPassword: " + savedPassword + "\nSavedHashedPassword: " + accounts.getHashedPassword(queriedAccounts.get(0))
+            + "\nServer Timestamp: " + serverTimeStamp);
             if (Objects.equals(savedPassword, inputPassword)){
 
                 //Speichere das DeviceToken
+                accounts.deleteDeviceTokenFromAllAccounts(deviceToken);
                 accounts.setFirebaseDeviceToken(queriedAccounts.get(0), deviceToken);
                 accounts.saveAll(queriedAccounts.get(0));
 
@@ -90,6 +95,7 @@ public class Login extends HttpServlet {
                     output.append("ň");
                 }
                 String response = "2ò" + accounts.getKey(queriedAccounts.get(0)) + "ò" + output.toString();
+                resp.setStatus(200);
                 resp.getWriter().println(URLEncoder.encode(response, "UTF-8"));
             } else {
                 resp.getWriter().println("1");

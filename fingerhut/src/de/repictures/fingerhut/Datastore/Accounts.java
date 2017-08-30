@@ -446,6 +446,16 @@ public class Accounts {
         passedEntity.setProperty("firebaseDeviceToken", deviceToken);
     }
 
+    public void deleteDeviceTokenFromAllAccounts(String deviceToken){
+        Query.Filter propertyFiler = new Query.FilterPredicate("firebaseDeviceToken", Query.FilterOperator.EQUAL, deviceToken);
+        Query deviceTokensAccountQuery = new Query("Account").setFilter(propertyFiler);
+        List<Entity> deviceTokenAccounts = datastore.prepare(deviceTokensAccountQuery).asList(FetchOptions.Builder.withDefaults());
+        for (Entity account : deviceTokenAccounts){
+            setFirebaseDeviceToken(account, null);
+            saveAll(account);
+        }
+    }
+
     public void saveAll(){
         datastore.put(account);
     }
