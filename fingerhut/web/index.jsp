@@ -40,8 +40,9 @@
               <label class="mdl-textfield__label" for="userpass">Pin</label>
               <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
             </div>
-            <div class="mdl-card__actions mdl-card--border">
-              <input class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit" value="Anmelden">
+            <div class="mdl-card__actions mdl-card--border ">
+              <br>
+              <input class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" type="submit" value="Anmelden" id="submit_button">
             </div>
           </form>
         </div>

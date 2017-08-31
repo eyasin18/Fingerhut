@@ -6,3 +6,6 @@
   padding: 24px;
   flex: none;
 }
+#submit_button {
+  float: right;
+}
