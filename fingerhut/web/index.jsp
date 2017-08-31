@@ -51,6 +51,7 @@
   </div>
   <script type="application/javascript">
       function onButtonClick() {
+          console.log("clicked");
           var usernameInput = document.getElementById('username');
           var passwordInput = document.getElementById('userpass');
 
@@ -61,6 +62,14 @@
           var userpassError = document.getElementById('userpass_error');
           userpassError.parentElement.className = userpassError.parentElement.className.replace(" is-invalid", "");
           userpassError.textContent = '';
+
+          if(usernameInput === null){
+              return;
+          }
+
+          if(passwordInput === null){
+              return;
+          }
 
           var hash = sjcl.hash.sha256.hash(passwordInput.value);
           var hashHex = sjcl.codec.hex.fromBits(hash);
@@ -94,16 +103,17 @@
                   break;
               case 1:
                   console.log("yay");
+                  window.location = "https://fingerhut388.appspot.com/main";
                   break;
               case 2:
                   ele = document.getElementById('username_error');
                   ele.parentElement.className += ' is-invalid';
-                  ele.textContent = 'Error Message';
+                  ele.textContent = 'Nutzername ist nicht bekannt';
                   break;
               case 3:
                   ele = document.getElementById('userpass_error');
                   ele.parentElement.className += ' is-invalid';
-                  ele.textContent = 'Error Message';
+                  ele.textContent = 'Passwort ist nicht korrekt';
                   break;
               default:
                   console.log("hups");
