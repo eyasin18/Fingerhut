@@ -120,6 +120,14 @@
         <servlet-name>AccountSetter</servlet-name>
         <url-pattern>/setaccount</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>WebMainPage</servlet-name>
+        <jsp-file>main.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>WebMainPage</servlet-name>
+        <url-pattern>/main</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
