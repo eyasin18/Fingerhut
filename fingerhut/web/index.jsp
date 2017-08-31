@@ -7,6 +7,9 @@
 <%@ page import="javax.servlet.http.HttpServletRequest" %>
 <%@ page import="javax.servlet.http.HttpServletResponse" %>
 
+<%@ page import="de.repictures.fingerhut.Datastore.Accounts" %>
+<%@ page import="de.repictures.fingerhut.Website.Login" %>
+
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -15,18 +18,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.green-light_green.min.css">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Mobile-Device-Skalierung -->
   </head>
-  <body background="">
-  <div class="mdl-layout mdl-js-layout mdl-color--green-light_green-100">
-    <main class="mdl-layout__content">
-      <div class="mdl-card mdl-shadow--6dp">
-        <div class="mdl-card__title mdl-color--primary mdl-color-text--white">
-          <h2 class="mdl-card__title-text">Fingerhut</h2>
+  <body>
+    <!-- Header -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <!-- Titel -->
+          <span class="mdl-layout-title">Bezahlsystem SaZ</span>
         </div>
         <div class="mdl-card__supporting-text">
           <form action="#">
