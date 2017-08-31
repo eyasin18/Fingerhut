@@ -121,6 +121,14 @@
         <url-pattern>/setaccount</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>WebLogin</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Web.Login</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>WebLogin</servlet-name>
+        <url-pattern>/web/login</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>WebMainPage</servlet-name>
         <jsp-file>main.jsp</jsp-file>
     </servlet>

@@ -456,6 +456,32 @@ public class Accounts {
         }
     }
 
+    public void setRandomWebString(String randomWebString){
+        account.setProperty("randomWebString", randomWebString);
+    }
+
+    public void setRandomWebString(Entity passedEntity, String randomWebString){
+        account.setProperty("randomWebString", randomWebString);
+    }
+
+    public void updateRandomWebString(){
+        String randomWebString = cryptor.generateRandomString(32);
+        account.setProperty("randomWebString", randomWebString);
+    }
+
+    public void updateRandomWebString(Entity passedEntity){
+        String randomWebString = cryptor.generateRandomString(32);
+        passedEntity.setProperty("randomWebString", randomWebString);
+    }
+
+    public String getRandomWebString(){
+        return (String) account.getProperty("randomWebString");
+    }
+
+    public String getRandomWebString(Entity passedEntity){
+        return (String) passedEntity.getProperty("randomWebString");
+    }
+
     public void saveAll(){
         datastore.put(account);
     }

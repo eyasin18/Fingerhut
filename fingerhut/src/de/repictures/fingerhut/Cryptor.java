@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import javax.crypto.*;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Cryptor {
@@ -31,6 +32,24 @@ public class Cryptor {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public byte[] hashWithSalt(String password, String saltStr) {
+        byte[] salt = new byte[0];
+        try {
+            salt = saltStr.getBytes("ISO-8859-1");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 100, 256);
+        try {
+            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            return skf.generateSecret(spec).getEncoded();
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new AssertionError("Error while hashing a password: " + e.getMessage(), e);
+        } finally {
+            spec.clearPassword();
         }
     }
 
@@ -198,7 +217,7 @@ public class Cryptor {
         }
     }
 
-    public String generateAuthPin(int length){ // Generiert zufälligen String mit n Zeichen
+    public String generateRandomString(int length){ // Generiert zufälligen String mit n Zeichen
         SecureRandom sr = new SecureRandom();
         return new BigInteger(130, sr).toString(32);
     }
