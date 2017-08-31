@@ -41,7 +41,7 @@
             </div>
             <div class="mdl-card__actions mdl-card--border">
               <br>
-              <input class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit" value="Einloggen" id="submit_button"/>
+              <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit" value="Einloggen" id="submit_button"></button>
             </div>
           </form>
         </div>
