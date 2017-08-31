@@ -65,7 +65,7 @@
           var hash = sjcl.hash.sha256.hash(passwordInput.value);
           var hashHex = sjcl.codec.hex.fromBits(hash);
 
-          var urlStr = "https://3-dot-fingerhut388.appspot.com/web/login?accountnumber=" + usernameInput.value + "&password=" + hashHex;
+          var urlStr = "https://fingerhut388.appspot.com/web/login?accountnumber=" + usernameInput.value + "&password=" + hashHex;
 
           httpGetAsync(urlStr);
       }
