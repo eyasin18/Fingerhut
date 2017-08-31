@@ -48,6 +48,10 @@
       </div>
     </main>
   </div>
+  <script type="application/javascript">
+      var hash = sjcl.hash.sha256();
+      var hashHex = sjcl.codec.hex.fromBits(hash);
+  </script>
   </body>
 </html>
 
