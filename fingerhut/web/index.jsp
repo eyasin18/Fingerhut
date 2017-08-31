@@ -16,13 +16,13 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/index.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.green-light_green.min.css">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.green-light_blue.min.css">
       <script defer src="js/sjcl.js"></script>
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Mobile-Device-Skalierung -->
   </head>
   <body>
-  <div class="mdl-layout mdl-js-layout mdl-color--green-light_green-100">
+  <div class="mdl-layout mdl-js-layout mdl-color--green-light_blue-100">
     <main class="mdl-layout__content">
       <div class="mdl-card mdl-shadow--6dp">
         <div class="mdl-card__title mdl-color--primary mdl-color-text--white">
@@ -40,9 +40,9 @@
               <label class="mdl-textfield__label" for="userpass">Pin</label>
               <span class="mdl-textfield__error" id="userpass_error">Eingabe muss eine Zahl sein!</span>
             </div>
-            <div class="mdl-card__actions mdl-card--border">
+            <div class="mdl-card__actions">
               <br>
-              <button onclick="onButtonClick()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit" id="submit_button">Einloggen</button>
+              <button onclick="onButtonClick()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white" type="submit" id="submit_button">Einloggen</button>
             </div>
           </form>
         </div>
