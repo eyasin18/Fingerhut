@@ -7,7 +7,6 @@
 <%@ page import="javax.servlet.http.HttpServletRequest" %>
 <%@ page import="javax.servlet.http.HttpServletResponse" %>
 
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%-- Toller Kommentar --%>
@@ -49,5 +48,6 @@
     </main>
   </div>
   </body>
+<!--TODO: Passwort hashen -->
 </html>
 
