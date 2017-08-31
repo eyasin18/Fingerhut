@@ -34,18 +34,6 @@ public class Cryptor {
         }
     }
 
-    public void genereateKey(){
-        try {
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-            kpg.initialize(2048);
-            KeyPair kp =  kpg.generateKeyPair();
-            kp.getPrivate();
-            kp.getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-    }
-
     public byte[] hashToByte(String input){
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");//Wir wollen auf SHA-256 verschlüsseln
