@@ -1,0 +1,7 @@
+.mdl-card{
+    margin: auto;
+}
+.mdl-card__title{
+    margin-right: auto;
+    margin-left: auto;
+}
