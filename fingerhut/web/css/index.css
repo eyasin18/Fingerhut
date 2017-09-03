@@ -9,4 +9,8 @@
 }
 #submit_button {
   float: right;
+    position: relative;
+}
+#submit_spinner{
+    position: relative;
 }

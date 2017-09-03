@@ -1,11 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Max Buchholz
-  Date: 31.08.2017
-  Time: 20:29
-  To change this template use File | Settings | File Templates.
---%>
-
 <%@ page import="java.io.IOException" %>
 <%@ page import="java.net.URLDecoder" %>
 <%@ page import="java.net.URLEncoder" %>
@@ -14,8 +6,21 @@
 <%@ page import="javax.servlet.http.HttpServlet" %>
 <%@ page import="javax.servlet.http.HttpServletRequest" %>
 <%@ page import="javax.servlet.http.HttpServletResponse" %>
+<%@ page import="java.util.Objects" %>
+<%@ page import="java.util.logging.Logger" %>
+<%@ page import="de.repictures.fingerhut.Web.Authenticate" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%
+    String code = request.getParameter("code");
+    String accountnumber = request.getParameter("accountnumber");
+    Authenticate authenticate = new Authenticate(accountnumber, code);
+    if (!authenticate.isAuthentificated()){
+        response.sendRedirect("https://fingerhut388.appspot.com/");
+    }
+    %>
+
 <html>
  <head>
         <meta charset="utf-8">

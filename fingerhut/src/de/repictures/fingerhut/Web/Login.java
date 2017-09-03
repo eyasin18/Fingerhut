@@ -1,6 +1,5 @@
 package de.repictures.fingerhut.Web;
 
-import de.repictures.fingerhut.Cryptor;
 import de.repictures.fingerhut.Datastore.Accounts;
 
 import javax.servlet.ServletException;
@@ -8,12 +7,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
 
 public class Login extends HttpServlet{
+
     private Logger log = Logger.getLogger(Accounts.class.getName());
 
     @Override
@@ -23,12 +22,21 @@ public class Login extends HttpServlet{
 
         if (accountnumber == null || passwordHash == null){
             resp.getWriter().println("0");
+            return;
+        } else if (accountnumber.length() < 1 || passwordHash.length() < 1) {
+            resp.getWriter().println("4");
+            return;
+        } else {
+            passwordHash = passwordHash.toUpperCase(Locale.getDefault());
         }
 
-        passwordHash = passwordHash.toUpperCase(Locale.getDefault());
-
         Accounts accountGetter = new Accounts(accountnumber);
-        if (accountGetter.account == null) resp.getWriter().println("3");
+
+        if (accountGetter.account == null) {
+            resp.getWriter().println("3");
+            return;
+        }
+
         String savedPasswordHash = accountGetter.getHashedPassword();
 
         if (Objects.equals(savedPasswordHash, passwordHash)){
