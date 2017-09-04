@@ -8,9 +8,21 @@
   flex: none;
 }
 #submit_button {
-  float: right;
+    float: right;
     position: relative;
+    background: #1DE9B6 !important;
 }
+
+#submit_button:after{
+    background-color: #1DE9B6 !important;
+}
+
 #submit_spinner{
-    position: relative;
+    position:fixed;
+    border-color: #FFFF00 !important;
 }
+
+#submit_spinner:after{
+    border-color: #FFFF00 !important;
+}
+
