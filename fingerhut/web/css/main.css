@@ -1,7 +1,14 @@
 .mdl-card{
     margin: auto;
 }
-.mdl-card__title{
+#Überschrift{
+    margin-right: auto;
+    margin-left: auto;
+}
+#Kontostand{
+    margin-left: auto;
+}
+#Icon{
     margin-right: auto;
     margin-left: auto;
 }

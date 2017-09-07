@@ -24,7 +24,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/main.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}../css/main.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.green-light_green.min.css">
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
@@ -39,24 +39,29 @@
     </header>
     <main class="mdl-layout__content">
         <div class="content-grid mdl-grid">
-            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col ">
-                <div class="mdl-card__title">
-                    <h2 class="mdl-card__title-text">Kontostand</h2>
+            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col content-grid mdl-grid">
+                <div class="mdl-card mdl-cell mdl-cell--6-col">
+                    <div class="mdl-card__title">
+                        <h3>Girokonto</h3>
+                    </div>
+                </div>
+                <div class="mdl-card mdl-cell mdl-cell--6-col">
+                    <div class="mdl-card__title mdl-color-text--green" id="Kontostand">
+                        <h1>Kontostand</h1>
+                    </div>
                 </div>
             </div>
-            <div class="mdl-card mdl-shadow--4dp mdl-cell">
-                <div class="mdl-card__title">
-                    <h2 class="mdl-card__title-text">Überweisen</h2>
+            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--6-col">
+                <div class="mdl-card__title" id="Überschrift">
+                    <h3>Überweisen</h3>
                 </div>
             </div>
-            <div class="mdl-card mdl-shadow--4dp mdl-cell">
-                <div class="mdl-card__title">
-                    <h2 class="mdl-card__title-text">Posteingang</h2>
+            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--6-col">
+                <div class="mdl-card__title" id="Überschrift">
+                    <h3>Unternehmen</h3>
                 </div>
-            </div>
-            <div class="mdl-card mdl-shadow--4dp mdl-cell">
-                <div class="mdl-card__title">
-                    <h2 class="mdl-card__title-text">Unternehmen</h2>
+                <div id="Icon">
+                    <img src="res/images/ic_business_black_48px.svg" alt="business_icon" style="width:128px;height:128px;">
                 </div>
             </div>
         </div>
