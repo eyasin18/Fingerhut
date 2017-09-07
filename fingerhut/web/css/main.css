@@ -1,14 +1,18 @@
 .mdl-card{
     margin: auto;
 }
-#Überschrift{
+#transfer_heading {
     margin-right: auto;
     margin-left: auto;
 }
-#Kontostand{
+#company_heading{
+    margin-right: auto;
     margin-left: auto;
 }
-#Icon{
+#kontostand{
+    margin-left: auto;
+}
+#icon{
     margin-right: auto;
     margin-left: auto;
 }

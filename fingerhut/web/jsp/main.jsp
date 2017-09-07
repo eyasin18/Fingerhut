@@ -46,21 +46,21 @@
                     </div>
                 </div>
                 <div class="mdl-card mdl-cell mdl-cell--6-col">
-                    <div class="mdl-card__title mdl-color-text--green" id="Kontostand">
+                    <div class="mdl-card__title mdl-color-text--green" id="kontostand">
                         <h1>Kontostand</h1>
                     </div>
                 </div>
             </div>
             <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--6-col">
-                <div class="mdl-card__title" id="Überschrift">
+                <div class="mdl-card__title" id="transfer_heading">
                     <h3>Überweisen</h3>
                 </div>
             </div>
             <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--6-col">
-                <div class="mdl-card__title" id="Überschrift">
+                <div class="mdl-card__title" id="company_heading">
                     <h3>Unternehmen</h3>
                 </div>
-                <div id="Icon">
+                <div id="icon">
                     <img src="res/images/ic_business_black_48px.svg" alt="business_icon" style="width:128px;height:128px;">
                 </div>
             </div>
