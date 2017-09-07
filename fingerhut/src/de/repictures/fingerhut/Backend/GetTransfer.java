@@ -26,10 +26,17 @@ public class GetTransfer extends HttpServlet {
         //Kontnummern werden entgegen genommen
         String receiverAccountnumber = URLDecoder.decode(req.getParameter("receiveraccountnumber"), "UTF-8");
         String senderAccountnumber = URLDecoder.decode(req.getParameter("senderaccountnumber"), "UTF-8");
+        String webString = req.getParameter("webstring");
 
         //Die entsprechenden Entitäts-Builder werden initialisiert
         Accounts receiverBuilder = new Accounts(receiverAccountnumber);
         Accounts senderBuilder = new Accounts(senderAccountnumber);
+
+        String savedWebString = senderBuilder.getRandomWebString();
+        if (!Objects.equals(webString, savedWebString)){
+            resp.getWriter().println("2");
+        }
+
         if (receiverBuilder.account == null){
             receiverBuilder = new Company(receiverAccountnumber);
         }
@@ -41,7 +48,7 @@ public class GetTransfer extends HttpServlet {
         String senderPublicKeyStr = senderBuilder.getPublicKeyStr();
         String receiverPublicKeyStr = receiverBuilder.getPublicKeyStr();
         //Antwort wird zurück gegeben
-        String outputStr = URLEncoder.encode(senderPublicKeyStr + "ò" + receiverPublicKeyStr, "UTF-8");
+        String outputStr = URLEncoder.encode("1ò" + senderPublicKeyStr + "ò" + receiverPublicKeyStr, "UTF-8");
         resp.getWriter().println(outputStr);
     }
 

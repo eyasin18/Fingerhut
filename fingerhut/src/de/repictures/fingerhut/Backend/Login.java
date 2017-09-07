@@ -81,12 +81,9 @@ public class Login extends HttpServlet {
 
                 //Gebe alle Kontonummern und die verschlüsselten Namen hinter den Kontonummern zurück
                 StringBuilder output = new StringBuilder();
-                for (Entity entity : accounts.getAllAccounts()){
-                    output.append(accounts.getAccountnumber(entity));
-                    output.append("ĵ");
-                    output.append(accounts.getOwner(entity));
-                    output.append("ň");
-                }
+                accounts.updateRandomWebString(queriedAccounts.get(0));
+                accounts.saveAll(queriedAccounts.get(0));
+                output.append(accounts.getRandomWebString(queriedAccounts.get(0)));
                 output.append("ò");
                 //Gebe zurück, welche Berechtigungen der Nutzer hat
                 ArrayList<Long> featuresList = accounts.getFeatures(queriedAccounts.get(0));
