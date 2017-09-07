@@ -99,7 +99,8 @@
                 var hashHex = sjcl.codec.hex.fromBits(hash);
                 accountnumber = usernameInput.value;
 
-                var urlStr = "https://fingerhut388.appspot.com/web/login?accountnumber=" + accountnumber + "&password=" + hashHex;
+                //TODO: https://fingerhut388.appspot.com
+                var urlStr = "https://2-dot-fingerhut388.appspot.com" + "/web/login?accountnumber=" + accountnumber + "&password=" + hashHex;
 
                 submitButton.textContent = '';
                 submitSpinner.style.visibility = 'visible';
@@ -132,7 +133,8 @@
                         break;
                     case 1:
                         console.log("yay");
-                        window.location = "https://fingerhut388.appspot.com/main?code=" + responses[1] + "&accountnumber=" + accountnumber;
+                        //TODO: https://fingerhut388.appspot.com
+                        window.location = "https://2-dot-fingerhut388.appspot.com" + "/main?code=" + responses[1] + "&accountnumber=" + accountnumber;
                         break;
                     case 2:
                         submitSpinner.style.visibility = 'hidden';

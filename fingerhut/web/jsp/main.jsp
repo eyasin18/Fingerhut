@@ -73,6 +73,27 @@
                         <div id="cash_icon">
                             <img src="../res/images/cash.svg" alt="cash_icon" style="width:128px;height:128px;">
                         </div>
+                        <form action="#">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" id="receiver">
+                                <label class="mdl-textfield__label" for="receiver">Begünstigter</label>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="accountnumber">
+                                <label class="mdl-textfield__label" for="accountnumber">Kontonummer</label>
+                                <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
+                            </div><br>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="amount">
+                                <label class="mdl-textfield__label" for="amount">Betrag</label>
+                                <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
+                            </div>
+                            <br>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" id="usage">
+                                <label class="mdl-textfield__label" for="usage">Verwendungszweck</label>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
