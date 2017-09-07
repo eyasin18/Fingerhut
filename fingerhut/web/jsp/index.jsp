@@ -28,7 +28,7 @@
         <div class="mdl-layout mdl-js-layout mdl-color--green-light_blue-100">
             <main class="mdl-layout__content">
                 <div class="mdl-card mdl-shadow--6dp">
-                    <div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+                    <div id="title_card" class="mdl-card__title mdl-color--primary mdl-color-text--white">
                         <h2 class="mdl-card__title-text">Fingerhut</h2>
                     </div>
                     <div class="mdl-card__supporting-text">
@@ -52,16 +52,25 @@
             </main>
         </div>
         <script type="application/javascript">
-            console.log(strings.accountnumber);
             document.getElementById('username_label').textContent = strings.accountnumber;
             document.getElementById('username_error').textContent = strings.noNumberInputError;
             document.getElementById('userpass_label').textContent = strings.pin;
             document.getElementById('userpass_error').textContent = strings.noNumberInputError;
 
             var submitSpinner = document.getElementById('submit_spinner');
-            submitSpinner.style.visibility = 'hidden';
             var submitButton = document.getElementById('submit_button');
             submitButton.textContent = strings.loginButtonText;
+            var buttonWidth = window.getComputedStyle(submitButton, null).getPropertyValue("width");
+            submitButton.style.setProperty("width", buttonWidth, "");
+            var buttonHeight = window.getComputedStyle(submitButton, null).getPropertyValue("height");
+            var rect = submitButton.getBoundingClientRect();
+            var spinnerHeight = parseInt(buttonHeight, 10) - 12;
+            submitSpinner.style.height = spinnerHeight + "px";
+            submitSpinner.style.width = spinnerHeight + "px";
+            submitSpinner.style.top = (rect.top + 6) + "px";
+            var spinnerLeftInt = rect.left + parseInt(buttonWidth)/2 - spinnerHeight/2;
+            submitSpinner.style.left = spinnerLeftInt + "px";
+            submitSpinner.style.visibility = 'hidden';
 
             var accountnumber;
 
@@ -145,6 +154,11 @@
                         console.log("hups");
                         break;
                 }
+            }
+            function unquote(string) {
+                var count = string.length - 1;
+                var pair = string.charAt(0) + string.charAt(count);
+                return (pair === '""' || pair === "''") ? string.slice(1, count) : string;
             }
         </script>
   </body>
