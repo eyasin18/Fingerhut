@@ -61,7 +61,7 @@
                     <h3>Unternehmen</h3>
                 </div>
                 <div id="icon">
-                    <img src="res/images/ic_business_black_48px.svg" alt="business_icon" style="width:128px;height:128px;">
+                    <img src="../res/images/ic_business_black_48px.svg" alt="business_icon" style="width:128px;height:128px;">
                 </div>
             </div>
         </div>
