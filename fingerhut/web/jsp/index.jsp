@@ -155,11 +155,6 @@
                         break;
                 }
             }
-            function unquote(string) {
-                var count = string.length - 1;
-                var pair = string.charAt(0) + string.charAt(count);
-                return (pair === '""' || pair === "''") ? string.slice(1, count) : string;
-            }
         </script>
   </body>
 </html>
