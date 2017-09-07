@@ -31,40 +31,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
+            <!-- Title -->
             <span class="mdl-layout-title mdl-color-text--white">Fingerhut</span>
+        </div>
+        <!-- Tabs -->
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+            <a href="#scroll-tab-1" class="mdl-layout__tab is-active mdl-color-text--white">Kontoübersicht</a>
+            <a href="#scroll-tab-2" class="mdl-layout__tab mdl-color-text--white">Überweisen</a>
+            <a href="#scroll-tab-3" class="mdl-layout__tab mdl-color-text--white">Unternehmen</a>>
         </div>
     </header>
     <main class="mdl-layout__content">
-        <div class="content-grid mdl-grid">
-            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col content-grid mdl-grid">
-                <div class="mdl-card mdl-cell mdl-cell--6-col">
-                    <div class="mdl-card__title">
-                        <h3>Girokonto</h3>
+        <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">
+            <div class="page-content">
+                <div class="content-grid mdl-grid">
+                    <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col content-grid mdl-grid">
+                        <div class="mdl-card mdl-cell mdl-cell--6-col">
+                            <div class="mdl-card__title">
+                                <h3>Girokonto</h3>
+                            </div>
+                        </div>
+                        <div class="mdl-card mdl-cell mdl-cell--6-col">
+                            <div class="mdl-card__title mdl-color-text--green" id="kontostand">
+                                <h1>Kontostand</h1>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="mdl-card mdl-cell mdl-cell--6-col">
-                    <div class="mdl-card__title mdl-color-text--green" id="kontostand">
-                        <h1>Kontostand</h1>
+            </div>
+        </section>
+        <section class="mdl-layout__tab-panel" id="scroll-tab-2">
+            <div class="page-content">
+                <div class="content-grid mdl-grid">
+                    <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+                        <div class="mdl-card__title" id="transfer_heading">
+                            <h2>Überweisen</h2>
+                        </div>
+                        <div id="cash_icon">
+                            <img src="../res/images/cash.svg" alt="cash_icon" style="width:128px;height:128px;">
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--6-col">
-                <div class="mdl-card__title" id="transfer_heading">
-                    <h3>Überweisen</h3>
+        </section>
+        <section class="mdl-layout__tab-panel" id="scroll-tab-3">
+            <div class="page-content">
+                <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+                    <div class="mdl-card__title" id="company_heading">
+                        <h2>Unternehmen</h2>
+                    </div>
+                    <div id="business_icon">
+                        <img src="../res/images/ic_business_black_48px.svg" alt="business_icon" style="width:128px;height:128px;">
+                    </div>
                 </div>
             </div>
-            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--6-col">
-                <div class="mdl-card__title" id="company_heading">
-                    <h3>Unternehmen</h3>
-                </div>
-                <div id="icon">
-                    <img src="../res/images/ic_business_black_48px.svg" alt="business_icon" style="width:128px;height:128px;">
-                </div>
-            </div>
-        </div>
+        </section>
     </main>
 </div>
 </body>
