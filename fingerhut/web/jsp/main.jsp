@@ -9,6 +9,7 @@
 <%@ page import="java.util.Objects" %>
 <%@ page import="java.util.logging.Logger" %>
 <%@ page import="de.repictures.fingerhut.Web.Authenticate" %>
+<%@ page import="de.repictures.fingerhut.Web.GetBalance" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -20,6 +21,7 @@
         response.sendRedirect("https://fingerhut388.appspot.com/");
     }
     %>
+
 
 <html>
 <head>
@@ -51,12 +53,18 @@
                     <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col content-grid mdl-grid">
                         <div class="mdl-card mdl-cell mdl-cell--6-col">
                             <div class="mdl-card__title">
-                                <h3>Girokonto</h3>
+                                <script>
+                                    <%
+                                    GetBalance getBalance = new GetBalance();
+                                    String balance = getBalance.getBalance(accountnumber);
+                                    %>
+                                </script>
+                                <h3>Kontostand: <%= balance %></h3>
                             </div>
                         </div>
                         <div class="mdl-card mdl-cell mdl-cell--6-col">
                             <div class="mdl-card__title mdl-color-text--green" id="kontostand">
-                                <h1>Kontostand</h1>
+                                <h1>Girokonto</h1>
                             </div>
                         </div>
                     </div>
