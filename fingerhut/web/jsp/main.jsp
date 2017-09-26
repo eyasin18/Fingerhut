@@ -38,6 +38,10 @@
         <div class="mdl-layout__header-row">
             <!-- Title -->
             <span class="mdl-layout-title mdl-color-text--white">Fingerhut</span>
+            <div class="mdl-layout-spacer"></div>
+            <form action="https://2-dot-fingerhut388.appspot.com/">
+                <input type="submit" value="Ausloggen" id="logout_button" class= "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white"/>
+            </form>
         </div>
         <!-- Tabs -->
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
