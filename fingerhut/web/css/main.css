@@ -21,6 +21,11 @@
     margin-left: auto;
 }
 .form{
-    margin-right: auto;
     margin-left: auto;
+    margin-right: auto;
+}
+#form{
+    display: flex;
+    justify-content:center;
+    align-items: center;
 }

@@ -81,6 +81,7 @@
                         <div id="cash_icon">
                             <img src="../res/images/cash.svg" alt="cash_icon" style="width:128px;height:128px;">
                         </div>
+                        <div id="form" class="mdl-card">
                         <form action="#">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input class="mdl-textfield__input" type="text" id="receiver">
@@ -98,10 +99,16 @@
                             </div>
                             <br>
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="text" id="usage">
+                                <textarea class="mdl-textfield__input" type="text" rows="2" id="usage" ></textarea>
                                 <label class="mdl-textfield__label" for="usage">Verwendungszweck</label>
                             </div>
+                            <div class="mdl-card__actions">
+                                <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
+                                    Überweisen
+                                </a>
+                            </div>
                         </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -122,4 +129,3 @@
 </div>
 </body>
 </html>
-
