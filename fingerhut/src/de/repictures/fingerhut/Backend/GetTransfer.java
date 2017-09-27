@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -80,13 +81,15 @@ public class GetTransfer extends HttpServlet {
         Calendar calendar = Calendar.getInstance();
 
         //Kontostände des Auftaggebers und des Empfängers werden initialisiert
-        float senderBalance = senderBuilder.account != null ? Float.parseFloat(senderBuilder.getBalance()) : 0;
-        float receiverBalance = receiverBuilder.account != null ? Float.parseFloat(receiverBuilder.getBalance()) : 0;
+        float senderBalanceFloat = senderBuilder.account != null ? Float.parseFloat(senderBuilder.getBalance()) : 0;
+        float receiverBalanceFloat = receiverBuilder.account != null ? Float.parseFloat(receiverBuilder.getBalance()) : 0;
+        BigDecimal senderBalance = new BigDecimal(senderBalanceFloat);
+        BigDecimal receiverBalance = new BigDecimal(receiverBalanceFloat);
 
         //Es wird überprüft ob der Auftraggeber sich selbst Geld überweisen möchte
         if (receiverBuilder.account != null && Objects.equals(senderAccountnumber, receiverAccountnumber)){
             resp.getWriter().println("4");
-        } else if (receiverBuilder.account != null && senderBalance >= amount && receiverBuilder.account != null){ //Daten scheinen in Ordnung
+        } else if (receiverBuilder.account != null && senderBalance.compareTo(new BigDecimal(amount)) >= 0 && receiverBuilder.account != null){ //Daten scheinen in Ordnung
             //Entitäts-Creator wird initialisiert
             Transfers transferCreator = new Transfers(resp.getLocale());
             Entity transfer = transferCreator.createTransaction(f.format(calendar.getTime()));
@@ -107,9 +110,11 @@ public class GetTransfer extends HttpServlet {
             //Die jeweiligen Accountentitäten werden aktualisiert
             Entity savedTransfer = transferBuilder.getTransfer(f.format(calendar.getTime()));
             senderBuilder.addTransfer(savedTransfer);
-            senderBuilder.setBalance(senderBalance - amount);
+            senderBalance = senderBalance.subtract(new BigDecimal(amount));
+            senderBuilder.setBalance(senderBalance.floatValue());
             receiverBuilder.addTransfer(savedTransfer);
-            receiverBuilder.setBalance(receiverBalance + amount);
+            receiverBalance = receiverBalance.add(new BigDecimal(amount));
+            receiverBuilder.setBalance(receiverBalance.floatValue());
             senderBuilder.saveAll();
             receiverBuilder.saveAll();
 
