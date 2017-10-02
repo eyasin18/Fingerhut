@@ -8,20 +8,19 @@
 <%@ page import="javax.servlet.http.HttpServletResponse" %>
 <%@ page import="java.util.Objects" %>
 <%@ page import="java.util.logging.Logger" %>
-<%@ page import="de.repictures.fingerhut.Web.Authenticate" %>
-<%@ page import="de.repictures.fingerhut.Web.GetBalance" %>
+<%@ page import="de.repictures.fingerhut.Web.mainTools" %>
+
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
     String code = request.getParameter("code");
     String accountnumber = request.getParameter("accountnumber");
-    Authenticate authenticate = new Authenticate(accountnumber, code);
-    if (!authenticate.isAuthentificated()){
+    mainTools mainTools = new mainTools(accountnumber, code);
+    if (!mainTools.isAuthentificated()){
         response.sendRedirect("https://fingerhut388.appspot.com/");
     }
     %>
-
 
 <html>
 <head>
@@ -59,8 +58,7 @@
                             <div class="mdl-card__title">
                                 <script>
                                     <%
-                                    GetBalance getBalance = new GetBalance();
-                                    String balance = getBalance.getBalance(accountnumber);
+                                    String balance = mainTools.getBalance(accountnumber);
                                     %>
                                 </script>
                                 <h3>Kontostand: <%= balance %></h3>
