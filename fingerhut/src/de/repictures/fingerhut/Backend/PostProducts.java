@@ -45,6 +45,8 @@ public class PostProducts extends HttpServlet{
             else output.append("0");
             output.append("ò");
             output.append(String.valueOf(productGetter.getSelfBuy()));
+            output.append("ò");
+            output.append(productGetter.getCode());
             output.append("ň");
             resp.getWriter().println(URLEncoder.encode(output.toString(), "UTF-8"));
         }

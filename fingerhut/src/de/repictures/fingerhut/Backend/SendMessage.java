@@ -28,13 +28,13 @@ public class SendMessage extends HttpServlet{
         resp.getWriter().println(getResonse());
     }
 
-    public void sendMessage(Map<String, String> dataBody, String registrationToken){
+    public void sendMessage(Map<String, String> dataBody, String sendTo){
         try{
             URL firebaseUrl = new URL("https://fcm.googleapis.com/fcm/send");
 
             StringBuilder messageBuilder = new StringBuilder();
             messageBuilder.append("{ \"to\": \"")
-                    .append(registrationToken)
+                    .append(sendTo)
                     .append("\", \"data\" : {");
 
             int counter = 0;

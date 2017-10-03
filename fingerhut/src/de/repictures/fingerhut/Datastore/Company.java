@@ -4,10 +4,11 @@ import com.google.appengine.api.datastore.*;
 import de.repictures.fingerhut.Cryptor;
 
 import java.security.KeyPair;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+@SuppressWarnings("unchecked")
 public class Company extends Accounts {
 
     private Entity company;
@@ -30,6 +31,7 @@ public class Company extends Accounts {
         datastore = DatastoreServiceFactory.getDatastoreService();
         cryptor = new Cryptor();
         this.account = getAccount(accountnumber);
+        this.company = this.account;
     }
 
     public void postAccount(String accountnumber, String name, String password){
@@ -137,6 +139,94 @@ public class Company extends Accounts {
         } catch (EntityNotFoundException e){
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void setShoppingRequests(Map<String, List<String[]>> shoppingMap){
+        List<String> shoppingMapAccountnumbers = new ArrayList<>(shoppingMap.keySet());
+        List<String> shoppingLists = new ArrayList<>();
+
+        for (List<String[]> items : shoppingMap.values()){
+            StringBuilder itemStrBuilder = new StringBuilder();
+            for (String[] item : items){
+                for (String property : item){
+                    itemStrBuilder.append(property);
+                    itemStrBuilder.append("ò");
+                }
+                itemStrBuilder.append("ň");
+            }
+            shoppingLists.add(itemStrBuilder.toString());
+        }
+
+        account.setProperty("shoppingMapKeys", shoppingMapAccountnumbers);
+        account.setProperty("shoppingLists", shoppingLists);
+    }
+
+    public void setShoppingRequests(Entity passedEntity, Map<String, List<String[]>> shoppingMap){
+        List<String> shoppingMapAccountnumbers = new ArrayList<>(shoppingMap.keySet());
+        List<String> shoppingLists = new ArrayList<>();
+
+        for (List<String[]> items : shoppingMap.values()){
+            StringBuilder itemStrBuilder = new StringBuilder();
+            for (String[] item : items){
+                for (String property : item){
+                    itemStrBuilder.append(property);
+                    itemStrBuilder.append("ò");
+                }
+                itemStrBuilder.append("ň");
+            }
+            shoppingLists.add(itemStrBuilder.toString());
+        }
+
+        passedEntity.setProperty("shoppingMapKeys", shoppingMapAccountnumbers);
+        passedEntity.setProperty("shoppingLists", shoppingLists);
+    }
+
+    public Map<String, List<String[]>> getShoppingRequests(){
+        try {
+            List<String> shoppingMapAccountnumbers = (List<String>) account.getProperty("shoppingMapKeys");
+            List<String> shoppingListsRaw = (List<String>) account.getProperty("shoppingLists");
+
+            List<List<String[]>> shoppingLists = new ArrayList<>();
+            for (String listItem : shoppingListsRaw){
+                List<String> itemsRaw = Arrays.asList(listItem.split("ň"));
+                List<String[]> items = new ArrayList<>();
+                for (String propertiesRaw : itemsRaw){
+                    items.add(propertiesRaw.split("ò"));
+                }
+                shoppingLists.add(items);
+            }
+
+            Iterator<String> shoppingMapAccountnumbersIter = shoppingMapAccountnumbers.iterator();
+            Iterator<List<String[]>> shoppingListsIter = shoppingLists.iterator();
+            return IntStream.range(0, shoppingMapAccountnumbers.size()).boxed()
+                    .collect(Collectors.toMap(_i -> shoppingMapAccountnumbersIter.next(), _i -> shoppingListsIter.next()));
+        } catch (NullPointerException e){
+            return new HashMap<>();
+        }
+    }
+
+    public Map<String, List<String[]>> getShoppingRequests(Entity passedEntity){
+        try {
+            List<String> shoppingMapAccountnumbers = (List<String>) passedEntity.getProperty("shoppingMapKeys");
+            List<String> shoppingListsRaw = (List<String>) passedEntity.getProperty("shoppingLists");
+
+            List<List<String[]>> shoppingLists = new ArrayList<>();
+            for (String listItem : shoppingListsRaw){
+                List<String> itemsRaw = Arrays.asList(listItem.split("ň"));
+                List<String[]> items = new ArrayList<>();
+                for (String propertiesRaw : itemsRaw){
+                    items.add(propertiesRaw.split("ò"));
+                }
+                shoppingLists.add(items);
+            }
+
+            Iterator<String> shoppingMapAccountnumbersIter = shoppingMapAccountnumbers.iterator();
+            Iterator<List<String[]>> shoppingListsIter = shoppingLists.iterator();
+            return IntStream.range(0, shoppingMapAccountnumbers.size()).boxed()
+                    .collect(Collectors.toMap(_i -> shoppingMapAccountnumbersIter.next(), _i -> shoppingListsIter.next()));
+        } catch (NullPointerException e){
+            return new HashMap<>();
         }
     }
 }
