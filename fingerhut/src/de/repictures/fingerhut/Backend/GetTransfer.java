@@ -2,6 +2,7 @@ package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
+import de.repictures.fingerhut.Cryptor;
 import de.repictures.fingerhut.Datastore.Accounts;
 import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Transfers;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.PublicKey;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -36,6 +38,7 @@ public class GetTransfer extends HttpServlet {
         String savedWebString = senderBuilder.getRandomWebString();
         if (!Objects.equals(webString, savedWebString)){
             resp.getWriter().println("2");
+            return;
         }
 
         if (receiverBuilder.account == null){
@@ -56,15 +59,18 @@ public class GetTransfer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //Parameter werden entgegen genommen
-        String senderPurposeStr = URLDecoder.decode(req.getParameter("senderpurpose"), "UTF-8");
-        Text senderPurpose = new Text(senderPurposeStr);
-        String receiverPurposeStr = URLDecoder.decode(req.getParameter("receiverpurpose"), "UTF-8");
-        Text receiverPurpose = new Text(receiverPurposeStr);
+        String senderPurposeStr = req.getParameter("senderpurpose");
+        if (senderPurposeStr != null)senderPurposeStr = URLDecoder.decode(senderPurposeStr, "UTF-8");
+        String receiverPurposeStr = req.getParameter("receiverpurpose");
+        if (receiverPurposeStr != null)receiverPurposeStr = URLDecoder.decode(receiverPurposeStr, "UTF-8");
         float amount = Float.parseFloat(URLDecoder.decode(req.getParameter("amount"), "UTF-8"));
         String receiverAccountnumber = URLDecoder.decode(req.getParameter("receiveraccountnumber"), "UTF-8");
         String senderAccountnumber = URLDecoder.decode(req.getParameter("senderaccountnumber"), "UTF-8");
-        String senderAesKey = URLDecoder.decode(req.getParameter("senderkey"), "UTF-8");
-        String receiverAesKey = URLDecoder.decode(req.getParameter("receiverkey"), "UTF-8");
+        String senderAesKey = req.getParameter("senderkey");
+        if (senderAesKey != null)senderAesKey = URLDecoder.decode(senderAesKey, "UTF-8");
+        String receiverAesKey = req.getParameter("receiverkey");
+        if (receiverAesKey != null)receiverAesKey = URLDecoder.decode(receiverAesKey, "UTF-8");
+        String webString = req.getParameter("code");
 
         //Die entsprechenden Entitäts-Builder werden initialisiert
         Accounts receiverBuilder = new Accounts(receiverAccountnumber);
@@ -75,6 +81,41 @@ public class GetTransfer extends HttpServlet {
         if (senderBuilder.account == null){
             senderBuilder = new Company(senderAccountnumber);
         }
+
+        String savedWebString = senderBuilder.getRandomWebString();
+        if (!Objects.equals(webString, savedWebString)){
+            resp.getWriter().println("5");
+            return;
+        }
+
+        if (senderPurposeStr == null){
+            Cryptor cryptor = new Cryptor();
+            String senderPublicKeyStr = senderBuilder.getPublicKeyStr();
+            String receiverPublicKeyStr = receiverBuilder.getPublicKeyStr();
+
+            PublicKey senderPublicKey = cryptor.stringToPublicKey(senderPublicKeyStr);
+            PublicKey receiverPublicKey = cryptor.stringToPublicKey(receiverPublicKeyStr);
+
+            byte[] randomSenderAesKey = cryptor.generateRandomAesKey();
+            byte[] randomReceiverAesKey = cryptor.generateRandomAesKey();
+
+            String rawPurpose = "Web-Überweisung";
+
+            byte[] encryptedSenderPurpose = cryptor.encryptSymetricFromString(rawPurpose, randomSenderAesKey);
+            byte[] encryptedReceiverPurpose = cryptor.encryptSymetricFromString(rawPurpose, randomReceiverAesKey);
+
+            senderPurposeStr = cryptor.bytesToHex(encryptedSenderPurpose);
+            receiverPurposeStr = cryptor.bytesToHex(encryptedReceiverPurpose);
+
+            byte[] encryptedSenderAesKeyByte = cryptor.encryptAsymetric(randomSenderAesKey, senderPublicKey);
+            byte[] encryptedReceiverAesKeyByte = cryptor.encryptAsymetric(randomReceiverAesKey, receiverPublicKey);
+
+            senderAesKey = cryptor.bytesToHex(encryptedSenderAesKeyByte);
+            receiverAesKey = cryptor.bytesToHex(encryptedReceiverAesKeyByte);
+        }
+
+        Text senderPurpose = new Text(senderPurposeStr);
+        Text receiverPurpose = new Text(receiverPurposeStr);
 
         //Momentane Serverzeit wird abgefragt
         SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", resp.getLocale());

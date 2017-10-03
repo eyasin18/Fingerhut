@@ -26,4 +26,3 @@ public class MainTools {
     }
     public boolean isAuthentificated() { return isAuthenticated; }
 }
-

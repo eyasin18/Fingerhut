@@ -84,7 +84,6 @@
                             <img src="../res/images/cash.svg" alt="cash_icon" style="width:128px;height:128px;">
                         </div>
                         <div id="form" class="mdl-card">
-                        <form action="#">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input class="mdl-textfield__input" type="text" id="receiver">
                                 <label class="mdl-textfield__label" for="receiver">Begünstigter</label>
@@ -93,23 +92,17 @@
                                 <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="accountnumber">
                                 <label class="mdl-textfield__label" for="accountnumber">Kontonummer</label>
                                 <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
-                            </div><br>
+                            </div>
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="amount">
                                 <label class="mdl-textfield__label" for="amount">Betrag</label>
                                 <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
                             </div>
-                            <br>
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <textarea class="mdl-textfield__input" type="text" rows="2" id="usage" ></textarea>
-                                <label class="mdl-textfield__label" for="usage">Verwendungszweck</label>
-                            </div>
                             <div class="mdl-card__actions">
-                                <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
+                                <button onclick="onButtonClick()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
                                     Überweisen
-                                </a>
+                                </button>
                             </div>
-                        </form>
                         </div>
                     </div>
                 </div>
@@ -129,5 +122,55 @@
         </section>
     </main>
 </div>
+<script type="application/javascript">
+    var receiveraccountnumber;
+    var amount;
+
+    var getURL;
+
+
+    function onButtonClick(){
+        receiveraccountnumber = document.getElementById('accountnumber').value;
+        amount = document.getElementById('amount').value;
+        usage = document.getElementById('usage').value;
+        getURL = "https://2-dot-fingerhut388.appspot.com/transfer?receiveraccountnumber=" + receiveraccountnumber + "&senderaccountnumber=<%= accountnumber %>&webstring=<%= code %>";
+        httpAsync(getURL,"GET");
+    }
+
+    function httpAsync(theUrl, method) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState === 4 && xmlHttp.status === 200){
+                console.log(xmlHttp.responseText);
+                if (method === "GET") processGetResponse(decodeURIComponent(xmlHttp.responseText));
+                else if (method === "POST") processPostResponse(decodeURIComponent(xmlHttp.responseText));
+            }
+        };
+        xmlHttp.open(method, theUrl, true); // true for asynchronous
+        xmlHttp.send(null);
+    }
+
+    function processGetResponse(responseStr){
+        var responses = responseStr.split("ò");
+        switch (parseInt(responses[0])){
+            case 1:
+                var postUrl = "https://2-dot-fingerhut388.appspot.com/transfer?amount=" + amount
+                    + "&receiveraccountnumber=" + receiveraccountnumber
+                    + "&senderaccountnumber=<%= accountnumber%>"
+                    + "&code=<%=code%>";
+                httpAsync(postUrl, "POST");
+                break;
+            case 2:
+                //TODO: Nutzer sagen er muss sich nochmal anmelden
+                break;
+            default:
+                break;
+        }
+    }
+
+    function processPostResponse(responseStr) {
+        console.log(responseStr);
+    }
+</script>
 </body>
 </html>
