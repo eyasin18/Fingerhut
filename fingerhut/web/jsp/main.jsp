@@ -213,6 +213,7 @@
                 timeout: 3000
             }
         );
+        window.location.reload();
     }
 </script>
 </body>
