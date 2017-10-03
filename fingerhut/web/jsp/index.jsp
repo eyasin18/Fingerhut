@@ -10,8 +10,6 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%-- Toller Kommentar --%>
-
 <html>
     <head>
         <meta charset="utf-8">
@@ -52,6 +50,9 @@
             </main>
         </div>
         <script type="application/javascript">
+
+            var url = "https://fingerhut388.appspot.com";
+
             document.getElementById('username_label').textContent = strings.accountnumber;
             document.getElementById('username_error').textContent = strings.noNumberInputError;
             document.getElementById('userpass_label').textContent = strings.pin;
@@ -100,7 +101,7 @@
                 accountnumber = usernameInput.value;
 
                 //TODO: https://fingerhut388.appspot.com
-                var urlStr = "https://2-dot-fingerhut388.appspot.com" + "/web/login?accountnumber=" + accountnumber + "&password=" + hashHex;
+                var urlStr = url + "/web/login?accountnumber=" + accountnumber + "&password=" + hashHex;
 
                 submitButton.textContent = '';
                 submitSpinner.style.visibility = 'visible';
@@ -134,7 +135,7 @@
                     case 1:
                         console.log("yay");
                         //TODO: https://fingerhut388.appspot.com
-                        window.location = "https://2-dot-fingerhut388.appspot.com" + "/main?code=" + responses[1] + "&accountnumber=" + accountnumber;
+                        window.location = url + "/main?code=" + responses[1] + "&accountnumber=" + accountnumber;
                         break;
                     case 2:
                         submitSpinner.style.visibility = 'hidden';

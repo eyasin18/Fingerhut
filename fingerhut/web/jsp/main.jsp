@@ -10,7 +10,6 @@
 <%@ page import="java.util.logging.Logger" %>
 <%@ page import="de.repictures.fingerhut.Web.MainTools" %>
 
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
@@ -129,7 +128,7 @@
 <script type="application/javascript">
     var receiveraccountnumber;
     var amount;
-
+    var url = "https://fingerhut388.appspot.com";
     var getURL;
 
 
@@ -158,7 +157,7 @@
         }
         amount = Math.round(amount * 100) / 100;
         document.getElementById("amount").value = amount;
-        getURL = "https://2-dot-fingerhut388.appspot.com/transfer?receiveraccountnumber=" + receiveraccountnumber + "&senderaccountnumber=<%= accountnumber %>&webstring=<%= code %>";
+        getURL = url + "/transfer?receiveraccountnumber=" + receiveraccountnumber + "&senderaccountnumber=<%= accountnumber %>&webstring=<%= code %>";
         httpAsync(getURL,"GET");
     }
 
@@ -179,7 +178,7 @@
         var responses = responseStr.split("ò");
         switch (parseInt(responses[0])){
             case 1:
-                var postUrl = "https://2-dot-fingerhut388.appspot.com/transfer?amount=" + amount
+                var postUrl = url + "/transfer?amount=" + amount
                     + "&receiveraccountnumber=" + receiveraccountnumber
                     + "&senderaccountnumber=<%= accountnumber%>"
                     + "&code=<%=code%>";
