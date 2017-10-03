@@ -20,6 +20,8 @@ function deStrings() {
         pin: "Pin",
         accountnumberError: "Diese Kontonummer existiert nicht",
         pinError: "Falsches Passwort",
+        receiveraccountnumberFormatError: "Kontonummer muss eine Zahl sein",
+        amountFormatError: "Formatfehler",
         serverError: "Server Fehler",
         noNumberInputError: "Eingabe muss eine Zahl sein",
         loginButtonText : "Anmelden"

@@ -35,6 +35,11 @@ public class GetTransfer extends HttpServlet {
         Accounts receiverBuilder = new Accounts(receiverAccountnumber);
         Accounts senderBuilder = new Accounts(senderAccountnumber);
 
+        if (receiverBuilder.account == null){
+            resp.getWriter().println("3");
+            return;
+        }
+
         String savedWebString = senderBuilder.getRandomWebString();
         if (!Objects.equals(webString, savedWebString)){
             resp.getWriter().println("2");

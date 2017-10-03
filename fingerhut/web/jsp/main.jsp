@@ -91,17 +91,21 @@
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="accountnumber">
                                 <label class="mdl-textfield__label" for="accountnumber">Kontonummer</label>
-                                <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
+                                <span class="mdl-textfield__error" id="accountnumber_error"></span>
                             </div>
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="amount">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)? [^-]" id="amount">
                                 <label class="mdl-textfield__label" for="amount">Betrag</label>
-                                <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
+                                <span class="mdl-textfield__error" id="amount_error"></span>
                             </div>
                             <div class="mdl-card__actions">
-                                <button onclick="onButtonClick()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
+                                <button id="transfer_button" onclick="onButtonClick()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white" type="button">
                                     Überweisen
                                 </button>
+                                <div id="toast" class="mdl-js-snackbar mdl-snackbar">
+                                    <div class="mdl-snackbar__text"></div>
+                                    <button class="mdl-snackbar__action" type="button"></button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -130,9 +134,30 @@
 
 
     function onButtonClick(){
+        var accountnumberError = document.getElementById('accountnumber_error');
+        accountnumberError.parentElement.className = accountnumberError.parentElement.className.replace(" is-invalid", "");
+        accountnumberError.textContent = '';
+
+        var amountError = document.getElementById('amount_error');
+        amountError.parentElement.className = amountError.parentElement.className.replace(" is-invalid", "");
+        amountError.textContent = '';
+
         receiveraccountnumber = document.getElementById('accountnumber').value;
+        if (isNaN(receiveraccountnumber) || receiveraccountnumber < 0){
+            var element1 = document.getElementById('accountnumber_error');
+            element1.parentElement.className += ' is-invalid';
+            element1.textContent = strings.receiveraccountnumberFormatError;
+            return;
+        }
         amount = document.getElementById('amount').value;
-        usage = document.getElementById('usage').value;
+        if (isNaN(amount) || amount < 0){
+            var element2 = document.getElementById('accountnumber_error');
+            element2.parentElement.className += ' is-invalid';
+            element2.textContent = strings.amountFormatError;
+            return;
+        }
+        amount = Math.round(amount * 100) / 100;
+        document.getElementById("amount").value = amount;
         getURL = "https://2-dot-fingerhut388.appspot.com/transfer?receiveraccountnumber=" + receiveraccountnumber + "&senderaccountnumber=<%= accountnumber %>&webstring=<%= code %>";
         httpAsync(getURL,"GET");
     }
@@ -163,6 +188,11 @@
             case 2:
                 //TODO: Nutzer sagen er muss sich nochmal anmelden
                 break;
+            case 3:
+                var ele = document.getElementById('accountnumber_error');
+                ele.parentElement.className += ' is-invalid';
+                ele.textContent = strings.pinError;
+                break;
             default:
                 break;
         }
@@ -170,6 +200,13 @@
 
     function processPostResponse(responseStr) {
         console.log(responseStr);
+        var notification = document.querySelector('#toast');
+        notification.MaterialSnackbar.showSnackbar(
+            {
+                message: 'Überweisung erfolgreich',
+                timeout: 3000
+            }
+        );
     }
 </script>
 </body>
