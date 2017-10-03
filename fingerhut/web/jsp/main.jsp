@@ -37,7 +37,7 @@
             <!-- Title -->
             <span class="mdl-layout-title mdl-color-text--white">Fingerhut</span>
             <div class="mdl-layout-spacer"></div>
-            <form action="https://2-dot-fingerhut388.appspot.com/">
+            <form action= "https://fingerhut388.appspot.com" >
                 <input type="submit" value="Ausloggen" id="logout_button" class= "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white"/>
             </form>
         </div>
@@ -57,10 +57,12 @@
                             <div class="mdl-card__title">
                                 <script>
                                     <%
-                                    String balance = mainTools.getBalance(accountnumber);
+                                    String balancestring = mainTools.getBalance(accountnumber);
+                                    float balancenumber = java.lang.Float.parseFloat(balancestring);
+                                    balancestring = String.format("%.2f", balancenumber);
                                     %>
                                 </script>
-                                <h3>Kontostand: <%= balance %></h3>
+                                <h3>Kontostand: <%= balancestring %></h3>
                             </div>
                         </div>
                         <div class="mdl-card mdl-cell mdl-cell--6-col">
@@ -88,12 +90,12 @@
                                 <label class="mdl-textfield__label" for="receiver">Begünstigter</label>
                             </div>
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="accountnumber">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]" id="accountnumber">
                                 <label class="mdl-textfield__label" for="accountnumber">Kontonummer</label>
                                 <span class="mdl-textfield__error" id="accountnumber_error"></span>
                             </div>
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)? [^-]" id="amount">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]" id="amount">
                                 <label class="mdl-textfield__label" for="amount">Betrag</label>
                                 <span class="mdl-textfield__error" id="amount_error"></span>
                             </div>
@@ -133,6 +135,7 @@
 
 
     function onButtonClick(){
+
         var accountnumberError = document.getElementById('accountnumber_error');
         accountnumberError.parentElement.className = accountnumberError.parentElement.className.replace(" is-invalid", "");
         accountnumberError.textContent = '';
@@ -159,6 +162,7 @@
         document.getElementById("amount").value = amount;
         getURL = url + "/transfer?receiveraccountnumber=" + receiveraccountnumber + "&senderaccountnumber=<%= accountnumber %>&webstring=<%= code %>";
         httpAsync(getURL,"GET");
+
     }
 
     function httpAsync(theUrl, method) {
@@ -183,6 +187,9 @@
                     + "&senderaccountnumber=<%= accountnumber%>"
                     + "&code=<%=code%>";
                 httpAsync(postUrl, "POST");
+                document.getElementById("receiver").value = "";
+                document.getElementById("accountnumber").value = "";
+                document.getElementById("amount").value = "";
                 break;
             case 2:
                 //TODO: Nutzer sagen er muss sich nochmal anmelden
