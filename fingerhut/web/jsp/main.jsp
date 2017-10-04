@@ -45,7 +45,7 @@
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
             <a href="#scroll-tab-1" class="mdl-layout__tab is-active mdl-color-text--white">Kontoübersicht</a>
             <a href="#scroll-tab-2" class="mdl-layout__tab mdl-color-text--white">Überweisen</a>
-            <a href="#scroll-tab-3" class="mdl-layout__tab mdl-color-text--white">Unternehmen</a>>
+            <a href="#scroll-tab-3" class="mdl-layout__tab mdl-color-text--white">Unternehmen</a>
         </div>
     </header>
     <main class="mdl-layout__content">
@@ -135,6 +135,7 @@
 
 
     function onButtonClick(){
+        document.getElementById('transfer_button').setAttribute("disabled", "disabled");
 
         var accountnumberError = document.getElementById('accountnumber_error');
         accountnumberError.parentElement.className = accountnumberError.parentElement.className.replace(" is-invalid", "");
@@ -162,6 +163,7 @@
         document.getElementById("amount").value = amount;
         getURL = url + "/transfer?receiveraccountnumber=" + receiveraccountnumber + "&senderaccountnumber=<%= accountnumber %>&webstring=<%= code %>";
         httpAsync(getURL,"GET");
+        document.getElementById('transfer_button').removeAttribute("disabled");
 
     }
 
@@ -187,9 +189,6 @@
                     + "&senderaccountnumber=<%= accountnumber%>"
                     + "&code=<%=code%>";
                 httpAsync(postUrl, "POST");
-                document.getElementById("receiver").value = "";
-                document.getElementById("accountnumber").value = "";
-                document.getElementById("amount").value = "";
                 break;
             case 2:
                 //TODO: Nutzer sagen er muss sich nochmal anmelden
