@@ -23,6 +23,11 @@ public class GetProduct extends HttpServlet{
         boolean selfBuy;
         selfBuy = selfBuyStr != null && Boolean.parseBoolean(selfBuyStr);
 
+        if (new Product(barcode).product != null){
+            resp.getWriter().println(2);
+            return;
+        }
+
         Company companyBuilder = new Company();
         Entity company = companyBuilder.getAccount(companyAccountnumber);
 
@@ -36,6 +41,6 @@ public class GetProduct extends HttpServlet{
         companyBuilder.addProduct(company, savedProduct);
         companyBuilder.saveAll(company);
 
-        resp.getWriter().println("success");
+        resp.getWriter().println(1);
     }
 }

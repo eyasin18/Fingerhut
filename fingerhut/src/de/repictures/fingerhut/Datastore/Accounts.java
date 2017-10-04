@@ -58,7 +58,7 @@ public class Accounts {
         setAccountnumber(account, accountnumber);
         setHashedPassword(account, encryptedPassword);
         setOwner(account, name);
-        setBalance(account, 15.00f);
+        setBalance(account, 1500.00f);
         account.setProperty("transferarray", new ArrayList<String>());
         setGroup(account, 7);
         setFeature(account,0, true);
@@ -282,6 +282,8 @@ public class Accounts {
      * Liste der Features:
      * 0 = Produkt hinzufügen
      * 1 = Authentifizierungs QR-Codes lesen und schreiben
+     * 3 = Features setzen
+     * 4 = Accounts erstellen
      */
 
     public void setFeature(Entity passedEntity, long featureNumber, boolean add){
@@ -319,14 +321,14 @@ public class Accounts {
 
     /**
      * Liste der Groups:
-     * 0 = Beamter der Zentralbank
+     * 0 = Arbeitslos
      * 1 = Beamter des Finanzministeriums
      * 2 = Beamter des Wirtschaftsministeriums
      * 3 = Beamter des Ministeriums für Kultus und Soziales
      * 4 = Beamter des Umweltministeriums
      * 5 = Beamter des Innen-/Justizministeriums
      * 6 = Angestellter eines Unternehmens
-     * 7 = Arbeitslos
+     * 7 = Beamter der Zentralbank
      */
 
     public void setGroup(Entity passedEntity, int groupNumber){

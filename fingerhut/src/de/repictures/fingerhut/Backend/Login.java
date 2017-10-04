@@ -91,6 +91,9 @@ public class Login extends HttpServlet {
                     output.append(feature);
                     output.append("ň");
                 }
+                output.append("ò");
+                accounts.setGroup(queriedAccounts.get(0), 7);
+                output.append(accounts.getGroup(queriedAccounts.get(0)));
                 String response = "2ò" + accounts.getKey(queriedAccounts.get(0)) + "ò" + output.toString();
                 resp.setStatus(200);
                 resp.getWriter().println(URLEncoder.encode(response, "UTF-8"));
