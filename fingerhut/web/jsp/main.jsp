@@ -135,7 +135,7 @@
 
 
     function onButtonClick(){
-        document.getElementById('transfer_button').setAttribute("disabled", "disabled");
+        document.getElementById('transfer_button').setAttribute("disabled",);
 
         var accountnumberError = document.getElementById('accountnumber_error');
         accountnumberError.parentElement.className = accountnumberError.parentElement.className.replace(" is-invalid", "");
