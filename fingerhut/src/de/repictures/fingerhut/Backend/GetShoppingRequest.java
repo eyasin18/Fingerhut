@@ -38,9 +38,9 @@ public class GetShoppingRequest extends HttpServlet{
         }
 
         Map<String, List<String[]>> shoppingRequests = companyGetter.getShoppingRequests();
-        List<String[]> newItems;
-        if (shoppingRequests.get(companyNumber) != null) newItems = shoppingRequests.get(companyNumber);
-        else newItems = new ArrayList<>();
+        List<String[]> newItems = new ArrayList<>();
+        /*if (shoppingRequests.get(companyNumber) != null) newItems = shoppingRequests.get(companyNumber);
+        else newItems = new ArrayList<>();*/
 
         String[] shoppingListSplittedItems = shoppingListRaw.split("ň");
         for (String shoppingListSpittedItem : shoppingListSplittedItems) {
@@ -55,10 +55,12 @@ public class GetShoppingRequest extends HttpServlet{
                 continue;
             }
             Product product = new Product(item[0]);
-            purposeBuilder.append(product.getName()).append("\n");
+            int count = Integer.parseInt(item[3]);
+            if (count > 1) purposeBuilder.append(count).append(" x ").append(product.getName()).append("\n");
+            else purposeBuilder.append(product.getName()).append("\n");
 
             double itemPrice = Double.parseDouble(item[1]);
-            priceSum += itemPrice;
+            priceSum += (count * itemPrice);
         }
 
         if (priceSum > Float.parseFloat(accountGetter.getBalance())){
@@ -68,7 +70,7 @@ public class GetShoppingRequest extends HttpServlet{
 
         buyItems(accountGetter, companyGetter, resp.getLocale(), purposeBuilder.toString(), priceSum);
 
-        shoppingRequests.put(companyNumber, newItems);
+        shoppingRequests.put(accountnumber, newItems);
         companyGetter.setShoppingRequests(shoppingRequests);
         companyGetter.saveAll();
 

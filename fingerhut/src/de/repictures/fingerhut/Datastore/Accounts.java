@@ -45,8 +45,6 @@ public class Accounts {
             password = String.format("%04d", rand.nextInt(10000));
         }
         String encryptedPassword = cryptor.hashToString(password);
-        byte[] encryptedByteName = cryptor.encryptSymetricFromString(name, cryptor.hashToByte(password));
-        name = cryptor.bytesToHex(encryptedByteName);
 
         KeyPair securityKeyPair = cryptor.generateKeyPair();
         String privateKeyStr = cryptor.privateKeyToString(securityKeyPair.getPrivate());
@@ -60,7 +58,7 @@ public class Accounts {
         setOwner(account, name);
         setBalance(account, 1500.00f);
         account.setProperty("transferarray", new ArrayList<String>());
-        setGroup(account, 7);
+        setGroup(account, 0);
         setFeature(account,0, true);
         setPrivateKeyStr(account, privateKeyStr);
         setPublicKeyStr(account, publicKeyStr);
@@ -401,35 +399,35 @@ public class Accounts {
     }
 
     public String getPrivateKeyStr(){
-        return (String) account.getProperty("privateKey");
+        return ((Text) account.getProperty("privateKey")).getValue();
     }
 
     public String getPrivateKeyStr(Entity passedEntity){
-        return (String) passedEntity.getProperty("privateKey");
+        return ((Text) passedEntity.getProperty("privateKey")).getValue();
     }
 
     public void setPrivateKeyStr(String privateKeyStr){
-        account.setProperty("privateKey", privateKeyStr);
+        account.setProperty("privateKey", new Text(privateKeyStr));
     }
 
     public void setPrivateKeyStr(Entity passedEntity, String privateKeyStr){
-        passedEntity.setProperty("privateKey", privateKeyStr);
+        passedEntity.setProperty("privateKey", new Text(privateKeyStr));
     }
 
     public String getPublicKeyStr(){
-        return (String) account.getProperty("publicKey");
+        return ((Text) account.getProperty("publicKey")).getValue();
     }
 
     public String getPublicKeyStr(Entity passedEntity){
-        return (String) passedEntity.getProperty("publicKey");
+        return ((Text) passedEntity.getProperty("publicKey")).getValue();
     }
 
     public void setPublicKeyStr(String publicKeyStr){
-        account.setProperty("publicKey", publicKeyStr);
+        account.setProperty("publicKey", new Text(publicKeyStr));
     }
 
     public void setPublicKeyStr(Entity passedEntity, String publicKeyStr){
-        passedEntity.setProperty("publicKey", publicKeyStr);
+        passedEntity.setProperty("publicKey", new Text(publicKeyStr));
     }
 
     public String getFirebaseDeviceToken(){

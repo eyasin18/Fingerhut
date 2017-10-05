@@ -36,7 +36,7 @@ public class PostFinancialStatus extends HttpServlet {
             String output = "1ò" +
                     accounts.getAccountnumber() +
                     "ò" +
-                    accounts.getOwner() +
+                    accounts.getEncryptedOwner() +
                     "ò" +
                     accounts.getBalance();
             resp.getWriter().println(URLEncoder.encode(output, "UTF-8"));

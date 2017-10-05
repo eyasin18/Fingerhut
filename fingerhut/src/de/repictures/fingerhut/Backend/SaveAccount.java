@@ -20,6 +20,8 @@ public class SaveAccount extends HttpServlet{
         String password = req.getParameter("password");
         if(password != null){
             password = URLDecoder.decode(password, "UTF-8");
+        } else {
+
         }
 
         //Account wird erstellt
