@@ -3,6 +3,7 @@ package de.repictures.fingerhut.Datastore;
 import com.google.appengine.api.datastore.*;
 import de.repictures.fingerhut.Cryptor;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.SecureRandom;
@@ -48,7 +49,21 @@ public class Accounts {
 
         KeyPair securityKeyPair = cryptor.generateKeyPair();
         String privateKeyStr = cryptor.privateKeyToString(securityKeyPair.getPrivate());
+        byte[] privateKey = cryptor.hexToBytes(privateKeyStr);
         String publicKeyStr = cryptor.publicKeyToString(securityKeyPair.getPublic());
+
+        String encryptedPrivateKeyStr = "";
+        try {
+            byte[] passwordBytes = password.getBytes("ISO-8859-1");
+            byte[] passwordKey = new byte[32];
+            for (int i = 0; i < passwordKey.length; i++){
+                passwordKey[i] = passwordBytes[i % passwordBytes.length];
+            }
+            byte[] encryptedPrivateKey = cryptor.encryptSymetricFromByte(privateKey, passwordKey);
+            encryptedPrivateKeyStr = cryptor.bytesToHex(encryptedPrivateKey);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         Key loginKey = KeyFactory.createKey("accountnumber", accountnumber);
         Entity account = new Entity("Account", loginKey);
@@ -60,7 +75,7 @@ public class Accounts {
         account.setProperty("transferarray", new ArrayList<String>());
         setGroup(account, 0);
         setFeature(account,0, true);
-        setPrivateKeyStr(account, privateKeyStr);
+        setPrivateKeyStr(account, encryptedPrivateKeyStr);
         setPublicKeyStr(account, publicKeyStr);
 
         saveAll(account);

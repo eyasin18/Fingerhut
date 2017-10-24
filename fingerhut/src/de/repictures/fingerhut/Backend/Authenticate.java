@@ -46,7 +46,7 @@ public class Authenticate extends HttpServlet{
             String privateKey = accountsBuilder.getPrivateKeyStr();
             byte[] encryptedPrivateKey = cryptor.encryptSymetricFromString(privateKey, password);
             String encryptedPrivateKeyHex = cryptor.bytesToHex(encryptedPrivateKey);
-            resp.getWriter().println(encryptedPrivateKeyHex);
+            resp.getWriter().println(privateKey);
         } else {
             log.warning("Falsche Authentifizierung!");
             resp.getWriter().println("0");
