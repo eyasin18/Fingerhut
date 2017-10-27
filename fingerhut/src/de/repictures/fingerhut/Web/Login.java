@@ -1,6 +1,6 @@
 package de.repictures.fingerhut.Web;
 
-import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Account;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 public class Login extends HttpServlet{
 
-    private Logger log = Logger.getLogger(Accounts.class.getName());
+    private Logger log = Logger.getLogger(Account.class.getName());
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -30,7 +30,7 @@ public class Login extends HttpServlet{
             passwordHash = passwordHash.toUpperCase(Locale.getDefault());
         }
 
-        Accounts accountGetter = new Accounts(accountnumber);
+        Account accountGetter = new Account(accountnumber);
 
         if (accountGetter.account == null) {
             resp.getWriter().println("3");

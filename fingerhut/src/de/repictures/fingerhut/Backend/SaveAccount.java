@@ -1,7 +1,7 @@
 package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.Entity;
-import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Account;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,12 +25,12 @@ public class SaveAccount extends HttpServlet{
         }
 
         //Account wird erstellt
-        Accounts accounts = new Accounts();
-        accounts.postAccount(accountnumber, password, name);
-        Entity createdAccount = accounts.getAccount(accountnumber);
+        Account account = new Account();
+        account.postAccount(accountnumber, password, name);
+        Entity createdAccount = account.getAccount(accountnumber);
 
         //Ergebnis wird ausgegeben
-        resp.getWriter().println("Kontonummer: " + accounts.getAccountnumber(createdAccount)
+        resp.getWriter().println("Kontonummer: " + account.getAccountnumber(createdAccount)
                 + " Klartextpasswort: " + password);
     }
 }

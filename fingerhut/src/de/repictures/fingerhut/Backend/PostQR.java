@@ -2,7 +2,7 @@ package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.Blob;
 import de.repictures.fingerhut.Cryptor;
-import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Account;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,8 +18,8 @@ public class PostQR extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String accountnumber = req.getParameter("accountnumber");
-        Accounts accountsBuilder = new Accounts(accountnumber);
-        Blob qrBlob = accountsBuilder.getQRBlob();
+        Account accountBuilder = new Account(accountnumber);
+        Blob qrBlob = accountBuilder.getQRBlob();
         byte[] qrData = qrBlob.getBytes();
         resp.getWriter().println(qrData.length);
     }
@@ -28,13 +28,13 @@ public class PostQR extends HttpServlet{
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String accountnumber = req.getParameter("accountnumber");
         String requestingAccountnumber = req.getParameter("reqaccountnumber");
-        Accounts accountsBuilder = new Accounts(accountnumber);
-        String requestingAccountKey = accountsBuilder.getHashedPassword(accountsBuilder.getAccount(requestingAccountnumber));
+        Account accountBuilder = new Account(accountnumber);
+        String requestingAccountKey = accountBuilder.getHashedPassword(accountBuilder.getAccount(requestingAccountnumber));
 
         DataOutputStream response = new DataOutputStream(resp.getOutputStream());
         byte[] key = cryptor.hexToBytes(requestingAccountKey);
 
-        Blob qrBlob = accountsBuilder.getQRBlob();
+        Blob qrBlob = accountBuilder.getQRBlob();
         byte[] qrData = qrBlob.getBytes();
 
         qrData = cryptor.encryptSymetricFromByte(qrData, key);

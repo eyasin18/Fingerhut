@@ -1,6 +1,6 @@
 package de.repictures.fingerhut.Backend;
 
-import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Account;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,11 +22,11 @@ public class PostFinancialStatus extends HttpServlet {
         String accountnumber = req.getParameter("accountnumber");
         String webstring = req.getParameter("webstring");
 
-        Accounts accounts = new Accounts(accountnumber);
+        Account account = new Account(accountnumber);
 
-        if (accounts.account != null){
+        if (account.account != null){
 
-            String savedWebString = accounts.getRandomWebString();
+            String savedWebString = account.getRandomWebString();
             log.info("Saved Web String: " + savedWebString + "\nPassed Web String: " + webstring);
             if (!Objects.equals(webstring, savedWebString)){
                 resp.getWriter().println("2");
@@ -34,11 +34,11 @@ public class PostFinancialStatus extends HttpServlet {
             }
 
             String output = "1ò" +
-                    accounts.getAccountnumber() +
+                    account.getAccountnumber() +
                     "ò" +
-                    accounts.getEncryptedOwner() +
+                    account.getEncryptedOwner() +
                     "ò" +
-                    accounts.getBalance();
+                    account.getBalance();
             resp.getWriter().println(URLEncoder.encode(output, "UTF-8"));
         } else {
             resp.getWriter().println("0");

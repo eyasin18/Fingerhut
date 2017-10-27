@@ -3,9 +3,9 @@ package de.repictures.fingerhut.Backend;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
 import de.repictures.fingerhut.Cryptor;
-import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
-import de.repictures.fingerhut.Datastore.Transfers;
+import de.repictures.fingerhut.Datastore.Transfer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,8 +32,8 @@ public class GetTransfer extends HttpServlet {
         String webString = req.getParameter("webstring");
 
         //Die entsprechenden Entitäts-Builder werden initialisiert
-        Accounts receiverBuilder = new Accounts(receiverAccountnumber);
-        Accounts senderBuilder = new Accounts(senderAccountnumber);
+        Account receiverBuilder = new Account(receiverAccountnumber);
+        Account senderBuilder = new Account(senderAccountnumber);
 
         if (receiverBuilder.account == null){
             resp.getWriter().println("3");
@@ -78,8 +78,8 @@ public class GetTransfer extends HttpServlet {
         String webString = req.getParameter("code");
 
         //Die entsprechenden Entitäts-Builder werden initialisiert
-        Accounts receiverBuilder = new Accounts(receiverAccountnumber);
-        Accounts senderBuilder = new Accounts(senderAccountnumber);
+        Account receiverBuilder = new Account(receiverAccountnumber);
+        Account senderBuilder = new Account(senderAccountnumber);
         if (receiverBuilder.account == null){
             receiverBuilder = new Company(receiverAccountnumber);
         }
@@ -137,11 +137,11 @@ public class GetTransfer extends HttpServlet {
             resp.getWriter().println("4");
         } else if (receiverBuilder.account != null && senderBalance.compareTo(new BigDecimal(amount)) >= 0 && receiverBuilder.account != null){ //Daten scheinen in Ordnung
             //Entitäts-Creator wird initialisiert
-            Transfers transferCreator = new Transfers(resp.getLocale());
+            Transfer transferCreator = new Transfer(resp.getLocale());
             Entity transfer = transferCreator.createTransaction(f.format(calendar.getTime()));
 
             //Entitäts-Builder wird initialisiert und Werte werden eingetragen
-            Transfers transferBuilder = new Transfers(transfer, resp.getLocale());
+            Transfer transferBuilder = new Transfer(transfer, resp.getLocale());
             transferBuilder.setSender(senderBuilder.account);
             transferBuilder.setReceiver(receiverBuilder.account);
             transferBuilder.setAmount(amount);

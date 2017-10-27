@@ -3,10 +3,10 @@ package de.repictures.fingerhut.Backend;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
 import de.repictures.fingerhut.Cryptor;
-import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Product;
-import de.repictures.fingerhut.Datastore.Transfers;
+import de.repictures.fingerhut.Datastore.Transfer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,7 +29,7 @@ public class GetShoppingRequest extends HttpServlet{
         String shoppingListRaw = req.getParameter("shoppinglist");
         if (shoppingListRaw != null) shoppingListRaw = URLDecoder.decode(shoppingListRaw, "UTF-8");
 
-        Accounts accountGetter = new Accounts(accountnumber);
+        Account accountGetter = new Account(accountnumber);
         Company companyGetter = new Company(companyNumber);
 
         if (!Objects.equals(accountGetter.getRandomWebString(), webstring)){
@@ -82,7 +82,7 @@ public class GetShoppingRequest extends HttpServlet{
         resp.getWriter().println(1);
     }
 
-    private void buyItems(Accounts accountGetter, Company companyGetter, Locale locale, String purpose, double priceSum) {
+    private void buyItems(Account accountGetter, Company companyGetter, Locale locale, String purpose, double priceSum) {
 
         Cryptor cryptor = new Cryptor();
 
@@ -106,7 +106,7 @@ public class GetShoppingRequest extends HttpServlet{
         SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", locale);
         String datetime = f.format(calendar.getTime());
 
-        Transfers transferBuilder = new Transfers(new Transfers(locale).createTransaction(datetime), locale);
+        Transfer transferBuilder = new Transfer(new Transfer(locale).createTransaction(datetime), locale);
         transferBuilder.setSender(accountGetter.account);
         transferBuilder.setReceiver(companyGetter.account);
         transferBuilder.setAmount((float) priceSum);

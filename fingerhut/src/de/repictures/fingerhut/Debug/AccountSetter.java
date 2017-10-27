@@ -1,7 +1,7 @@
 package de.repictures.fingerhut.Debug;
 
 import de.repictures.fingerhut.Cryptor;
-import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Account;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.PrivateKey;
 
 //TODO: Klasse entfernen!!
 public class AccountSetter extends HttpServlet {
@@ -27,7 +26,7 @@ public class AccountSetter extends HttpServlet {
             resp.getWriter().println("You have to pass a account number!");
             return;
         }
-        Accounts accountSetter = new Accounts(accountnumber);
+        Account accountSetter = new Account(accountnumber);
 
         if (owner != null){
             accountSetter.setOwner(owner);
@@ -44,7 +43,7 @@ public class AccountSetter extends HttpServlet {
             resp.getWriter().println("You have to pass a account number!");
             return;
         }
-        Accounts accountSetter = new Accounts(accountnumber);
+        Account accountSetter = new Account(accountnumber);
         Cryptor cryptor = new Cryptor();
         String newPrivateKeyStr = null;
         try {

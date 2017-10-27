@@ -2,7 +2,7 @@ package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.Blob;
 import de.repictures.fingerhut.Cryptor;
-import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Account;
 
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
@@ -71,10 +71,10 @@ public class SaveQR extends HttpServlet {
             return;
         }
 
-        Accounts accountsBuilder = new Accounts(accountnumber);
-        Accounts userAccountsBuilder = new Accounts(userAccountnumber);
-        log.info("Account hashedPassword: " + userAccountsBuilder.getHashedPassword());
-        byte[] password = cryptor.hexToBytes(userAccountsBuilder.getHashedPassword());
+        Account accountBuilder = new Account(accountnumber);
+        Account userAccountBuilder = new Account(userAccountnumber);
+        log.info("Account hashedPassword: " + userAccountBuilder.getHashedPassword());
+        byte[] password = cryptor.hexToBytes(userAccountBuilder.getHashedPassword());
         log.info("Password Length: " + password.length);
         byte[] encryptedAuthCode = cryptor.hexToBytes(encryptedAuthCodeHex);
         log.info("EncryptedAuthCode Length: " + encryptedAuthCode.length);
@@ -97,9 +97,9 @@ public class SaveQR extends HttpServlet {
 
         log.info("Image size: " + image.length + " bytes");
         Blob imageBlob = new Blob(image);
-        accountsBuilder.setQRBlob(imageBlob);
-        accountsBuilder.setAuthString(authCode);
-        accountsBuilder.saveAll();
+        accountBuilder.setQRBlob(imageBlob);
+        accountBuilder.setAuthString(authCode);
+        accountBuilder.saveAll();
 
         resp.setStatus(HttpServletResponse.SC_OK);
 

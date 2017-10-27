@@ -1,22 +1,23 @@
 package de.repictures.fingerhut.Web;
 
-import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Account;
+
 import java.util.Objects;
 import java.util.logging.Logger;
 
 public class MainTools {
     public String getBalance(String accountnumber){
-        Accounts accountsGetter = new Accounts(accountnumber);
-        return accountsGetter.getBalance();
+        Account accountGetter = new Account(accountnumber);
+        return accountGetter.getBalance();
     }
     private Logger log = Logger.getLogger("main.jsp");
     private boolean isAuthenticated = false;
 
     public MainTools(String accountnumber, String code){
-        Accounts accountsGetter = new Accounts();
+        Account accountGetter = new Account();
 
-        accountsGetter.account = accountsGetter.getAccount(accountnumber);
-        String savedCode = accountsGetter.getRandomWebString();
+        accountGetter.account = accountGetter.getAccount(accountnumber);
+        String savedCode = accountGetter.getRandomWebString();
 
         log.info("Passed Code: " + code + "\nSaved Code: " + savedCode);
 

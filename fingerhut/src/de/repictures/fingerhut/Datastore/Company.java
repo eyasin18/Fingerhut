@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SuppressWarnings("unchecked")
-public class Company extends Accounts {
+public class Company extends Account {
 
     private Entity company;
     private Cryptor cryptor;

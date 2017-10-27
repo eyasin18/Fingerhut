@@ -2,25 +2,19 @@ package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.*;
 import de.repictures.fingerhut.Cryptor;
-import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
-import de.repictures.fingerhut.Datastore.Transfers;
+import de.repictures.fingerhut.Datastore.Transfer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.RSAPrivateKeySpec;
 import java.util.List;
 import java.util.Objects;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 public class PostTransfers extends HttpServlet {
@@ -33,7 +27,7 @@ public class PostTransfers extends HttpServlet {
         String accountnumber = req.getParameter("accountnumber");
 
         Company companyGetter = new Company();
-        Accounts accountGetter = new Accounts();
+        Account accountGetter = new Account();
         Entity account = accountGetter.getAccount(accountnumber);
 
         //Überprüfe ob wir eine Valide Kontonummer bekommen haben
@@ -50,13 +44,13 @@ public class PostTransfers extends HttpServlet {
                     Entity transfer = accountGetter.getEntity(transferKeyStr);
                     //Wenn es keine Überweisungsdaten zu der Verlinkung gibt, dann springe zur nächsten Verlinkung
                     if (transfer == null) continue;
-                    Transfers transfersGetter = new Transfers(resp.getLocale());
+                    Transfer transferGetter = new Transfer(resp.getLocale());
                     //Lese den Zeitpunkt der Überweisung
-                    output.append(transfersGetter.getDateTime(transfer));
+                    output.append(transferGetter.getDateTime(transfer));
                     //Lese den Auftraggeber aus der Überweisung
-                    Entity sender = transfersGetter.getSender(transfer);
+                    Entity sender = transferGetter.getSender(transfer);
                     //Lese den Empfänger aus der Überweisung
-                    Entity receiver = transfersGetter.getReceiver(transfer);
+                    Entity receiver = transferGetter.getReceiver(transfer);
                     //Lese die Kontonummer des Auftraggebers
                     String senderAccountnumber = sender.getProperty("accountnumber").toString();
                     char plusminus = '+';
@@ -107,27 +101,27 @@ public class PostTransfers extends HttpServlet {
                     }
                     output.append("ò");
                     //Lese den Typ der Überweisung
-                    output.append(transfersGetter.getType(transfer));
+                    output.append(transferGetter.getType(transfer));
                     output.append("ò");
                     //Ist derjenige, der gerade die Daten abfragt der Auftraggeber oder der Empfänger dieser Überweisung?
                     if (Objects.equals(accountnumber, senderAccountnumber)){
                         //Lese den Verwendungszweck der mit einem zufälligem Schlüssel verschlüsselt ist, der asymetrisch verschlüsselt auf dem Server liegt
-                        output.append(transfersGetter.getSenderPurpose(transfer).getValue());
+                        output.append(transferGetter.getSenderPurpose(transfer).getValue());
                         output.append("ò");
 
                         //Lese den Schlüssel mit dem der Verwendungszweck verschlüsselt wurde
-                        output.append(transfersGetter.getSenderAesKey(transfer));
+                        output.append(transferGetter.getSenderAesKey(transfer));
                         output.append("ò");
 
                         //Gebe dem Backend zurück, dass der Nutzer der Auftraggeber war
                         output.append("true");
                     } else if(Objects.equals(accountGetter.getAccountnumber(receiver), accountnumber)){
                         //Lese den Verwendungszweck der mit einem zufälligem Schlüssel verschlüsselt ist, der asymetrisch verschlüsselt auf dem Server liegt
-                        output.append(transfersGetter.getReceiverPurpose(transfer).getValue());
+                        output.append(transferGetter.getReceiverPurpose(transfer).getValue());
                         output.append("ò");
 
                         //Lese den Schlüssel mit dem der Verwendungszweck verschlüsselt wurde
-                        output.append(transfersGetter.getReceiverAesKey(transfer));
+                        output.append(transferGetter.getReceiverAesKey(transfer));
                         output.append("ò");
 
                         //Gebe dem Backend zurück, dass der Nutzer der Empfänger war
@@ -139,7 +133,7 @@ public class PostTransfers extends HttpServlet {
                     //Vorzeichen für die Überweisung
                     output.append(plusminus);
                     //Betrag des Geldes das geflossen ist
-                    output.append(transfersGetter.getAmount(transfer));
+                    output.append(transferGetter.getAmount(transfer));
                     output.append("ň");
                 }
             } else {

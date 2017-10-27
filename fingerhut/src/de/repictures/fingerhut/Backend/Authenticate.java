@@ -1,7 +1,7 @@
 package de.repictures.fingerhut.Backend;
 
 import de.repictures.fingerhut.Cryptor;
-import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Account;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,14 +16,14 @@ public class Authenticate extends HttpServlet{
 
     String serverTimeStamp = "";
     private Cryptor cryptor = new Cryptor();
-    private Logger log = Logger.getLogger(Accounts.class.getName());
+    private Logger log = Logger.getLogger(Account.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String accountnumber = req.getParameter("accountnumber");
 
-        Accounts accountsBuilder = new Accounts(accountnumber);
-        String authCode = accountsBuilder.getAuthString();
+        Account accountBuilder = new Account(accountnumber);
+        String authCode = accountBuilder.getAuthString();
         int accountnumberlength = accountnumber.length();
         String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength+8), authCode.substring(accountnumberlength+8, accountnumberlength+16)};
         String output = URLEncoder.encode(authParts[1] + serverTimeStamp, "UTF-8");
@@ -35,15 +35,15 @@ public class Authenticate extends HttpServlet{
         String accountnumber = req.getParameter("accountnumber");
         String authPart = req.getParameter("authPart");
 
-        Accounts accountsBuilder = new Accounts(accountnumber);
+        Account accountBuilder = new Account(accountnumber);
 
-        String authCode = accountsBuilder.getAuthString();
+        String authCode = accountBuilder.getAuthString();
         int accountnumberlength = accountnumber.length();
         String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength+8), authCode.substring(accountnumberlength+8, accountnumberlength+16)};
 
-        if (accountsBuilder.account != null && Objects.equals(authParts[0], authPart)){
-            byte[] password = cryptor.hexToBytes(accountsBuilder.getHashedPassword());
-            String privateKey = accountsBuilder.getPrivateKeyStr();
+        if (accountBuilder.account != null && Objects.equals(authParts[0], authPart)){
+            byte[] password = cryptor.hexToBytes(accountBuilder.getHashedPassword());
+            String privateKey = accountBuilder.getPrivateKeyStr();
             byte[] encryptedPrivateKey = cryptor.encryptSymetricFromString(privateKey, password);
             String encryptedPrivateKeyHex = cryptor.bytesToHex(encryptedPrivateKey);
             resp.getWriter().println(privateKey);

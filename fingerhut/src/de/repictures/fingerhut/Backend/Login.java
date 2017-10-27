@@ -1,8 +1,7 @@
 package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Query;
-import de.repictures.fingerhut.Datastore.Accounts;
+import de.repictures.fingerhut.Datastore.Account;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +20,7 @@ import java.util.logging.Logger;
 
 public class Login extends HttpServlet {
 
-    private Logger log = Logger.getLogger(Accounts.class.getName());
+    private Logger log = Logger.getLogger(Account.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -54,13 +53,13 @@ public class Login extends HttpServlet {
         }
 
         //Finde Account mit dieser Accountnummber
-        Accounts accounts = new Accounts();
-        List<Entity> queriedAccounts = accounts.getAccounts(accountnumber);
+        Account account = new Account();
+        List<Entity> queriedAccounts = account.getAccounts(accountnumber);
         //Wenn du einen gefunden hast, dann...
         if (queriedAccounts.size() > 0){
 
             //Vergleiche den empfangenen Authentifizierungspart mit dem auf der Datenbank
-            String authCode = accounts.getAuthString(queriedAccounts.get(0));
+            String authCode = account.getAuthString(queriedAccounts.get(0));
             int accountnumberlength = accountnumber.length();
             String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength+8), authCode.substring(accountnumberlength+8, accountnumberlength+16)};
             if (!authParts[0].equals(authPart)){
@@ -69,32 +68,32 @@ public class Login extends HttpServlet {
             }
 
             //Vergleiche salte das gespeicherte Passwort und vergleiche es mit dem empfangenem Passwort
-            String savedPassword = accounts.getSaltedPassword(queriedAccounts.get(0), serverTimeStamp);
-            log.info("\nInputPassword: " + inputPassword + "\nSavedSaltedPassword: " + savedPassword + "\nSavedHashedPassword: " + accounts.getHashedPassword(queriedAccounts.get(0))
+            String savedPassword = account.getSaltedPassword(queriedAccounts.get(0), serverTimeStamp);
+            log.info("\nInputPassword: " + inputPassword + "\nSavedSaltedPassword: " + savedPassword + "\nSavedHashedPassword: " + account.getHashedPassword(queriedAccounts.get(0))
             + "\nServer Timestamp: " + serverTimeStamp);
             if (Objects.equals(savedPassword, inputPassword)){
 
                 //Speichere das DeviceToken
-                accounts.deleteDeviceTokenFromAllAccounts(deviceToken);
-                accounts.setFirebaseDeviceToken(queriedAccounts.get(0), deviceToken);
-                accounts.saveAll(queriedAccounts.get(0));
+                account.deleteDeviceTokenFromAllAccounts(deviceToken);
+                account.setFirebaseDeviceToken(queriedAccounts.get(0), deviceToken);
+                account.saveAll(queriedAccounts.get(0));
 
                 //Gebe alle Kontonummern und die verschlüsselten Namen hinter den Kontonummern zurück
                 StringBuilder output = new StringBuilder();
-                accounts.updateRandomWebString(queriedAccounts.get(0));
-                accounts.saveAll(queriedAccounts.get(0));
-                output.append(accounts.getRandomWebString(queriedAccounts.get(0)));
+                account.updateRandomWebString(queriedAccounts.get(0));
+                account.saveAll(queriedAccounts.get(0));
+                output.append(account.getRandomWebString(queriedAccounts.get(0)));
                 output.append("ò");
                 //Gebe zurück, welche Berechtigungen der Nutzer hat
-                ArrayList<Long> featuresList = accounts.getFeatures(queriedAccounts.get(0));
+                ArrayList<Long> featuresList = account.getFeatures(queriedAccounts.get(0));
                 for (Long feature : featuresList){
                     output.append(feature);
                     output.append("ň");
                 }
                 output.append("ò");
-                accounts.setGroup(queriedAccounts.get(0), 7);
-                output.append(accounts.getGroup(queriedAccounts.get(0)));
-                String response = "2ò" + accounts.getKey(queriedAccounts.get(0)) + "ò" + output.toString();
+                account.setGroup(queriedAccounts.get(0), 7);
+                output.append(account.getGroup(queriedAccounts.get(0)));
+                String response = "2ò" + account.getKey(queriedAccounts.get(0)) + "ò" + output.toString();
                 resp.setStatus(200);
                 resp.getWriter().println(URLEncoder.encode(response, "UTF-8"));
             } else {

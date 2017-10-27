@@ -9,22 +9,22 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-public class Transfers {
+public class Transfer {
 
     private Entity transfer;
     private DatastoreService datastore;
     private Cryptor cryptor;
     private SimpleDateFormat f;
     private Calendar calendar = Calendar.getInstance();
-    private Logger log = Logger.getLogger(Transfers.class.getName());
+    private Logger log = Logger.getLogger(Transfer.class.getName());
 
-    public Transfers(Locale locale){
+    public Transfer(Locale locale){
         f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", locale);
         datastore = DatastoreServiceFactory.getDatastoreService();
         cryptor = new Cryptor();
     }
 
-    public Transfers(Entity transfer, Locale locale){
+    public Transfer(Entity transfer, Locale locale){
         f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", locale);
         datastore = DatastoreServiceFactory.getDatastoreService();
         cryptor = new Cryptor();

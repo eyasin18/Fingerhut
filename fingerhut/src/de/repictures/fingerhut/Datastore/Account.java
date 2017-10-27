@@ -11,25 +11,25 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @SuppressWarnings("unchecked")
-public class Accounts {
+public class Account {
 
     public Entity account;
     private DatastoreService datastore;
     private Cryptor cryptor;
-    private Logger log = Logger.getLogger(Accounts.class.getName());
+    private Logger log = Logger.getLogger(Account.class.getName());
 
-    public Accounts(){
+    public Account(){
         datastore = DatastoreServiceFactory.getDatastoreService();
         cryptor = new Cryptor();
     }
 
-    public Accounts(Entity account){
+    public Account(Entity account){
         datastore = DatastoreServiceFactory.getDatastoreService();
         cryptor = new Cryptor();
         this.account = account;
     }
 
-    public Accounts(String accountnumber){
+    public Account(String accountnumber){
         datastore = DatastoreServiceFactory.getDatastoreService();
         cryptor = new Cryptor();
         this.account = getAccount(accountnumber);
@@ -296,7 +296,7 @@ public class Accounts {
      * 0 = Produkt hinzufügen
      * 1 = Authentifizierungs QR-Codes lesen und schreiben
      * 3 = Features setzen
-     * 4 = Accounts erstellen
+     * 4 = Account erstellen
      */
 
     public void setFeature(Entity passedEntity, long featureNumber, boolean add){

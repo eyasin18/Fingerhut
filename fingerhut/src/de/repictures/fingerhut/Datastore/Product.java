@@ -1,7 +1,6 @@
 package de.repictures.fingerhut.Datastore;
 
 import com.google.appengine.api.datastore.*;
-import de.repictures.fingerhut.Cryptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.logging.Logger;
 public class Product {
 
     private DatastoreService datastore;
-    private Logger log = Logger.getLogger(Accounts.class.getName());
+    private Logger log = Logger.getLogger(Account.class.getName());
     public Entity product;
 
     public Product(){
