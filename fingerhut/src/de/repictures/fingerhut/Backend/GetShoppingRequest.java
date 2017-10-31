@@ -3,10 +3,7 @@ package de.repictures.fingerhut.Backend;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
 import de.repictures.fingerhut.Cryptor;
-import de.repictures.fingerhut.Datastore.Account;
-import de.repictures.fingerhut.Datastore.Company;
-import de.repictures.fingerhut.Datastore.Product;
-import de.repictures.fingerhut.Datastore.Transfer;
+import de.repictures.fingerhut.Datastore.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -73,6 +70,9 @@ public class GetShoppingRequest extends HttpServlet{
         shoppingRequests.put(accountnumber, newItems);
         companyGetter.setShoppingRequests(shoppingRequests);
         companyGetter.saveAll();
+
+        PurchaseOrder purchaseOrder = new PurchaseOrder(companyGetter.account, resp.getLocale());
+        purchaseOrder.updatePurchaseOrder(companyGetter.account, newItems, accountnumber);
 
         Map<String, String> messageContent = new HashMap<>();
         messageContent.put("notificationId", "1");
