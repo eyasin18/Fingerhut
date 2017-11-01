@@ -46,9 +46,10 @@ public class PurchaseOrder{
 
         purchaseOrder = getPurchaseOrder(parentCompany.getKey(), buyerAccountnumber);
 
-        if (purchaseOrder == null)
+        if (purchaseOrder == null){
             purchaseOrder = new Entity("PurchaseOrder", parentCompany.getKey());
-        else{
+            setNumber();
+        } else {
             produtCodesList = getProductCodesList();
             pricesList = getPricesList();
             isSelfBuyList = getIsSelfBuyList();
@@ -65,7 +66,6 @@ public class PurchaseOrder{
             amountsList.add(amount);
         }
 
-        setNumber();
         setDateTime(f.format(calendar.getTime()));
         setBuyerAccountnumber(buyerAccountnumber);
         setProductCodesList(produtCodesList);
@@ -107,7 +107,11 @@ public class PurchaseOrder{
 
     public void setNumber(){
         List<Entity> purchaseOrders = getPurchaseOrders(parentCompany.getKey());
-        number = (int) Collections.max(purchaseOrders, new MaxNumberComparator()).getProperty("number") + 1;
+        if (purchaseOrders.size() > 0){
+            Entity maxNumberEntiy = Collections.max(purchaseOrders, new MaxNumberComparator());
+            long maxNumber = ((long) maxNumberEntiy.getProperty("number"));
+            number = Math.toIntExact(maxNumber) + 1;
+        }
         purchaseOrder.setProperty("number", number);
     }
 
@@ -125,7 +129,8 @@ public class PurchaseOrder{
     }
 
     public int getNumber(){
-        return (int) purchaseOrder.getProperty("number");
+        long number = (long) purchaseOrder.getProperty("number");
+        return Math.toIntExact(number);
     }
 
     public void setBuyerAccountnumber(String buyerAccountnumber){

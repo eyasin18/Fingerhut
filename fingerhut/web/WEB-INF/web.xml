@@ -145,11 +145,11 @@
         <url-pattern>/getshoppingrequest</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>Datenschutzerklärung</servlet-name>
-        <jsp-file>/jsp/datenschutzerklärung.jsp</jsp-file>
+        <servlet-name>Datenschutzerklaerung</servlet-name>
+        <jsp-file>/jsp/datenschutzerklaerung.jsp</jsp-file>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Datenschutzerklärung</servlet-name>
+        <servlet-name>Datenschutzerklaerung</servlet-name>
         <url-pattern>/datenschutz</url-pattern>
     </servlet-mapping>
     <welcome-file-list>

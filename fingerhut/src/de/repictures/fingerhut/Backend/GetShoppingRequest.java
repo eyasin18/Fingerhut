@@ -34,16 +34,16 @@ public class GetShoppingRequest extends HttpServlet{
             return;
         }
 
-        Map<String, List<String[]>> shoppingRequests = companyGetter.getShoppingRequests();
+        //Einkaufsauftragentität wird erstellt
         List<String[]> newItems = new ArrayList<>();
-        /*if (shoppingRequests.get(companyNumber) != null) newItems = shoppingRequests.get(companyNumber);
-        else newItems = new ArrayList<>();*/
-
         String[] shoppingListSplittedItems = shoppingListRaw.split("ň");
         for (String shoppingListSpittedItem : shoppingListSplittedItems) {
             newItems.add(shoppingListSpittedItem.split("ò"));
         }
+        PurchaseOrder purchaseOrder = new PurchaseOrder(companyGetter.account, req.getLocale());
+        purchaseOrder.updatePurchaseOrder(companyGetter.account, newItems, accountnumber);
 
+        //Verwendungszweck wird generiert und Gesamtpreis kalkuliert
         StringBuilder purposeBuilder = new StringBuilder();
         double priceSum = 0.0;
 
@@ -66,13 +66,6 @@ public class GetShoppingRequest extends HttpServlet{
         }
 
         buyItems(accountGetter, companyGetter, resp.getLocale(), purposeBuilder.toString(), priceSum);
-
-        shoppingRequests.put(accountnumber, newItems);
-        companyGetter.setShoppingRequests(shoppingRequests);
-        companyGetter.saveAll();
-
-        PurchaseOrder purchaseOrder = new PurchaseOrder(companyGetter.account, resp.getLocale());
-        purchaseOrder.updatePurchaseOrder(companyGetter.account, newItems, accountnumber);
 
         Map<String, String> messageContent = new HashMap<>();
         messageContent.put("notificationId", "1");
