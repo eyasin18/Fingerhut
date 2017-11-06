@@ -43,6 +43,10 @@ public class AccountSetter extends HttpServlet {
             resp.getWriter().println("You have to pass a account number!");
             return;
         }
+        if (password == null){
+            resp.getWriter().println("You have to pass a password!");
+            return;
+        }
         Account accountSetter = new Account(accountnumber);
         Cryptor cryptor = new Cryptor();
         String newPrivateKeyStr = null;
@@ -59,10 +63,8 @@ public class AccountSetter extends HttpServlet {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
         accountSetter.setPrivateKeyStr(newPrivateKeyStr);
         accountSetter.saveAll();
-
         resp.getWriter().println(newPrivateKeyStr);
     }
 }

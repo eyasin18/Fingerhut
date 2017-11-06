@@ -217,7 +217,18 @@ public class Cryptor {
         }
     }
 
-    public String generateRandomString(int length){ // Generiert zufälligen String mit n Zeichen
+    public String generateRandomString(int length){
+        char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+        StringBuilder sb = new StringBuilder();
+        SecureRandom random = new SecureRandom();
+        for (int i = 0; i < length; i++) {
+            char c = chars[random.nextInt(chars.length)];
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
+    public String generateRandomAlphaNummericString(int length){ // Generiert zufälligen String mit n Zeichen
         SecureRandom sr = new SecureRandom();
         return new BigInteger(130, sr).toString(32);
     }

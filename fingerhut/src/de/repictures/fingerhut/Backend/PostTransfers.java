@@ -5,6 +5,7 @@ import de.repictures.fingerhut.Cryptor;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Transfer;
+import de.repictures.fingerhut.MultipartResponse;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +26,10 @@ public class PostTransfers extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String accountnumber = req.getParameter("accountnumber");
+        String startStr = req.getParameter("start");
+        int start = 0;
+        if (startStr != null) start = Integer.parseInt(startStr);
+        boolean itemsLeft = true;
 
         Company companyGetter = new Company();
         Account accountGetter = new Account();
@@ -38,21 +43,49 @@ public class PostTransfers extends HttpServlet {
 
             //Wenn es mindestens eine Verlinkung gibt, dann...
             if (transfersList != null && transfersList.size() > 0){
+                //Lege den Ablesebereich für den Output fest
+                log.info("Anzahl Überweisungen: " + transfersList.size());
+                int end = start + 20;
+                int size = transfersList.size();
+                if (end >= transfersList.size()){
+                    end = transfersList.size();
+                }
                 //Gehe durch jede Verlinkung einmal
-                for (String transferKeyStr : transfersList){
+                for (int i = start; i < end; i++){
+                    String transferKeyStr = transfersList.get(i);
                     //Lese die Entität aus der Verlinkung
                     Entity transfer = accountGetter.getEntity(transferKeyStr);
                     //Wenn es keine Überweisungsdaten zu der Verlinkung gibt, dann springe zur nächsten Verlinkung
-                    if (transfer == null) continue;
+                    if (transfer == null){
+                        transfersList.remove(i);
+                        accountGetter.setTransfers(account, transfersList);
+                        accountGetter.saveAll(account);
+                        i--;
+                        end--;
+                        size--;
+                        continue;
+                    }
                     Transfer transferGetter = new Transfer(resp.getLocale());
-                    //Lese den Zeitpunkt der Überweisung
-                    output.append(transferGetter.getDateTime(transfer));
                     //Lese den Auftraggeber aus der Überweisung
                     Entity sender = transferGetter.getSender(transfer);
                     //Lese den Empfänger aus der Überweisung
                     Entity receiver = transferGetter.getReceiver(transfer);
+                    //Wenn Sender oder Empfänger nicht (mehr) existieren: springe zur nächsten Verlinkung
+                    if (sender == null || receiver == null){
+                        transfersList.remove(i);
+                        accountGetter.setTransfers(account, transfersList);
+                        accountGetter.saveAll(account);
+                        i--;
+                        end--;
+                        size--;
+                        continue;
+                    }
+
                     //Lese die Kontonummer des Auftraggebers
                     String senderAccountnumber = sender.getProperty("accountnumber").toString();
+                    //Lese den Zeitpunkt der Überweisung
+                    output.append(transferGetter.getDateTime(transfer));
+
                     char plusminus = '+';
                     //Ist derjenige, der gerade die Daten abfragt der Auftraggeber oder der Empfänger dieser Überweisung?
                     if (Objects.equals(senderAccountnumber, accountnumber)){
@@ -136,13 +169,28 @@ public class PostTransfers extends HttpServlet {
                     output.append(transferGetter.getAmount(transfer));
                     output.append("ň");
                 }
+                if (end >= size) itemsLeft = false;
             } else {
                 output.append("ĵ");
             }
             //Werte werden zurückgegeben
-            resp.getWriter().println(URLEncoder.encode(output.toString(), "UTF-8"));
+            MultipartResponse multi = new MultipartResponse(resp);
+            multi.startResponse("text/plain");
+            resp.getOutputStream().println(URLEncoder.encode(output.toString(), "UTF-8"));
+            multi.endResponse();
+            multi.startResponse("text/plain");
+            resp.getOutputStream().println(String.valueOf(itemsLeft));
+            multi.endResponse();
+            multi.finish();
         } else {
-            resp.getWriter().println(URLEncoder.encode("ĵ", "UTF-8"));
+            MultipartResponse multi = new MultipartResponse(resp);
+            multi.startResponse("text/plain");
+            resp.getOutputStream().println(URLEncoder.encode("ĵ", "UTF-8"));
+            multi.endResponse();
+            multi.startResponse("text/plain");
+            resp.getOutputStream().println(String.valueOf(false));
+            multi.endResponse();
+            multi.finish();
         }
     }
 }

@@ -77,7 +77,7 @@ public class Account {
         setFeature(account,0, true);
         setPrivateKeyStr(account, encryptedPrivateKeyStr);
         setPublicKeyStr(account, publicKeyStr);
-
+        setAuthString(account);
         saveAll(account);
     }
 
@@ -268,6 +268,14 @@ public class Account {
         passedEntity.setProperty("transferarray", transfersList);
     }
 
+    public void setTransfers(List<String> transfersList){
+        account.setProperty("transferarray", transfersList);
+    }
+
+    public void setTransfers(Entity passedEntity, List<String> transfersList){
+        passedEntity.setProperty("transferarray", transfersList);
+    }
+
     public ArrayList<String> getTransfers(){
         ArrayList<String> transfersList = new ArrayList<>();
         if (account.getProperty("transferarray") != null)
@@ -365,12 +373,13 @@ public class Account {
         return new BigInteger(130, sr).toString(32);
     }
 
-    public void setAuthString(String authString){
+    public void setAuthString(){
+        String authString = cryptor.generateRandomString(16);
         account.setProperty("authString", authString);
     }
 
-    public void setAuthString(){
-        account.setProperty("authString", createAuthString());
+    public void setAuthString(String authString){
+        account.setProperty("authString", authString);
     }
 
     public void setAuthString(String authString, Entity passedEntity){
@@ -378,7 +387,8 @@ public class Account {
     }
 
     public void setAuthString(Entity passedEntity){
-        passedEntity.setProperty("authString", createAuthString());
+        String authString = cryptor.generateRandomString(16);
+        passedEntity.setProperty("authString", authString);
     }
 
     public String getAuthString(){
@@ -480,12 +490,12 @@ public class Account {
     }
 
     public void updateRandomWebString(){
-        String randomWebString = cryptor.generateRandomString(32);
+        String randomWebString = cryptor.generateRandomAlphaNummericString(32);
         account.setProperty("randomWebString", randomWebString);
     }
 
     public void updateRandomWebString(Entity passedEntity){
-        String randomWebString = cryptor.generateRandomString(32);
+        String randomWebString = cryptor.generateRandomAlphaNummericString(32);
         passedEntity.setProperty("randomWebString", randomWebString);
     }
 
