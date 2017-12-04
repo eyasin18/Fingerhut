@@ -67,9 +67,36 @@ public class GetShoppingRequest extends HttpServlet{
 
         buyItems(accountGetter, companyGetter, resp.getLocale(), purposeBuilder.toString(), priceSum);
 
+        StringBuilder amountsBuilder = new StringBuilder();
+        for (Long amount : purchaseOrder.getAmountsList()) {
+            amountsBuilder.append(amount).append("ò");
+        }
+
+        StringBuilder isSelfBuysBuilder = new StringBuilder();
+        for (Boolean isSelfBuy : purchaseOrder.getIsSelfBuyList()){
+            isSelfBuysBuilder.append(isSelfBuy).append("ò");
+        }
+
+        StringBuilder pricesBuilder = new StringBuilder();
+        for (Double price : purchaseOrder.getPricesList()){
+            pricesBuilder.append(price).append("ò");
+        }
+
+        StringBuilder productCodesBuilder = new StringBuilder();
+        for (String productCode : purchaseOrder.getProductCodesList()){
+            productCodesBuilder.append(productCode).append("ò");
+        }
+
         Map<String, String> messageContent = new HashMap<>();
         messageContent.put("notificationId", "1");
         messageContent.put("updateKey", "1");
+        messageContent.put("amounts", amountsBuilder.toString());
+        messageContent.put("buyerAccountnumber", purchaseOrder.getBuyerAccountnumber());
+        messageContent.put("dateTime", purchaseOrder.getDateTime());
+        messageContent.put("isSelfBuys", isSelfBuysBuilder.toString());
+        messageContent.put("number", String.valueOf(purchaseOrder.getNumber()));
+        messageContent.put("prices", pricesBuilder.toString());
+        messageContent.put("productCodes", productCodesBuilder.toString());
         new SendMessage().sendMessage(messageContent, "/topics/" + companyNumber + "-shoppingRequests");
 
         resp.getWriter().println(1);

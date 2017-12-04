@@ -3,6 +3,7 @@ package de.repictures.fingerhut.Datastore;
 import com.google.appengine.api.datastore.*;
 import de.repictures.fingerhut.Cryptor;
 
+import java.io.UnsupportedEncodingException;
 import java.security.KeyPair;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,7 +35,7 @@ public class Company extends Account {
         this.company = this.account;
     }
 
-    public void postAccount(String accountnumber, String name, String password){
+    public void postAccount(String companynumber, String ownername, String password){
         if (password == null){
             Random rand = new Random();
             password = String.format("%04d", rand.nextInt(10000));
@@ -43,17 +44,31 @@ public class Company extends Account {
 
         KeyPair securityKeyPair = cryptor.generateKeyPair();
         String privateKeyStr = cryptor.privateKeyToString(securityKeyPair.getPrivate());
+        byte[] privateKey = cryptor.hexToBytes(privateKeyStr);
         String publicKeyStr = cryptor.publicKeyToString(securityKeyPair.getPublic());
 
-        Key loginKey = KeyFactory.createKey("accountnumber", accountnumber);
+        String encryptedPrivateKeyStr = "";
+        try {
+            byte[] passwordBytes = password.getBytes("ISO-8859-1");
+            byte[] passwordKey = new byte[32];
+            for (int i = 0; i < passwordKey.length; i++){
+                passwordKey[i] = passwordBytes[i % passwordBytes.length];
+            }
+            byte[] encryptedPrivateKey = cryptor.encryptSymetricFromByte(privateKey, passwordKey);
+            encryptedPrivateKeyStr = cryptor.bytesToHex(encryptedPrivateKey);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        Key loginKey = KeyFactory.createKey("accountnumber", companynumber);
         Entity company = new Entity("Company", loginKey);
 
-        setAccountnumber(company, accountnumber);
-        setPassword(company, encryptedPassword);
-        setOwner(company, name);
+        setAccountnumber(company, companynumber);
+        setHashedPassword(company, encryptedPassword);
+        setOwner(company, ownername);
         setBalance(company, 0.0f);
         company.setProperty("transferarray", new ArrayList<String>());
-        setPrivateKeyStr(company, privateKeyStr);
+        setPrivateKeyStr(company, encryptedPrivateKeyStr);
         setPublicKeyStr(company, publicKeyStr);
 
         saveAll(company);

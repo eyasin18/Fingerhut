@@ -152,6 +152,14 @@
         <servlet-name>Datenschutzerklaerung</servlet-name>
         <url-pattern>/datenschutz</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>PostShoppingRequest</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.PostShoppingRequests</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PostShoppingRequest</servlet-name>
+        <url-pattern>/postpurchaseorders</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>jsp/index.jsp</welcome-file>
     </welcome-file-list>
