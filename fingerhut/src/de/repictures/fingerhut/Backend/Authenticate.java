@@ -1,6 +1,5 @@
 package de.repictures.fingerhut.Backend;
 
-import de.repictures.fingerhut.Cryptor;
 import de.repictures.fingerhut.Datastore.Account;
 
 import javax.servlet.ServletException;
@@ -15,7 +14,6 @@ import java.util.logging.Logger;
 public class Authenticate extends HttpServlet{
 
     String serverTimeStamp = "";
-    private Cryptor cryptor = new Cryptor();
     private Logger log = Logger.getLogger(Account.class.getName());
 
     @Override

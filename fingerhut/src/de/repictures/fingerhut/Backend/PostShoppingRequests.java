@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
+import de.repictures.fingerhut.Datastore.Product;
 import de.repictures.fingerhut.Datastore.PurchaseOrder;
 import de.repictures.fingerhut.MultipartResponse;
 
@@ -103,7 +104,8 @@ public class PostShoppingRequests extends HttpServlet{
             //Read productCodes
             JsonArray oProductCodes = new JsonArray();
             for (String productCode : purchaseOrdersGetter.getProductCodesList(purchaseOrderEntity)){
-                oProductCodes.add(productCode);
+                Product productGetter = new Product(productCode);
+                oProductCodes.add(productGetter.getName());
             }
             productCodesArray.add(oProductCodes);
         }

@@ -1,7 +1,6 @@
 package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.Entity;
-import de.repictures.fingerhut.Cryptor;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
 
@@ -10,9 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Objects;
 
 public class CompanyLogin extends HttpServlet{
