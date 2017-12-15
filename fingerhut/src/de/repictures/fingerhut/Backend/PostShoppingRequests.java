@@ -68,6 +68,7 @@ public class PostShoppingRequests extends HttpServlet{
         JsonArray isSelfBuysArray = new JsonArray();
         JsonArray numbersArray = new JsonArray();
         JsonArray pricesArray = new JsonArray();
+        JsonArray productNamesArray = new JsonArray();
         JsonArray productCodesArray = new JsonArray();
 
         for (Entity purchaseOrderEntity : purchaseOrders){
@@ -102,10 +103,17 @@ public class PostShoppingRequests extends HttpServlet{
             pricesArray.add(oPricesArray);
 
             //Read productCodes
-            JsonArray oProductCodes = new JsonArray();
+            JsonArray oProductNames = new JsonArray();
             for (String productCode : purchaseOrdersGetter.getProductCodesList(purchaseOrderEntity)){
                 Product productGetter = new Product(productCode);
-                oProductCodes.add(productGetter.getName());
+                oProductNames.add(productGetter.getName());
+            }
+            productNamesArray.add(oProductNames);
+
+            //Read productCodes
+            JsonArray oProductCodes = new JsonArray();
+            for (String productCode : purchaseOrdersGetter.getProductCodesList(purchaseOrderEntity)){
+                oProductCodes.add(productCode);
             }
             productCodesArray.add(oProductCodes);
         }
@@ -116,6 +124,7 @@ public class PostShoppingRequests extends HttpServlet{
         object.add("isSelfBuys", isSelfBuysArray);
         object.add("numbers", numbersArray);
         object.add("prices", pricesArray);
+        object.add("productNames", productNamesArray);
         object.add("productCodes", productCodesArray);
 
         multi.startResponse("text/plain");
