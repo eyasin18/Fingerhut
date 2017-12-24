@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -215,6 +216,13 @@ public class Cryptor {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public String[] publicKeyToModulusExponentHex(PublicKey publicKey){
+        RSAPublicKey publicRSAKey = (RSAPublicKey) publicKey;
+        BigInteger modulus = publicRSAKey.getModulus();
+        BigInteger publicExponent = publicRSAKey.getPublicExponent();
+        return new String[]{modulus.toString(16), publicExponent.toString(16)};
     }
 
     public String generateRandomString(int length){

@@ -30,6 +30,9 @@ public class GetTransfer extends HttpServlet {
         String receiverAccountnumber = URLDecoder.decode(req.getParameter("receiveraccountnumber"), "UTF-8");
         String senderAccountnumber = URLDecoder.decode(req.getParameter("senderaccountnumber"), "UTF-8");
         String webString = req.getParameter("webstring");
+        String keyAsNumbersStr = req.getParameter("keyasnumbers");
+        boolean keyAsNumbers = false;
+        if (keyAsNumbersStr != null) keyAsNumbers = Boolean.parseBoolean(keyAsNumbersStr);
 
         //Die entsprechenden Entitäts-Builder werden initialisiert
         Account receiverBuilder = new Account(receiverAccountnumber);
@@ -56,8 +59,13 @@ public class GetTransfer extends HttpServlet {
         //Öffentliche Schlüssel werden aus dem Datenspeicher gelesen
         String senderPublicKeyStr = senderBuilder.getPublicKeyStr();
         String receiverPublicKeyStr = receiverBuilder.getPublicKeyStr();
+        String[] senderValues = senderBuilder.getPublicKeyValues();
+        String[] receiverValues = receiverBuilder.getPublicKeyValues();
+
         //Antwort wird zurück gegeben
-        String outputStr = URLEncoder.encode("1ò" + senderPublicKeyStr + "ò" + receiverPublicKeyStr, "UTF-8");
+        String outputStr;
+        if (!keyAsNumbers) outputStr = URLEncoder.encode("1ò" + senderPublicKeyStr + "ò" + receiverPublicKeyStr, "UTF-8");
+        else outputStr = "1ò" + senderValues[0] + "ò" + senderValues[1] + "ò" + receiverValues[0] + "ò" + receiverValues[1];
         resp.getWriter().println(outputStr);
     }
 
@@ -93,7 +101,7 @@ public class GetTransfer extends HttpServlet {
             return;
         }
 
-        if (senderPurposeStr == null){
+        if (senderPurposeStr == null || receiverPurposeStr == null){
             Cryptor cryptor = new Cryptor();
             String senderPublicKeyStr = senderBuilder.getPublicKeyStr();
             String receiverPublicKeyStr = receiverBuilder.getPublicKeyStr();
