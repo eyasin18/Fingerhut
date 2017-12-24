@@ -6,6 +6,7 @@ import de.repictures.fingerhut.Cryptor;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.KeyPair;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.logging.Logger;
@@ -453,6 +454,18 @@ public class Account {
 
     public void setPublicKeyStr(Entity passedEntity, String publicKeyStr){
         passedEntity.setProperty("publicKey", new Text(publicKeyStr));
+    }
+
+    public String[] getPublicKeyValues(){
+        String keyStr = ((Text) account.getProperty("publicKey")).getValue();
+        PublicKey publicKey = cryptor.stringToPublicKey(keyStr);
+        return cryptor.publicKeyToModulusExponentHex(publicKey);
+    }
+
+    public String[] getPublicKeyValues(Entity passedEntity){
+        String keyStr = ((Text) passedEntity.getProperty("publicKey")).getValue();
+        PublicKey publicKey = cryptor.stringToPublicKey(keyStr);
+        return cryptor.publicKeyToModulusExponentHex(publicKey);
     }
 
     public String getFirebaseDeviceToken(){

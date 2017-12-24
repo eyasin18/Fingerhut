@@ -29,6 +29,12 @@
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.green-light_green.min.css">
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script language="JavaScript" type="text/javascript" src="../js/jsbn.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../js/prng4.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../js/rng.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../js/rsa.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../js/base64.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
 </head>
 <body>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
@@ -149,6 +155,7 @@
     var receiveraccountnumber;
     var amount;
     var url = "https://fingerhut388.appspot.com";
+    var encryptedPurpose = "";
     var getURL;
 
 
@@ -179,10 +186,9 @@
         }
         amount = Math.round(amount * 100) / 100;
         document.getElementById("amount").value = amount;
-        getURL = url + "/transfer?receiveraccountnumber=" + receiveraccountnumber + "&senderaccountnumber=<%= accountnumber %>&webstring=<%= code %>";
+        getURL = url + "/transfer?receiveraccountnumber=" + receiveraccountnumber + "&senderaccountnumber=<%= accountnumber %>&webstring=<%= code %>&keyssnumbers=true";
         httpAsync(getURL,"GET");
         document.getElementById('transfer_button').removeAttribute("disabled");
-
     }
 
     function httpAsync(theUrl, method) {
@@ -202,10 +208,48 @@
         var responses = responseStr.split("ò");
         switch (parseInt(responses[0])){
             case 1:
+                /*var senderModulus = responses[1];
+                var senderExponent = responses[2];
+                var receiverModulus = responses[3];
+                var receiverExponent = responses[4];
+
+                //TODO: Schlüssel zufällig generieren
+                var senderAesKey = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+                var receiverAesKey = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+                var purpose = "Hallo Welt! Ich bin hier!";
+
+                var purposeBytes = aesjs.utils.utf8.toBytes(purpose);
+                var aesSenderEcb = new aesjs.ModeOfOperation.ecb(senderAesKey);
+
+                var encryptedSenderBytes = aesSenderEcb.encrypt(purposeBytes);
+                var encryptedSenderPurposeHex = aesjs.utils.hex.fromBytes(encryptedSenderBytes);
+                console.log(encryptedSenderPurposeHex);
+
+                var aesReceiverEcb = new aesjs.ModeOfOperation.ecb(receiverAesKey);
+                var encryptedReceiverBytes = aesReceiverEcb.encrypt(purposeBytes);
+                var encryptedReceiverPurposeHex = aesjs.utils.hex.fromBytes(encryptedReceiverBytes);
+                console.log(encryptedReceiverPurposeHex);
+
+                var senderAesKeyHex = aesjs.utils.hex.fromBytes(senderAesKey);
+                var receiverAesKeyHex = aesjs.utils.hex.fromBytes(receiverAesKey);
+
+                var senderRSA = new RSAKey();
+                senderRSA.setPublic(senderModulus, senderExponent);
+                String.fromCharCode.apply(null, senderAesKey);
+                var encryptedSenderAESKey = senderRSA.encrypt(senderAesKey);
+
+                var receiverRSA = new RSAKey();
+                receiverRSA.setPublic(receiverModulus, receiverExponent);
+                var encryptedReceiverAESKey = receiverRSA.encrypt(receiverAesKey);*/
+
                 var postUrl = url + "/transfer?amount=" + amount
                     + "&receiveraccountnumber=" + receiveraccountnumber
                     + "&senderaccountnumber=<%= accountnumber%>"
-                    + "&code=<%=code%>";
+                    + "&code=<%=code%>"/*
+                    + "&senderpurpose=" + encryptedSenderPurposeHex
+                    + "&senderkey=" + encryptedSenderAESKey
+                    + "&receiverpurpose=" + encryptedReceiverPurposeHex
+                    + "&receiverkey=" + encryptedReceiverAESKey*/;
                 httpAsync(postUrl, "POST");
                 break;
             case 2:
