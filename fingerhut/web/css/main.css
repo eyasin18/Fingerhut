@@ -41,3 +41,25 @@
     padding: 24px;
     flex: none;
 }
+#submit_button {
+    float: right;
+    position: relative;
+    background: #1DE9B6 !important;
+    z-index: 10;
+}
+
+#submit_button:after{
+    background-color: #1DE9B6 !important;
+    z-index: 10;
+}
+
+#submit_spinner{
+    position:fixed;
+    border-color: #FFFF00 !important;
+    z-index: 1000;
+}
+
+#submit_spinner:after {
+    border-color: #FFFF00 !important;
+    z-index: 1000;
+}

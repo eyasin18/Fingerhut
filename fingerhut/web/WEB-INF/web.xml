@@ -2,7 +2,7 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
     <servlet>
         <servlet-name>Login</servlet-name>
-        <servlet-class>de.repictures.fingerhut.Backend.Login</servlet-class>
+        <servlet-class>de.repictures.fingerhut.Backend.PrivateLogin</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
@@ -159,6 +159,14 @@
     <servlet-mapping>
         <servlet-name>PostShoppingRequest</servlet-name>
         <url-pattern>/postpurchaseorders</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>LoginConfirmation</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.LoginConfirmation</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginConfirmation</servlet-name>
+        <url-pattern>/confirmlogin</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>WebCompany</servlet-name>

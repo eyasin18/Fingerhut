@@ -15,8 +15,8 @@
 <%
     String code = request.getParameter("code");
     String accountnumber = request.getParameter("accountnumber");
-    MainTools mainTools = new MainTools(accountnumber, code);
-    if (!mainTools.isAuthentificated()){
+    MainTools mainTools = new MainTools(accountnumber);
+    if (!mainTools.isAuthentificated(code)){
         response.sendRedirect("https://fingerhut388.appspot.com/");
     }
     %>
@@ -35,6 +35,7 @@
     <script language="JavaScript" type="text/javascript" src="../js/rsa.js"></script>
     <script language="JavaScript" type="text/javascript" src="../js/base64.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
+    <script type="application/javascript" src="../res/values/strings.js"></script>
 </head>
 <body>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
@@ -156,9 +157,26 @@
     var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
     var isFirefox = typeof InstallTrigger !== 'undefined';
     var isChrome = !!window.chrome && !!window.chrome.webstore;
+    var isAdmin = <%= mainTools.isCompanyAdmin() %>;
+
+    var submitSpinner = document.getElementById('submit_spinner');
+    var submitButton = document.getElementById('submit_button');
+    submitButton.textContent = strings.loginButtonText;
+    var buttonWidth = window.getComputedStyle(submitButton, null).getPropertyValue("width");
+    submitButton.style.setProperty("width", buttonWidth, "");
+    var buttonHeight = window.getComputedStyle(submitButton, null).getPropertyValue("height");
+    var rect = submitButton.getBoundingClientRect();
+    var spinnerHeight = parseInt(buttonHeight, 10) - 12;
+    submitSpinner.style.height = spinnerHeight + "px";
+    submitSpinner.style.width = spinnerHeight + "px";
+    submitSpinner.style.top = (rect.top + 6) + "px";
+    var spinnerLeftInt = rect.left + parseInt(buttonWidth)/2 - spinnerHeight/2;
+    submitSpinner.style.left = spinnerLeftInt + "px";
+    submitSpinner.style.visibility = 'hidden';
 
 
     function onButtonClick(){
+
         document.getElementById('transfer_button');
 
         var accountnumberError = document.getElementById('accountnumber_error');
@@ -277,8 +295,23 @@
     }
 
     function companyLogin(){
-        if(!isChrome||!isOpera||!isFirefox){
-            document.getElementById('companypass_error').textContent = "Sie müssen Chrome, Firefox oder Opera verwenden um sich auf der Adminseite anmelden zu können."
+        //TODO: Spinner ist weg :o
+        submitSpinner.style.visibility = 'visible';
+        submitButton.textContent = '';
+        var companypassError = document.getElementById('companypass_error');
+        companypassError.parentElement.className = companypassError.parentElement.className.replace(" is-invalid", "");
+        companypassError.textContent = '';
+
+        console.log("Is Admin? " + isAdmin);
+        if(!isChrome && !isOpera && !isFirefox){
+            if(!isAdmin) {
+                companypassError = document.getElementById('companypass_error');
+                companypassError.parentElement.className += ' is-invalid';
+                companypassError.textContent = "Sie müssen Chrome, Firefox oder Opera benutzen um sich auf der Unternehmensseite anmelden zu können.";
+            } else {
+                //TODO: Show allert
+                //TODO: Redirect to Company Page
+            }
         }
     }
 </script>

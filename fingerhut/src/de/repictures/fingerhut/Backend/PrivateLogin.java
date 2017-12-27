@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class Login extends HttpServlet {
+public class PrivateLogin extends HttpServlet {
 
     private Logger log = Logger.getLogger(Account.class.getName());
 

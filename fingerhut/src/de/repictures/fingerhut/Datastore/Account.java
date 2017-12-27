@@ -304,8 +304,11 @@ public class Account {
      * Liste der Features:
      * 0 = Produkt hinzufügen
      * 1 = Authentifizierungs QR-Codes lesen und schreiben
-     * 3 = Features setzen
+     * 3 = Kaufaufträge
      * 4 = Account erstellen
+     * 5 = Rechte zuweisen
+     * 6 = Account erstellen
+     * 7 = Statistiken
      */
 
     public void setFeature(Entity passedEntity, long featureNumber, boolean add){

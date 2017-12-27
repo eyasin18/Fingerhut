@@ -1,3 +1,15 @@
+<%@ page import="de.repictures.fingerhut.Web.MainTools" %>
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%
+    String code = request.getParameter("code");
+    String accountnumber = request.getParameter("accountnumber");
+    MainTools mainTools = new MainTools(accountnumber);
+    if (!mainTools.isAuthentificated(code)){
+        response.sendRedirect("https://fingerhut388.appspot.com/");
+    }
+%>
 <!doctype html>
 <html>
 <head>
