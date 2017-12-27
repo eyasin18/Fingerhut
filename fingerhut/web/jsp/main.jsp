@@ -316,6 +316,8 @@
                 }
 
             }
+        } else {
+            window.location = "https://fingerhut388.appspot.com/company?accountnumber=<%= accountnumber%>&companynumber=0002&webstring=<%= code %>";
         }
     }
 </script>

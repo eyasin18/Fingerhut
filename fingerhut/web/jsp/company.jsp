@@ -3,8 +3,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
-    String code = request.getParameter("code");
+    String code = request.getParameter("webstring");
     String accountnumber = request.getParameter("accountnumber");
+    String companynumber = request.getParameter("companynumber");
     MainTools mainTools = new MainTools(accountnumber);
     if (!mainTools.isAuthentificated(code)){
         response.sendRedirect("https://fingerhut388.appspot.com/");
