@@ -309,8 +309,12 @@
                 companypassError.parentElement.className += ' is-invalid';
                 companypassError.textContent = "Sie müssen Chrome, Firefox oder Opera benutzen um sich auf der Unternehmensseite anmelden zu können.";
             } else {
-                //TODO: Show allert
-                //TODO: Redirect to Company Page
+                if (confirm("Mit ihrem Browser können sie die Kaufaufträge nicht einsehen und bearbeiten.") == true) {
+                    window.location = "https://fingerhut388.appspot.com/company?accountnumber=<%= accountnumber%>&companynumber=0002&webstring=<%= code %>";
+                } else {
+                    window.location = "https://fingerhut388.appspot.com/company?accountnumber=<%= accountnumber%>&companynumber=0002&webstring=<%= code %>";
+                }
+
             }
         }
     }
