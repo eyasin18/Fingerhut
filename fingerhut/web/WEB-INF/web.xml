@@ -160,6 +160,14 @@
         <servlet-name>PostShoppingRequest</servlet-name>
         <url-pattern>/postpurchaseorders</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>WebCompany</servlet-name>
+        <jsp-file>/jsp/company.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>WebCompany</servlet-name>
+        <url-pattern>/company</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>jsp/index.jsp</welcome-file>
     </welcome-file-list>

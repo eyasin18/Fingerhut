@@ -1,3 +1,4 @@
+<!doctype html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -13,12 +14,10 @@
             mdl-layout--fixed-header">
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">Unternehmensseite</span>
-            <div class="mdl-layout-spacer"></div>
+            <span class="mdl-layout-title">Unternehmensname</span>
         </div>
     </header>
     <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Unternehmensname</span>
         <nav class="mdl-navigation">
             <a class="mdl-navigation__link" href="#statistics">Statistiken</a>
             <a class="mdl-navigation__link" href="#products">Produkte</a>
@@ -28,20 +27,14 @@
     <main class="mdl-layout__content">
         <div class="page-content">
             <div class="mdl-grid">
-                <div class="mdl-cell mdl-cell--10-col" id="statistics">
-                    <div class="mdl-card mdl-shadow--3dp">
-                        <h1>Statistiken</h1>
-                    </div>
+                <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="statistics">
+                    <h1>Statistiken</h1>
                 </div>
-                <div class="mdl-cell mdl-cell--10-col" id="products">
-                    <div class="mdl-card mdl-shadow--3dp">
-                        <h1>Produkte</h1>
-                    </div>
+                <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="products">
+                       <h1>Produkte</h1>
                 </div>
-                <div class="mdl-cell mdl-cell--10-col" id="employees">
-                    <div class="mdl-card mdl-shadow--3dp">
-                        <h1>Mitarbeiter</h1>
-                    </div>
+                <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="employees">
+                    <h1>Mitarbeiter</h1>
                 </div>
             </div>
         </div>

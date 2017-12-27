@@ -128,19 +128,15 @@
                                 <h2 class="mdl-card__title-text">Unternehmen</h2>
                             </div>
                             <div class="mdl-card__supporting-text">
-                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="company_view">
-                                    <input class="mdl-textfield__input" type="text" id="companyname" pattern="-?[0-9]*(\.[0-9]+)?" />
-                                    <label class="mdl-textfield__label" for="companyname" id="companyname_label"></label>
-                                    <span class="mdl-textfield__error" id="companyname_error"></span>
-                                </div>
+                                <div class="mdl-typography--headline">0000</div>
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="companypass_view">
                                     <input class="mdl-textfield__input" type="password" id="companypass" pattern="-?[0-9]*(\.[0-9]+)?" />
-                                    <label class="mdl-textfield__label" for="companypass" id="companypass_label"></label>
+                                    <label class="mdl-textfield__label" for="companypass" id="companypass_label">Passwort</label>
                                     <span class="mdl-textfield__error" id="companypass_error"></span>
                                 </div>
                                 <div class="mdl-card__actions">
                                     <br>
-                                    <button onclick="" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white" type="submit" id="submit_button"></button>
+                                    <button onclick="companyLogin()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white" type="submit" id="submit_button">Einloggen</button>
                                 </div>
                                 <div class="mdl-spinner mdl-js-spinner is-active" id="submit_spinner"></div>
                             </div>
@@ -157,6 +153,9 @@
     var url = "https://fingerhut388.appspot.com";
     var encryptedPurpose = "";
     var getURL;
+    var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+    var isFirefox = typeof InstallTrigger !== 'undefined';
+    var isChrome = !!window.chrome && !!window.chrome.webstore;
 
 
     function onButtonClick(){
@@ -275,6 +274,12 @@
             }
         );
         window.location.reload();
+    }
+
+    function companyLogin(){
+        if(!isChrome||!isOpera||!isFirefox){
+            document.getElementById('companypass_error').textContent = "Sie müssen Chrome, Firefox oder Opera verwenden um sich auf der Adminseite anmelden zu können."
+        }
     }
 </script>
 </body>
