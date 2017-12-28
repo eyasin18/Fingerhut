@@ -34,6 +34,7 @@
     <script language="JavaScript" type="text/javascript" src="../js/rng.js"></script>
     <script language="JavaScript" type="text/javascript" src="../js/rsa.js"></script>
     <script language="JavaScript" type="text/javascript" src="../js/base64.js"></script>
+    <script defer src="../js/sjcl.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
     <script type="application/javascript" src="../res/values/strings.js"></script>
 </head>
@@ -129,7 +130,7 @@
                                 <h2 class="mdl-card__title-text">Unternehmen</h2>
                             </div>
                             <div class="mdl-card__supporting-text">
-                                <div class="mdl-typography--headline">0000</div>
+                                <div class="mdl-typography--headline">0002</div>
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="companypass_view">
                                     <input class="mdl-textfield__input" type="password" id="companypass" pattern="-?[0-9]*(\.[0-9]+)?" />
                                     <label class="mdl-textfield__label" for="companypass" id="companypass_label">Passwort</label>
@@ -158,6 +159,9 @@
     var isFirefox = typeof InstallTrigger !== 'undefined';
     var isChrome = !!window.chrome && !!window.chrome.webstore;
     var isAdmin = <%= mainTools.isCompanyAdmin() %>;
+
+    var companypass = document.getElementById('companypass');
+    var companypassError = document.getElementById('companypass_error');
 
     var submitSpinner = document.getElementById('submit_spinner');
     var submitButton = document.getElementById('submit_button');
@@ -204,85 +208,115 @@
         amount = Math.round(amount * 100) / 100;
         document.getElementById("amount").value = amount;
         getURL = url + "/transfer?receiveraccountnumber=" + receiveraccountnumber + "&senderaccountnumber=<%= accountnumber %>&webstring=<%= code %>&keyssnumbers=true";
-        httpAsync(getURL,"GET");
+        httpAsync(getURL,"GET", 1);
         document.getElementById('transfer_button').removeAttribute("disabled");
     }
 
-    function httpAsync(theUrl, method) {
+    function httpAsync(theUrl, method, callerid) {
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function() {
             if (xmlHttp.readyState === 4 && xmlHttp.status === 200){
                 console.log(xmlHttp.responseText);
-                if (method === "GET") processGetResponse(decodeURIComponent(xmlHttp.responseText));
-                else if (method === "POST") processPostResponse(decodeURIComponent(xmlHttp.responseText));
+                if (method === "GET") processGetResponse(decodeURIComponent(xmlHttp.responseText), callerid);
+                else if (method === "POST") processPostResponse(decodeURIComponent(xmlHttp.responseText), callerid);
             }
         };
         xmlHttp.open(method, theUrl, true); // true for asynchronous
         xmlHttp.send(null);
     }
 
-    function processGetResponse(responseStr){
-        var responses = responseStr.split("ò");
-        switch (parseInt(responses[0])){
+    function processGetResponse(responseStr, callerid){
+        switch (callerid) {
             case 1:
-                /*var senderModulus = responses[1];
-                var senderExponent = responses[2];
-                var receiverModulus = responses[3];
-                var receiverExponent = responses[4];
+                var responses = responseStr.split("ò");
+                switch (parseInt(responses[0])) {
+                    case 1:
+                        /*var senderModulus = responses[1];
+                        var senderExponent = responses[2];
+                        var receiverModulus = responses[3];
+                        var receiverExponent = responses[4];
 
-                //TODO: Schlüssel zufällig generieren
-                var senderAesKey = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-                var receiverAesKey = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-                var purpose = "Hallo Welt! Ich bin hier!";
+                        //TODO: Schlüssel zufällig generieren
+                        var senderAesKey = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+                        var receiverAesKey = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+                        var purpose = "Hallo Welt! Ich bin hier!";
 
-                var purposeBytes = aesjs.utils.utf8.toBytes(purpose);
-                var aesSenderEcb = new aesjs.ModeOfOperation.ecb(senderAesKey);
+                        var purposeBytes = aesjs.utils.utf8.toBytes(purpose);
+                        var aesSenderEcb = new aesjs.ModeOfOperation.ecb(senderAesKey);
 
-                var encryptedSenderBytes = aesSenderEcb.encrypt(purposeBytes);
-                var encryptedSenderPurposeHex = aesjs.utils.hex.fromBytes(encryptedSenderBytes);
-                console.log(encryptedSenderPurposeHex);
+                        var encryptedSenderBytes = aesSenderEcb.encrypt(purposeBytes);
+                        var encryptedSenderPurposeHex = aesjs.utils.hex.fromBytes(encryptedSenderBytes);
+                        console.log(encryptedSenderPurposeHex);
 
-                var aesReceiverEcb = new aesjs.ModeOfOperation.ecb(receiverAesKey);
-                var encryptedReceiverBytes = aesReceiverEcb.encrypt(purposeBytes);
-                var encryptedReceiverPurposeHex = aesjs.utils.hex.fromBytes(encryptedReceiverBytes);
-                console.log(encryptedReceiverPurposeHex);
+                        var aesReceiverEcb = new aesjs.ModeOfOperation.ecb(receiverAesKey);
+                        var encryptedReceiverBytes = aesReceiverEcb.encrypt(purposeBytes);
+                        var encryptedReceiverPurposeHex = aesjs.utils.hex.fromBytes(encryptedReceiverBytes);
+                        console.log(encryptedReceiverPurposeHex);
 
-                var senderAesKeyHex = aesjs.utils.hex.fromBytes(senderAesKey);
-                var receiverAesKeyHex = aesjs.utils.hex.fromBytes(receiverAesKey);
+                        var senderAesKeyHex = aesjs.utils.hex.fromBytes(senderAesKey);
+                        var receiverAesKeyHex = aesjs.utils.hex.fromBytes(receiverAesKey);
 
-                var senderRSA = new RSAKey();
-                senderRSA.setPublic(senderModulus, senderExponent);
-                String.fromCharCode.apply(null, senderAesKey);
-                var encryptedSenderAESKey = senderRSA.encrypt(senderAesKey);
+                        var senderRSA = new RSAKey();
+                        senderRSA.setPublic(senderModulus, senderExponent);
+                        String.fromCharCode.apply(null, senderAesKey);
+                        var encryptedSenderAESKey = senderRSA.encrypt(senderAesKey);
 
-                var receiverRSA = new RSAKey();
-                receiverRSA.setPublic(receiverModulus, receiverExponent);
-                var encryptedReceiverAESKey = receiverRSA.encrypt(receiverAesKey);*/
+                        var receiverRSA = new RSAKey();
+                        receiverRSA.setPublic(receiverModulus, receiverExponent);
+                        var encryptedReceiverAESKey = receiverRSA.encrypt(receiverAesKey);*/
 
-                var postUrl = url + "/transfer?amount=" + amount
-                    + "&receiveraccountnumber=" + receiveraccountnumber
-                    + "&senderaccountnumber=<%= accountnumber%>"
-                    + "&code=<%=code%>"/*
+                        var postUrl = url + "/transfer?amount=" + amount
+                            + "&receiveraccountnumber=" + receiveraccountnumber
+                            + "&senderaccountnumber=<%= accountnumber%>"
+                            + "&code=<%=code%>"/*
                     + "&senderpurpose=" + encryptedSenderPurposeHex
                     + "&senderkey=" + encryptedSenderAESKey
                     + "&receiverpurpose=" + encryptedReceiverPurposeHex
                     + "&receiverkey=" + encryptedReceiverAESKey*/;
-                httpAsync(postUrl, "POST");
+                        httpAsync(postUrl, "POST", 1);
+                        break;
+                    case 2:
+                        //TODO: Nutzer sagen er muss sich nochmal anmelden
+                        break;
+                    case 3:
+                        var ele = document.getElementById('accountnumber_error');
+                        ele.parentElement.className += ' is-invalid';
+                        ele.textContent = strings.pinError;
+                        break;
+                    default:
+                        break;
+                }
                 break;
+
             case 2:
-                //TODO: Nutzer sagen er muss sich nochmal anmelden
-                break;
-            case 3:
-                var ele = document.getElementById('accountnumber_error');
-                ele.parentElement.className += ' is-invalid';
-                ele.textContent = strings.pinError;
-                break;
-            default:
+                submitButton.textContent = strings.loginButtonText;
+                submitSpinner.style.visibility = 'hidden';
+                console.log(responseStr);
+                switch (parseInt(responseStr)){
+                    case 0:
+                        //Unternehmen existiert nicht
+                        companypassError.parentElement.className += ' is-invalid';
+                        companypassError.textContent = "Unternehmen existiert nicht";
+                        break;
+                    case 3:
+                        //Passwörter stimmen nicht überein
+                        companypassError.parentElement.className += ' is-invalid';
+                        companypassError.textContent = strings.pinError;
+                        break;
+                    case 2:
+                        //Webstring nicht aktuell
+                        console.log("Webstring nicht aktuell");
+                        break;
+                    case 1:
+                        //Alles gut
+                        processCompanyLogin();
+                        break;
+                }
                 break;
         }
     }
 
-    function processPostResponse(responseStr) {
+    function processPostResponse(responseStr, callerid) {
         console.log(responseStr);
         var notification = document.querySelector('#toast');
         notification.MaterialSnackbar.showSnackbar(
@@ -298,9 +332,15 @@
         //TODO: Spinner ist weg :o
         submitSpinner.style.visibility = 'visible';
         submitButton.textContent = '';
-        var companypassError = document.getElementById('companypass_error');
         companypassError.parentElement.className = companypassError.parentElement.className.replace(" is-invalid", "");
         companypassError.textContent = '';
+
+        var hash = sjcl.hash.sha256.hash(companypass.value);
+        var encryptedPassword = sjcl.codec.hex.fromBits(hash);
+
+        var companyLoginUrl = "https://fingerhut388.appspot.com/companylogin?companynumber=0002"
+            + "&accountnumber=<%=accountnumber%>&password=" + encryptedPassword
+            + "&webstring=<%=code%>";
 
         console.log("Is Admin? " + isAdmin);
         if(!isChrome && !isOpera && !isFirefox){
@@ -310,15 +350,18 @@
                 companypassError.textContent = "Sie müssen Chrome, Firefox oder Opera benutzen um sich auf der Unternehmensseite anmelden zu können.";
             } else {
                 if (confirm("Mit ihrem Browser können sie die Kaufaufträge nicht einsehen und bearbeiten.") == true) {
-                    window.location = "https://fingerhut388.appspot.com/company?accountnumber=<%= accountnumber%>&companynumber=0002&webstring=<%= code %>";
+                    httpAsync(companyLoginUrl, "GET", 2);
                 } else {
-                    window.location = "https://fingerhut388.appspot.com/company?accountnumber=<%= accountnumber%>&companynumber=0002&webstring=<%= code %>";
+                    httpAsync(companyLoginUrl, "GET", 2);
                 }
-
             }
         } else {
-            window.location = "https://fingerhut388.appspot.com/company?accountnumber=<%= accountnumber%>&companynumber=0002&webstring=<%= code %>";
+            httpAsync(companyLoginUrl, "GET", 2);
         }
+    }
+
+    function processCompanyLogin() {
+        window.location = "https://fingerhut388.appspot.com/company?accountnumber=<%= accountnumber%>&companynumber=0002&webstring=<%= code %>";
     }
 </script>
 </body>

@@ -223,6 +223,22 @@ public class PurchaseOrder{
         return (List<Long>) passedEntity.getProperty("amounts_list");
     }
 
+    public void setCompleted(boolean completed){
+        purchaseOrder.setProperty("completed", completed);
+    }
+
+    public void setCompleted(boolean completed, Entity passedEntity){
+        passedEntity.setProperty("completed", completed);
+    }
+
+    public boolean getCompleted(){
+        return (boolean) purchaseOrder.getProperty("completed");
+    }
+
+    public boolean getCompleted(Entity passedEntity){
+        return (boolean) passedEntity.getProperty("completed");
+    }
+
     public void saveAll(){
         datastore.put(purchaseOrder);
     }

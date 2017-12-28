@@ -20,7 +20,7 @@ public class CompanyLogin extends HttpServlet{
         String webstring = req.getParameter("webstring");
         String inputPassword = req.getParameter("password");
         if (inputPassword != null) {
-            inputPassword = URLDecoder.decode(inputPassword, "UTF-8");
+            inputPassword = URLDecoder.decode(inputPassword.toUpperCase(), "UTF-8");
         }
 
         Account accountGetter = new Account(accountnumber);
@@ -37,6 +37,8 @@ public class CompanyLogin extends HttpServlet{
         }
 
         String savedPassword = companyGetter.getHashedPassword(company);
+
+        log("Input Password = " + inputPassword + "\n\nSaved Password = " + savedPassword);
 
         if (Objects.equals(inputPassword, savedPassword)){
             resp.getWriter().println("1");
