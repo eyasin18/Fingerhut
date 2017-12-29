@@ -34,6 +34,7 @@
     <script language="JavaScript" type="text/javascript" src="../js/rng.js"></script>
     <script language="JavaScript" type="text/javascript" src="../js/rsa.js"></script>
     <script language="JavaScript" type="text/javascript" src="../js/base64.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../js/platform.js"></script>
     <script defer src="../js/sjcl.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
     <script type="application/javascript" src="../res/values/strings.js"></script>
@@ -155,9 +156,9 @@
     var url = "https://fingerhut388.appspot.com";
     var encryptedPurpose = "";
     var getURL;
-    var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-    var isFirefox = typeof InstallTrigger !== 'undefined';
-    var isChrome = !!window.chrome && !!window.chrome.webstore;
+    var isOpera = (platform.name === 'Opera');
+    var isFirefox = (platform.name === 'Firefox') || (platform.name === 'Firefox for iOS');
+    var isChrome = (platform.name === 'Chrome') || (platform.name === 'Chrome Mobile');
     var isAdmin = <%= mainTools.isCompanyAdmin() %>;
 
     var companypass = document.getElementById('companypass');
@@ -343,13 +344,14 @@
             + "&webstring=<%=code%>";
 
         console.log("Is Admin? " + isAdmin);
-        if(!isChrome && !isOpera && !isFirefox){
+        console.log(platform.name);
+        if(!isChrome && !isFirefox && !isOpera){
             if(!isAdmin) {
                 companypassError = document.getElementById('companypass_error');
                 companypassError.parentElement.className += ' is-invalid';
                 companypassError.textContent = "Sie müssen Chrome, Firefox oder Opera benutzen um sich auf der Unternehmensseite anmelden zu können.";
             } else {
-                if (confirm("Mit ihrem Browser können sie die Kaufaufträge nicht einsehen und bearbeiten.") == true) {
+                if (confirm("Kaufaufträge können sie nur mit Chrome, Firefox und Opera einsehen und bearbeiten.") == true) {
                     httpAsync(companyLoginUrl, "GET", 2);
                 } else {
                     httpAsync(companyLoginUrl, "GET", 2);

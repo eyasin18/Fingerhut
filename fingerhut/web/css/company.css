@@ -1,4 +1,11 @@
-h1{
-    margin-right: auto;
-    margin-left: auto;
+.mdl-data-table {
+    table-layout:fixed;
+    width:100%;
+}
+#purchase_orders td, th {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
 }
