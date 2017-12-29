@@ -49,9 +49,9 @@ public class CompletePurchaseOrder extends HttpServlet {
                         case "webstring":
                             webstring = String.valueOf(bodyPart.getContent());
                             break;
-                        /*case "selleraccountnumber":
+                        case "selleraccountnumber":
                             sellerAccountnumber = String.valueOf(bodyPart.getContent());
-                            break;*/
+                            break;
                         case "buyeraccountnumber":
                             buyerAccountnumber = String.valueOf(bodyPart.getContent());
                             break;
