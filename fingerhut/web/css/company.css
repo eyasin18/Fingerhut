@@ -9,3 +9,19 @@
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
 }
+#purchase_heading{
+    margin-left: auto;
+    margin-right: auto;
+}
+#statistics_heading{
+    margin-left: auto;
+    margin-right: auto;
+}
+#products_heading{
+    margin-left: auto;
+    margin-right: auto;
+}
+#employee_heading{
+    margin-left: auto;
+    margin-right: auto;
+}

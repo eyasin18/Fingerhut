@@ -48,8 +48,11 @@
         <div class="page-content">
             <div class="mdl-grid">
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="purchase_orders">
-                    <h2 class="mdl-card__title-text">Kaufaufträge</h2>
-                    <table class="mdl-data-table mdl-js-data-table">
+                    <h2 class="mdl-card__title-text" id="purchase_heading">Kaufaufträge</h2>
+                    <br>
+                    <br>
+                    <br>
+                    <table class="mdl-data-table mdl-js-data-table" id="purchase_table">
                         <thead>
                         <tr>
                             <th>Datum/Uhrzeit</th>
@@ -58,24 +61,27 @@
                             <th>Mehr Information</th>
                         </tr>
                         </thead>
-                        <tbody id="purchase_table">
+                        <tbody>
                         </tbody>
                     </table>
                     <div class="mdl-card__menu">
-                        <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+                        <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="newTableEntry(10,1111,100);">
                             <i class="material-icons">add</i>
                         </button>
                     </div>
                 </div>
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="statistics">
-                    <h2 class="mdl-card__title-text">Statistiken</h2>
+                    <h2 class="mdl-card__title-text" id="statistics_heading">Statistiken</h2>
                     <div class="mdl-card__supporting-text">
                         Hier können sie die Statistiken ihres Unternehmens einsehen.
                     </div>
 
                 </div>
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="products">
-                    <h2 class="mdl-card__title-text">Produkte</h2>
+                    <h2 class="mdl-card__title-text" id="products_heading">Produkte</h2>
+                    <br>
+                    <br>
+                    <br>
                     <table class="mdl-data-table mdl-js-data-table">
                         <thead>
                         <tr>
@@ -95,7 +101,10 @@
                     </div>
                 </div>
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="employees">
-                    <h2 class="mdl-card__title-text">Mitarbeiter</h2>
+                    <h2 class="mdl-card__title-text" id="employee_heading">Mitarbeiter</h2>
+                    <br>
+                    <br>
+                    <br>
                     <table class="mdl-data-table mdl-js-data-table">
                         <thead>
                         <tr>
@@ -122,14 +131,16 @@
 <script>
     //Funktion zum hinzufügen eines neuen Kaufauftrags
     function newTableEntry(date,account,amount){
-        var newEntry = document.createElement(tr);
-        var dateNode = document.createTextNode(date);
-        var accountNode = document.createTextNode(account);
-        var amountNode = document.createTextNode(amount);
-        newEntry.appendChild(document.createElement(td)).appendChild(dateNode);
-        newEntry.appendChild(document.createElement(td)).appendChild(accountNode);
-        newEntry.appendChild(document.createElement(td)).appendChild(amountNode);
-        document.getElementById("purchase_table").appendChild(newEntry);
+        var table = document.getElementById("purchase_table");
+        var row = table.insertRow(document.getElementById("purchase_table").rows.length);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        cell1.innerHTML = date;
+        cell2.innerHTML = account;
+        cell3.innerHTML = amount;
+        cell4.innerHTML = "test";
     }
 </script>
 </html>
