@@ -1,6 +1,7 @@
 <%@ page import="de.repictures.fingerhut.Web.MainTools" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="de.repictures.fingerhut.Web.CompanyTools" %>
 
 <%
     String code = request.getParameter("webstring");
@@ -10,6 +11,7 @@
     if (!mainTools.isAuthentificated(code)){
         response.sendRedirect("https://fingerhut388.appspot.com/");
     }
+    CompanyTools companyTools = new CompanyTools(accountnumber);
 %>
 <!doctype html>
 <html>
@@ -27,7 +29,11 @@
             mdl-layout--fixed-header">
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">Unternehmensname</span>
+            <span class="mdl-layout-title">
+            <%=
+                companyTools.getOwner(companynumber)
+            %>
+            </span>
         </div>
     </header>
     <div class="mdl-layout__drawer">
