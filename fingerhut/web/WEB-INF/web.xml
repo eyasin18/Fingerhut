@@ -169,6 +169,14 @@
         <url-pattern>/confirmlogin</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>CompletePurchaseOrder</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.CompletePurchaseOrder</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CompletePurchaseOrder</servlet-name>
+        <url-pattern>/completepurchaseorder</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>WebCompany</servlet-name>
         <jsp-file>/jsp/company.jsp</jsp-file>
     </servlet>

@@ -16,6 +16,11 @@ public class Product {
         datastore = DatastoreServiceFactory.getDatastoreService();
     }
 
+    public Product(Entity productEntity){
+        datastore = DatastoreServiceFactory.getDatastoreService();
+        this.product = productEntity;
+    }
+
     public Product(String code){
         datastore = DatastoreServiceFactory.getDatastoreService();
         this.product = getProduct(code);

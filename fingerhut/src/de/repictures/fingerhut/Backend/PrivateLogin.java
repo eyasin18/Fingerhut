@@ -2,6 +2,7 @@ package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.Entity;
 import de.repictures.fingerhut.Datastore.Account;
+import de.repictures.fingerhut.Datastore.Company;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -91,8 +92,9 @@ public class PrivateLogin extends HttpServlet {
                     output.append("ň");
                 }
                 output.append("ò");
-                account.setGroup(queriedAccounts.get(0), 7);
-                output.append(account.getGroup(queriedAccounts.get(0)));
+                account.setCompany(queriedAccounts.get(0), "0002");
+                Company companyGetter = new Company(account.getCompany(queriedAccounts.get(0)));
+                output.append(companyGetter.getAccountnumber());
                 String response = "2ò" + account.getKey(queriedAccounts.get(0)) + "ò" + output.toString();
                 resp.setStatus(200);
                 resp.getWriter().println(URLEncoder.encode(response, "UTF-8"));

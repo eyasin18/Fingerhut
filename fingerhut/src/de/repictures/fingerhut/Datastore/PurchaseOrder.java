@@ -75,6 +75,7 @@ public class PurchaseOrder{
         setPricesList(pricesList);
         setIsSelfBuyList(isSelfBuyList);
         setAmountsList(amountsList);
+        setCompleted(false);
         saveAll();
         purchaseOrder = getPurchaseOrder(parentCompany.getKey(), number);
     }

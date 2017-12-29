@@ -22,7 +22,7 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Mobile-Device-Skalierung -->
     </head>
-    <body>
+    <body onkeypress="return enterPressed(event);">
         <div class="mdl-layout mdl-js-layout mdl-color--green-light_blue-100">
             <main class="mdl-layout__content">
                 <div class="mdl-card mdl-shadow--6dp">
@@ -156,6 +156,12 @@
                         submitButton.textContent = strings.loginButtonText;
                         console.log("hups");
                         break;
+                }
+            }
+
+            function enterPressed(event) {
+                if (event.keyCode === 13){
+                    onButtonClick();
                 }
             }
         </script>

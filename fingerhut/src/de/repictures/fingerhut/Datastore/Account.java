@@ -1,6 +1,7 @@
 package de.repictures.fingerhut.Datastore;
 
 import com.google.appengine.api.datastore.*;
+import de.repictures.fingerhut.Backend.CompletePurchaseOrder;
 import de.repictures.fingerhut.Cryptor;
 
 import java.io.UnsupportedEncodingException;
@@ -74,7 +75,7 @@ public class Account {
         setOwner(account, name);
         setBalance(account, 1500.00f);
         account.setProperty("transferarray", new ArrayList<String>());
-        setGroup(account, 0);
+        setCompany(account, "0002");
         setFeature(account,0, true);
         setPrivateKeyStr(account, encryptedPrivateKeyStr);
         setPublicKeyStr(account, publicKeyStr);
@@ -343,33 +344,32 @@ public class Account {
         return featureList;
     }
 
-
-    /**
-     * Liste der Groups:
-     * 0 = Arbeitslos
-     * 1 = Beamter des Finanzministeriums
-     * 2 = Beamter des Wirtschaftsministeriums
-     * 3 = Beamter des Ministeriums für Kultus und Soziales
-     * 4 = Beamter des Umweltministeriums
-     * 5 = Beamter des Innen-/Justizministeriums
-     * 6 = Angestellter eines Unternehmens
-     * 7 = Beamter der Zentralbank
-     */
-
-    public void setGroup(Entity passedEntity, int groupNumber){
-        passedEntity.setProperty("group", groupNumber);
+    public void setCompany(Entity passedEntity, String companyNumber){
+        Company company = new Company(companyNumber);
+        passedEntity.setProperty("company", company.account.getKey());
     }
 
-    public void setGroup(int groupNumber){
-        account.setProperty("group", groupNumber);
+    public void setCompany(String companyNumber){
+        Company company = new Company(companyNumber);
+        account.setProperty("company", company.account.getKey());
     }
 
-    public int getGroup(){
-        return (int) account.getProperty("group");
+    public Entity getCompany(){
+        try {
+            return datastore.get((Key) account.getProperty("company"));
+        } catch (EntityNotFoundException e) {
+            log.warning(e.toString());
+            return null;
+        }
     }
 
-    public int getGroup(Entity passedEntity){
-        return (int) passedEntity.getProperty("group");
+    public Entity getCompany(Entity passedEntity){
+        try {
+            return datastore.get((Key) passedEntity.getProperty("company"));
+        } catch (EntityNotFoundException e) {
+            log.warning(e.toString());
+            return null;
+        }
     }
 
     public String createAuthString(){
