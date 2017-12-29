@@ -41,6 +41,7 @@ public class CompletePurchaseOrder extends HttpServlet {
             int count = multipart.getCount();
             log.info("Multipart content count: " + count);
             for (int i = 0; i < count; i++){
+                log("Loop point: " + i);
                 BodyPart bodyPart = multipart.getBodyPart(i);
                 if (bodyPart.isMimeType("text/plain")){
                     log.info("bodypart no. " + i + "\n" + getStringBodyName(bodyPart) + "\n" + String.valueOf(bodyPart.getContent()));
@@ -48,9 +49,9 @@ public class CompletePurchaseOrder extends HttpServlet {
                         case "webstring":
                             webstring = String.valueOf(bodyPart.getContent());
                             break;
-                        case "selleraccountnumber":
+                        /*case "selleraccountnumber":
                             sellerAccountnumber = String.valueOf(bodyPart.getContent());
-                            break;
+                            break;*/
                         case "buyeraccountnumber":
                             buyerAccountnumber = String.valueOf(bodyPart.getContent());
                             break;
@@ -96,7 +97,7 @@ public class CompletePurchaseOrder extends HttpServlet {
         /*log("Company Number: " + companynumber + "\nsellerAccountnumber: "+ sellerAccountnumber + "\nbuyerAccountnumber: " + buyerAccountnumber
             + "\nwebstring: " + webstring + "\npurchaseOrderNumber: " + purchaseOrderNumber + "\nproductCodesArray: " + productCodesArray.toString() + "\namountsArray: " + amountsArray.toString()
             + "\npricesArray: " + pricesArray.toString() + "\nisSelfBuyArray: " + isSelfBuyArray.toString());*/
-        if (companynumber == null || sellerAccountnumber == null || buyerAccountnumber == null || webstring == null || purchaseOrderNumber == 0
+        if (companynumber == null || sellerAccountnumber == null || buyerAccountnumber == null || webstring == null
                 || productCodesArray == null || amountsArray == null || pricesArray == null || isSelfBuyArray == null){
             resp.getWriter().println(0);
             return;
