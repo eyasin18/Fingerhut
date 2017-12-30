@@ -137,11 +137,12 @@
         cell1.innerHTML = date;
         cell2.innerHTML = account;
         cell3.innerHTML = amount;
-        cell4.innerHTML = "<button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' onclick='edit()'>Edit</button>";
+        cell4.innerHTML = "<button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' onclick='edit(this.parentNode.parentNode.rowIndex)'>Edit</button>";
     }
 
-    function edit(){
-        alert()
+    function edit(x){
+        alert(x);
+        console.log(x);
     }
 </script>
 </html>
