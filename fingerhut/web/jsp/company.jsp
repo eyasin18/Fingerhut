@@ -62,7 +62,6 @@
                             <th>Datum/Uhrzeit</th>
                             <th>Nummer</th>
                             <th>Betrag</th>
-                            <th>Mehr Information</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -90,11 +89,10 @@
                                 sdf = new SimpleDateFormat("E HH:mm", request.getLocale());
                                 String dateTimeStr = sdf.format(calendar.getTime()) + " Uhr";
                         %>
-                            <tr>
+                            <tr onclick="edit(this.rowIndex)">
                                 <th><%=dateTimeStr%></th>
                                 <th><%=purchaseOrder.getNumber()%></th>
                                 <th><%= priceSumStr%></th>
-                                <th><button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' onclick='edit(this.parentNode.parentNode.rowIndex)'>Edit</button></th>
                             </tr>
                         <%
                             }
