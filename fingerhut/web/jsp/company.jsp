@@ -2,6 +2,7 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="de.repictures.fingerhut.Web.CompanyTools" %>
+<%@ page import="de.repictures.fingerhut.Datastore.Product" %>
 <%@ page import="de.repictures.fingerhut.Datastore.PurchaseOrder" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
@@ -100,7 +101,7 @@
                         </tbody>
                     </table>
                     <div class="mdl-card__menu">
-                        <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="newTableEntry(10,1111,100);">
+                        <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="newTableEntryOrder(10,1111,100);">
                             <i class="material-icons">add</i>
                         </button>
                     </div>
@@ -114,16 +115,29 @@
                 </div>
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="products">
                     <h2 class="mdl-card__title-text" id="products_heading">Produkte</h2>
-                    <table class="mdl-data-table mdl-js-data-table">
+                    <table class="mdl-data-table mdl-js-data-table" id="producttable">
                         <thead>
                         <tr>
                             <th>Name</th>
                             <th>Preis</th>
-                            <th>Verkauft</th>
                             <th>Bearbeiten</th>
                         </tr>
                         </thead>
                         <tbody id="products_table">
+                            <%
+                                Product[] products = companyTools.querySellingProducts(companynumber);
+                                for(Product product : products){
+                                    String nameStr = product.getName();
+                                    double priceStr = product.getPrice();
+
+                            %>
+                            <tr>
+                                <th><%= nameStr %></th>
+                                <th><%= priceStr %></th>
+                            </tr>
+                            <%
+                                }
+                            %>
                         </tbody>
                     </table>
                     <div class="mdl-card__menu">
@@ -160,7 +174,7 @@
 <script>
 
     //Funktion zum hinzufügen eines neuen Kaufauftrags
-    function newTableEntry(date,account,amount){
+    function newTableEntryOrder(date,account,amount){
         var table = document.getElementById("purchase_table");
         var row = table.insertRow(document.getElementById("purchase_table").rows.length);
         var cell1 = row.insertCell(0);
@@ -171,6 +185,23 @@
         cell2.innerHTML = account;
         cell3.innerHTML = amount;
         cell4.innerHTML = "<button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' onclick='edit(this.parentNode.parentNode.rowIndex)'>Edit</button>";
+    }
+
+    function newTableEntryProduct(name,prize){
+        var table = document.getElementById("producttable");
+        var row = table.insertRow(document.getElementById("producttable").rows.length);
+        //var btn = document.createElement('input');
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        /*btn.type = "button";
+        btn.className = "btn";
+        btn.classList.add("mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored");
+        btn.value = "Bearbeiten";
+        btn.onclick = edit();*/
+        cell1.innerHTML = name;
+        cell2.innerHTML = prize;
+        cell3.innerHTML = "<button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' onclick='edit(this.parentNode.parentNode.rowIndex)'>Edit</button>";
     }
 
     function edit(x){
