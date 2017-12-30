@@ -132,8 +132,8 @@
                             </div>
                             <div class="mdl-card__supporting-text">
                                 <div class="mdl-typography--headline">0002</div>
-                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="companypass_view">
-                                    <input class="mdl-textfield__input" type="password" id="companypass" pattern="-?[0-9]*(\.[0-9]+)?" />
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="companypass_view" onkeypress="return companyLoginEnterPressed(event);">
+                                    <input class="mdl-textfield__input" type="password" id="companypass" pattern="-?[0-9]*(\.[0-9]+)?"/>
                                     <label class="mdl-textfield__label" for="companypass" id="companypass_label">Passwort</label>
                                     <span class="mdl-textfield__error" id="companypass_error"></span>
                                 </div>
@@ -364,6 +364,12 @@
 
     function processCompanyLogin() {
         window.location = "https://fingerhut388.appspot.com/company?accountnumber=<%= accountnumber%>&companynumber=0002&webstring=<%= code %>";
+    }
+
+    function companyLoginEnterPressed(event) {
+        if (event.keyCode === 13){
+            companyLogin();
+        }
     }
 </script>
 </body>
