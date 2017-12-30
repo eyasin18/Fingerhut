@@ -120,7 +120,6 @@
                         <tr>
                             <th>Name</th>
                             <th>Preis</th>
-                            <th>Bearbeiten</th>
                         </tr>
                         </thead>
                         <tbody id="products_table">
@@ -190,15 +189,10 @@
     function newTableEntryProduct(name,prize){
         var table = document.getElementById("producttable");
         var row = table.insertRow(document.getElementById("producttable").rows.length);
-        //var btn = document.createElement('input');
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
         var cell3 = row.insertCell(2);
-        /*btn.type = "button";
-        btn.className = "btn";
-        btn.classList.add("mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored");
-        btn.value = "Bearbeiten";
-        btn.onclick = edit();*/
+
         cell1.innerHTML = name;
         cell2.innerHTML = prize;
         cell3.innerHTML = "<button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' onclick='edit(this.parentNode.parentNode.rowIndex)'>Edit</button>";
