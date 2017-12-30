@@ -124,12 +124,24 @@
     function newTableEntry(date,account,amount){
         var table = document.getElementById("purchase_table");
         var row = table.insertRow(document.getElementById("purchase_table").rows.length);
+        //var btn = document.createElement('input');
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
         var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        /*btn.type = "button";
+        btn.className = "btn";
+        btn.classList.add("mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored");
+        btn.value = "Bearbeiten";
+        btn.onclick = edit();*/
         cell1.innerHTML = date;
         cell2.innerHTML = account;
         cell3.innerHTML = amount;
+        cell4.innerHTML = "<button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' onclick='edit()'>Edit</button>";
+    }
+
+    function edit(){
+        alert()
     }
 </script>
 </html>
