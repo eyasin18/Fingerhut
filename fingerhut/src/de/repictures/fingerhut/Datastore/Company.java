@@ -157,6 +157,7 @@ public class Company extends Account {
         }
     }
 
+    @Deprecated
     public void setShoppingRequests(Map<String, List<String[]>> shoppingMap){
         List<String> shoppingMapAccountnumbers = new ArrayList<>(shoppingMap.keySet());
         List<String> shoppingLists = new ArrayList<>();
@@ -177,6 +178,7 @@ public class Company extends Account {
         account.setProperty("shoppingLists", shoppingLists);
     }
 
+    @Deprecated
     public void setShoppingRequests(Entity passedEntity, Map<String, List<String[]>> shoppingMap){
         List<String> shoppingMapAccountnumbers = new ArrayList<>(shoppingMap.keySet());
         List<String> shoppingLists = new ArrayList<>();
@@ -197,6 +199,7 @@ public class Company extends Account {
         passedEntity.setProperty("shoppingLists", shoppingLists);
     }
 
+    @Deprecated
     public Map<String, List<String[]>> getShoppingRequests(){
         try {
             List<String> shoppingMapAccountnumbers = (List<String>) account.getProperty("shoppingMapKeys");
@@ -221,6 +224,7 @@ public class Company extends Account {
         }
     }
 
+    @Deprecated
     public Map<String, List<String[]>> getShoppingRequests(Entity passedEntity){
         try {
             List<String> shoppingMapAccountnumbers = (List<String>) passedEntity.getProperty("shoppingMapKeys");

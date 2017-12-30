@@ -4,7 +4,10 @@ import com.google.appengine.api.datastore.*;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Product;
+import de.repictures.fingerhut.Datastore.PurchaseOrder;
+import org.apache.http.HttpRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -44,6 +47,16 @@ public class CompanyTools {
             products[i] = new Product(productEntities.get(i));
         }
         return products;
+    }
+
+    public PurchaseOrder[] queryPurchasOrders(String companynumber, HttpServletRequest req){
+        Company companyGetter = new Company(companynumber);
+        List<Entity> purchaseOrderEntities = new PurchaseOrder(companyGetter.account, req.getLocale()).getPurchaseOrders(companyGetter.account.getKey());
+        PurchaseOrder[] purchaseOrders = new PurchaseOrder[purchaseOrderEntities.size()];
+        for (int i = 0; i < purchaseOrderEntities.size(); i++){
+            purchaseOrders[i] = new PurchaseOrder(companyGetter.account, purchaseOrderEntities.get(i), req.getLocale());
+        }
+        return purchaseOrders;
     }
 
 }

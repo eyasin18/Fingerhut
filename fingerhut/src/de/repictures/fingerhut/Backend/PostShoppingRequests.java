@@ -8,6 +8,7 @@ import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Product;
 import de.repictures.fingerhut.Datastore.PurchaseOrder;
 import de.repictures.fingerhut.MultipartResponse;
+import io.swagger.util.Json;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -70,14 +71,11 @@ public class PostShoppingRequests extends HttpServlet{
         JsonArray pricesArray = new JsonArray();
         JsonArray productNamesArray = new JsonArray();
         JsonArray productCodesArray = new JsonArray();
+        JsonArray completedArray = new JsonArray();
 
         for (Entity purchaseOrderEntity : purchaseOrders){
             //Read Amounts
-            JsonArray oAmountsArray = new JsonArray();
-            for (Long amount : purchaseOrdersGetter.getAmountsList(purchaseOrderEntity)){
-                oAmountsArray.add(Math.toIntExact(amount));
-            }
-            amountsArray.add(oAmountsArray);
+            amountsArray.add(listToJsonArray(purchaseOrdersGetter.getAmountsList(purchaseOrderEntity)));
 
             //Read BuyerAccountnumber
             buyerAccountnumbersArray.add(purchaseOrdersGetter.getBuyerAccountnumber(purchaseOrderEntity));
@@ -86,23 +84,15 @@ public class PostShoppingRequests extends HttpServlet{
             dateTimesArray.add(purchaseOrdersGetter.getDateTime(purchaseOrderEntity));
 
             //Read isSelfBuys
-            JsonArray oIsSelfBuysArray = new JsonArray();
-            for (Boolean isSelfBuy : purchaseOrdersGetter.getIsSelfBuyList(purchaseOrderEntity)){
-                oIsSelfBuysArray.add(isSelfBuy);
-            }
-            isSelfBuysArray.add(oIsSelfBuysArray);
+            isSelfBuysArray.add(listToJsonArray(purchaseOrdersGetter.getIsSelfBuyList(purchaseOrderEntity)));
 
             //Read numbers
             numbersArray.add(purchaseOrdersGetter.getNumber(purchaseOrderEntity));
 
             //Read prices
-            JsonArray oPricesArray = new JsonArray();
-            for (double price : purchaseOrdersGetter.getPricesList(purchaseOrderEntity)){
-                oPricesArray.add(price);
-            }
-            pricesArray.add(oPricesArray);
+            pricesArray.add(listToJsonArray(purchaseOrdersGetter.getPricesList(purchaseOrderEntity)));
 
-            //Read productCodes
+            //Read productNames
             JsonArray oProductNames = new JsonArray();
             for (String productCode : purchaseOrdersGetter.getProductCodesList(purchaseOrderEntity)){
                 Product productGetter = new Product(productCode);
@@ -111,11 +101,10 @@ public class PostShoppingRequests extends HttpServlet{
             productNamesArray.add(oProductNames);
 
             //Read productCodes
-            JsonArray oProductCodes = new JsonArray();
-            for (String productCode : purchaseOrdersGetter.getProductCodesList(purchaseOrderEntity)){
-                oProductCodes.add(productCode);
-            }
-            productCodesArray.add(oProductCodes);
+            productCodesArray.add(listToJsonArray(purchaseOrdersGetter.getProductCodesList(purchaseOrderEntity)));
+
+            //Read completed
+            completedArray.add(purchaseOrdersGetter.getCompleted(purchaseOrderEntity));
         }
 
         object.add("amounts", amountsArray);
@@ -126,6 +115,7 @@ public class PostShoppingRequests extends HttpServlet{
         object.add("prices", pricesArray);
         object.add("productNames", productNamesArray);
         object.add("productCodes", productCodesArray);
+        object.add("completed", completedArray);
 
         multi.startResponse("text/plain");
         resp.getOutputStream().println(1);
@@ -135,5 +125,13 @@ public class PostShoppingRequests extends HttpServlet{
         log.info(object.toString());
         multi.endResponse();
         multi.finish();
+    }
+
+    private JsonArray listToJsonArray(List list){
+        JsonArray array = new JsonArray();
+        for (Object o : list){
+            array.add(String.valueOf(o));
+        }
+        return array;
     }
 }

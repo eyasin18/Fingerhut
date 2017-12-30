@@ -2,6 +2,13 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="de.repictures.fingerhut.Web.CompanyTools" %>
+<%@ page import="de.repictures.fingerhut.Datastore.PurchaseOrder" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.text.DecimalFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Calendar" %>
+<%@ page import="java.text.ParseException" %>
 
 <%
     String code = request.getParameter("webstring");
@@ -59,6 +66,39 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <%
+                            PurchaseOrder[] purchaseOrders = companyTools.queryPurchasOrders(companynumber, request);
+                            for (PurchaseOrder purchaseOrder : purchaseOrders){
+
+                                //Preis berechnen
+                                double priceSum = 0.0;
+                                List<Long> amountsList = purchaseOrder.getAmountsList();
+                                List<Double> pricesList = purchaseOrder.getPricesList();
+                                for (int o = 0; o < amountsList.size(); o++){
+                                    priceSum += (amountsList.get(o) * pricesList.get(o));
+                                }
+                                String priceSumStr = new DecimalFormat("#.00").format(priceSum) + " S";
+
+                                //DateTime anpassen
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", request.getLocale());
+                                Calendar calendar = Calendar.getInstance();
+                                try {
+                                    calendar.setTime(sdf.parse(purchaseOrder.getDateTime()));
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                sdf = new SimpleDateFormat("E HH:mm", request.getLocale());
+                                String dateTimeStr = sdf.format(calendar.getTime()) + " Uhr";
+                        %>
+                            <tr>
+                                <th><%=dateTimeStr%></th>
+                                <th><%=purchaseOrder.getNumber()%></th>
+                                <th><%= priceSumStr%></th>
+                                <th><button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' onclick='edit(this.parentNode.parentNode.rowIndex)'>Edit</button></th>
+                            </tr>
+                        <%
+                            }
+                        %>
                         </tbody>
                     </table>
                     <div class="mdl-card__menu">
@@ -120,6 +160,7 @@
 </div>
 </body>
 <script>
+
     //Funktion zum hinzufügen eines neuen Kaufauftrags
     function newTableEntry(date,account,amount){
         var table = document.getElementById("purchase_table");

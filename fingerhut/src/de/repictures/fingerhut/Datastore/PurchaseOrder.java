@@ -32,6 +32,14 @@ public class PurchaseOrder{
         purchaseOrder = getPurchaseOrder(parentCompany.getKey(), number);
     }
 
+    public PurchaseOrder(Entity parentCompany, Entity purchaseOrder, Locale locale){
+        datastore = DatastoreServiceFactory.getDatastoreService();
+        this.parentCompany = parentCompany;
+        calendar = Calendar.getInstance();
+        f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", locale);
+        this.purchaseOrder = purchaseOrder;
+    }
+
     @Deprecated
     public PurchaseOrder(Entity parentCompany, String buyerAccountnumber, Locale locale){
         datastore = DatastoreServiceFactory.getDatastoreService();
@@ -233,11 +241,13 @@ public class PurchaseOrder{
     }
 
     public boolean getCompleted(){
-        return (boolean) purchaseOrder.getProperty("completed");
+        Object completed = purchaseOrder.getProperty("completed");
+        return completed != null && (boolean) completed;
     }
 
     public boolean getCompleted(Entity passedEntity){
-        return (boolean) passedEntity.getProperty("completed");
+        Object completed = passedEntity.getProperty("completed");
+        return completed != null && (boolean) completed;
     }
 
     public void saveAll(){

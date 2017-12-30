@@ -67,23 +67,25 @@ public class CompletePurchaseOrder extends HttpServlet {
                             break;
                         case "amounts":
                             String amountsStr = String.valueOf(bodyPart.getContent());
-                            amountsArray = Arrays.stream(amountsStr.split("ò")).mapToLong(Long::parseLong).boxed().toArray(Long[]::new);
+                            amountsArray = Arrays.stream(amountsStr.split("ò")).map(Long::parseLong).toArray(Long[]::new);
                             break;
                         case "prices":
                             String pricesStr = String.valueOf(bodyPart.getContent());
-                            String[] pricesStrArray = pricesStr.split("ò");
+                            pricesArray = Arrays.stream(pricesStr.split("ò")).map(Double::parseDouble).toArray(Double[]::new);
+                            /*String[] pricesStrArray = pricesStr.split("ò");
                             pricesArray = new Double[pricesStrArray.length];
                             for (int o = 0; i < pricesStrArray.length; i++){
                                 pricesArray[o] = Double.parseDouble(pricesStrArray[o]);
-                            }
+                            }*/
                             break;
                         case "isselfbuy":
                             String isSelfBuyStr = String.valueOf(bodyPart.getContent());
-                            String[] isSelfBuyStrArray = isSelfBuyStr.split("ò");
+                            isSelfBuyArray = Arrays.stream(isSelfBuyStr.split("ò")).map(Boolean::parseBoolean).toArray(Boolean[]::new);
+                            /*String[] isSelfBuyStrArray = isSelfBuyStr.split("ò");
                             isSelfBuyArray = new Boolean[isSelfBuyStrArray.length];
                             for (int o = 0; i < isSelfBuyStrArray.length; i++){
                                 isSelfBuyArray[o] = Boolean.parseBoolean(isSelfBuyStrArray[o]);
-                            }
+                            }*/
                             break;
                     }
                 } else {
@@ -114,22 +116,27 @@ public class CompletePurchaseOrder extends HttpServlet {
         Company companyGetter = new Company(companynumber);
         PurchaseOrder purchaseOrderSetter = new PurchaseOrder(companyGetter.account, purchaseOrderNumber, req.getLocale());
 
-        //Verwendungszweck wird generiert und Gesamtpreis kalkuliert
-        StringBuilder purposeBuilder = new StringBuilder();
-        double priceSum = 0.0;
+        if(Arrays.asList(isSelfBuyArray).contains(false)) {
+            //Verwendungszweck wird generiert und Gesamtpreis kalkuliert
+            StringBuilder purposeBuilder = new StringBuilder();
+            purposeBuilder.append("Ihr Einkauf bei ")
+                    .append(companyGetter.getOwner())
+                    .append("\n");
+            double priceSum = 0.0;
 
-        for (int i = 0; i < amountsArray.length; i++){
-            if (isSelfBuyArray[i]) continue;
-            Product product = new Product(productCodesArray[i]);
-            long amount = amountsArray[i];
-            if (amount > 1) purposeBuilder.append(amount).append(" x ").append(product.getName()).append("\n");
-            else purposeBuilder.append(product.getName()).append("\n");
+            for (int i = 0; i < amountsArray.length; i++) {
+                if (isSelfBuyArray[i]) continue;
+                Product product = new Product(productCodesArray[i]);
+                long amount = amountsArray[i];
+                if (amount > 1) purposeBuilder.append(amount).append(" x ").append(product.getName()).append("\n");
+                else purposeBuilder.append(product.getName()).append("\n");
 
-            double itemPrice = pricesArray[i];
-            priceSum += (amount * itemPrice);
+                double itemPrice = pricesArray[i];
+                priceSum += (amount * itemPrice);
+            }
+
+            Transfer.buyItems(buyerAccountGetter, companyGetter, req.getLocale(), purposeBuilder.toString(), priceSum);
         }
-
-        Transfer.buyItems(buyerAccountGetter, companyGetter, req.getLocale(), purposeBuilder.toString(), priceSum);
 
         purchaseOrderSetter.setPricesList(Arrays.asList(pricesArray));
         purchaseOrderSetter.setAmountsList(Arrays.asList(amountsArray));

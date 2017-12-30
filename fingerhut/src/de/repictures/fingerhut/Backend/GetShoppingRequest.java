@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.PublicKey;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -43,29 +44,34 @@ public class GetShoppingRequest extends HttpServlet{
         PurchaseOrder purchaseOrder = new PurchaseOrder(companyGetter.account, req.getLocale());
         purchaseOrder.updatePurchaseOrder(companyGetter.account, newItems, accountnumber);
 
-        //Verwendungszweck wird generiert und Gesamtpreis kalkuliert
-        StringBuilder purposeBuilder = new StringBuilder();
-        double priceSum = 0.0;
+        if(purchaseOrder.getIsSelfBuyList().contains(true)) {
+            //Verwendungszweck wird generiert und Gesamtpreis kalkuliert
+            StringBuilder purposeBuilder = new StringBuilder();
+            purposeBuilder.append("Ihr Einkauf bei ")
+                    .append(companyGetter.getOwner())
+                    .append("\n");
+            double priceSum = 0.0;
 
-        for (String[] item : newItems){
-            if (!Boolean.parseBoolean(item[2])){
-                continue;
+            for (String[] item : newItems) {
+                if (!Boolean.parseBoolean(item[2])) {
+                    continue;
+                }
+                Product product = new Product(item[0]);
+                int count = Integer.parseInt(item[3]);
+                if (count > 1) purposeBuilder.append(count).append(" x ").append(product.getName()).append("\n");
+                else purposeBuilder.append(product.getName()).append("\n");
+
+                double itemPrice = Double.parseDouble(item[1]);
+                priceSum += (count * itemPrice);
             }
-            Product product = new Product(item[0]);
-            int count = Integer.parseInt(item[3]);
-            if (count > 1) purposeBuilder.append(count).append(" x ").append(product.getName()).append("\n");
-            else purposeBuilder.append(product.getName()).append("\n");
 
-            double itemPrice = Double.parseDouble(item[1]);
-            priceSum += (count * itemPrice);
+            if (priceSum > Float.parseFloat(accountGetter.getBalance())) {
+                resp.getWriter().println(2);
+                return;
+            }
+
+            Transfer.buyItems(accountGetter, companyGetter, resp.getLocale(), purposeBuilder.toString(), priceSum);
         }
-
-        if (priceSum > Float.parseFloat(accountGetter.getBalance())){
-            resp.getWriter().println(2);
-            return;
-        }
-
-        Transfer.buyItems(accountGetter, companyGetter, resp.getLocale(), purposeBuilder.toString(), priceSum);
 
         StringBuilder amountsBuilder = new StringBuilder();
         for (Long amount : purchaseOrder.getAmountsList()) {
@@ -87,6 +93,12 @@ public class GetShoppingRequest extends HttpServlet{
             productCodesBuilder.append(productCode).append("ò");
         }
 
+        StringBuilder productNamesBuilder = new StringBuilder();
+        for (String productCode : purchaseOrder.getProductCodesList()){
+            Product product = new Product(productCode);
+            productNamesBuilder.append(URLEncoder.encode(product.getName(), "UTF-8")).append("ò");
+        }
+
         Map<String, String> messageContent = new HashMap<>();
         messageContent.put("notificationId", "1");
         messageContent.put("updateKey", "1");
@@ -96,7 +108,9 @@ public class GetShoppingRequest extends HttpServlet{
         messageContent.put("isSelfBuys", isSelfBuysBuilder.toString());
         messageContent.put("number", String.valueOf(purchaseOrder.getNumber()));
         messageContent.put("prices", pricesBuilder.toString());
+        messageContent.put("productNames", productNamesBuilder.toString());
         messageContent.put("productCodes", productCodesBuilder.toString());
+        messageContent.put("completed", String.valueOf(purchaseOrder.getCompleted()));
         new SendMessage().sendMessage(messageContent, "/topics/" + companyNumber + "-shoppingRequests");
 
         resp.getWriter().println(1);
