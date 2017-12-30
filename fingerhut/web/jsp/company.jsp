@@ -49,9 +49,6 @@
             <div class="mdl-grid">
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="purchase_orders">
                     <h2 class="mdl-card__title-text" id="purchase_heading">Kaufaufträge</h2>
-                    <br>
-                    <br>
-                    <br>
                     <table class="mdl-data-table mdl-js-data-table" id="purchase_table">
                         <thead>
                         <tr>
@@ -79,9 +76,6 @@
                 </div>
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="products">
                     <h2 class="mdl-card__title-text" id="products_heading">Produkte</h2>
-                    <br>
-                    <br>
-                    <br>
                     <table class="mdl-data-table mdl-js-data-table">
                         <thead>
                         <tr>
@@ -102,9 +96,6 @@
                 </div>
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="employees">
                     <h2 class="mdl-card__title-text" id="employee_heading">Mitarbeiter</h2>
-                    <br>
-                    <br>
-                    <br>
                     <table class="mdl-data-table mdl-js-data-table">
                         <thead>
                         <tr>
