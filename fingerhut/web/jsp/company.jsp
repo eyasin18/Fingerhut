@@ -59,11 +59,11 @@
                     <h2 class="mdl-card__title-text" id="purchase_heading">Kaufaufträge</h2>
                     <table class="mdl-data-table mdl-js-data-table" id="purchase_table">
                         <thead>
-                        <tr>
-                            <th>Datum/Uhrzeit</th>
-                            <th>Nummer</th>
-                            <th>Betrag</th>
-                        </tr>
+                            <tr>
+                                <th>Datum/Uhrzeit</th>
+                                <th>Nummer</th>
+                                <th>Betrag</th>
+                            </tr>
                         </thead>
                         <tbody>
                         <%
@@ -105,6 +105,21 @@
                             <i class="material-icons">add</i>
                         </button>
                     </div>
+                </div>
+                <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="purchase_order">
+                    <table class="mdl-data-table mdl-js-data-table" id="purchase_info_table">
+                        <thead>
+                            <tr>
+                                <th>Produkt</th>
+                                <th>Preis</th>
+                                <th>Barcode</th>
+                                <th>Menge</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="back()" id="back_button">Fertig</button>
                 </div>
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="statistics">
                     <h2 class="mdl-card__title-text" id="statistics_heading">Statistiken</h2>
@@ -171,6 +186,9 @@
 </div>
 </body>
 <script>
+    var z = document.getElementById("purchase_order");
+    var y = document.getElementById("purchase_orders");
+    z.style.display = "none";
 
     //Funktion zum hinzufügen eines neuen Kaufauftrags
     function newTableEntryOrder(date,account,amount){
@@ -192,15 +210,18 @@
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
         var cell3 = row.insertCell(2);
-
         cell1.innerHTML = name;
         cell2.innerHTML = prize;
         cell3.innerHTML = "<button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' onclick='edit(this.parentNode.parentNode.rowIndex)'>Edit</button>";
     }
 
     function edit(x){
-        alert(x);
-        console.log(x);
+        y.style.display = "none";
+        z.style.display = "block";
+    }
+    function back() {
+        y.style.display = "block";
+        z.style.display = "none";
     }
 </script>
 </html>
