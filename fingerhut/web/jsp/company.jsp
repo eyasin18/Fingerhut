@@ -233,7 +233,7 @@
         productarray[i] = pojo(
             '<%= products[i].getName()%>',
             '<%= products[i].getPrice()%>',
-            '<%= products[i].getCode() %>',
+            '<%= products[i].getCode() %>'
         );
         <% i++;%>
     }
