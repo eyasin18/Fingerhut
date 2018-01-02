@@ -91,9 +91,9 @@
                                 String dateTimeStr = sdf.format(calendar.getTime()) + " Uhr";
                         %>
                             <tr onclick="edit(this.rowIndex)">
-                                <th><%=dateTimeStr%></th>
-                                <th><%=purchaseOrder.getNumber()%></th>
-                                <th><%= priceSumStr%></th>
+                                <th><%= dateTimeStr %></th>
+                                <th><%= purchaseOrder.getNumber() %></th>
+                                <th><%= priceSumStr %></th>
                             </tr>
                         <%
                             }
@@ -119,8 +119,8 @@
                         <tbody>
                         </tbody>
                     </table>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="back()" id="back_button">Fertig</button>
                 </div>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="back()" id="back_button">Fertig</button>
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="statistics">
                     <h2 class="mdl-card__title-text" id="statistics_heading">Statistiken</h2>
                     <div class="mdl-card__supporting-text">
@@ -185,7 +185,7 @@
     </main>
 </div>
 </body>
-<script>
+<script src="${pageContext.request.contextPath}../js/product.js">
     var z = document.getElementById("purchase_order");
     var y = document.getElementById("purchase_orders");
     z.style.display = "none";
@@ -222,6 +222,20 @@
     function back() {
         y.style.display = "block";
         z.style.display = "none";
+    }
+
+    var productarray = [];
+    var product = pojo('name', 'price', 'code');
+
+    <% int i = 0;%>
+    for(i = 0;i < <%= products.length %>; i++) {
+
+        productarray[i] = pojo(
+            '<%= products[i].getName()%>',
+            '<%= products[i].getPrice()%>',
+            '<%= products[i].getCode() %>',
+        );
+        <% i++;%>
     }
 </script>
 </html>
