@@ -90,7 +90,7 @@
                                 sdf = new SimpleDateFormat("E HH:mm", request.getLocale());
                                 String dateTimeStr = sdf.format(calendar.getTime()) + " Uhr";
                         %>
-                            <tr onclick="edit(this.rowIndex)">
+                            <tr onclick="editPurchaseorders()">
                                 <th><%= dateTimeStr %></th>
                                 <th><%= purchaseOrder.getNumber() %></th>
                                 <th><%= priceSumStr %></th>
@@ -171,6 +171,11 @@
                         Hinzufügen
                     </button>
                 </div>
+
+
+                <!-- Hier beginnt der Teil der für de Karte Statistiken zuständig ist -->
+
+
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="statistics">
                     <h2 class="mdl-card__title-text" id="statistics_heading">Statistiken</h2>
                     <div class="mdl-card__supporting-text">
@@ -237,6 +242,7 @@
 <script src="${pageContext.request.contextPath}../js/product.js" ></script>
 <script>
     var PurchaseOrder = document.getElementById("purchase_order");
+    var Products = document.getElementById("");
     var PurchaseOrders = document.getElementById("purchase_orders");
     var AddPurchase = document.getElementById("add_purchase");
     var AddProductToPurchase = document.getElementById("add_product_to_purchase");
@@ -269,42 +275,52 @@
         cell3.innerHTML = "<button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' onclick='edit(this.parentNode.parentNode.rowIndex)'>Edit</button>";
     }
 
-    function edit(x){
+    function editPurchaseorders(){
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "block";
         AddPurchase.style.display = "none";
         AddProductToPurchase.style.display = "none";
     }
+
+    function editProducts(){
+
+    }
+
     function back() {
         PurchaseOrders.style.display = "block";
         PurchaseOrder.style.display = "none";
         AddPurchase.style.display = "none";
         AddProductToPurchase.style.display = "none";
     }
+
     function addPurchase() {
         AddPurchase.style.display = "block";
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
     }
+
     function addProductToPurchase() {
         AddPurchase.style.display = "none";
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "block";
     }
+
     function addProductToPurchaseTable() {
         AddPurchase.style.display = "block";
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
     }
+
     function addPurchaseToTable() {
         AddPurchase.style.display = "none";
         PurchaseOrders.style.display = "block";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
     }
+
     var productarray = [];
     var product = pojo('name', 'price', 'code','amount');
 
