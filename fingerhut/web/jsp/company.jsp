@@ -101,7 +101,7 @@
                         </tbody>
                     </table>
                     <div class="mdl-card__menu">
-                        <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="newTableEntryOrder(10,1111,100);">
+                        <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="addPurchase()">
                             <i class="material-icons">add</i>
                         </button>
                     </div>
@@ -119,14 +119,63 @@
                         <tbody>
                         </tbody>
                     </table>
-                </div>
                     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="back()" id="back_button">Fertig</button>
+                </div>
+                <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="add_purchase">
+                    <div class="mdl-card__menu">
+                        <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="addProductToPurchase()">
+                            <i class="material-icons">add</i>
+                        </button>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample4">
+                        <label class="mdl-textfield__label" for="sample4">Kontonummer</label>
+                        <span class="mdl-textfield__error">Eingabe ist keine Zahl</span>
+                    </div>
+                    <table class="mdl-data-table mdl-js-data-table" id="add_purchase_table">
+                        <thead>
+                        <tr>
+                            <th>Anzahl</th>
+                            <th>Produkt</th>
+                            <th>Preis</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="addPurchaseToTable()">
+                        Fertig
+                    </button>
+                </div>
+                <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="add_product_to_purchase">
+                    <div class="mdl-card__title">
+                        <h2 class="mdl-card__title-text">Neues Produkt zum Kaufauftrag hinzufügen</h2>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample5">
+                        <label class="mdl-textfield__label" for="sample5">Kontonummer</label>
+                        <span class="mdl-textfield__error">Eingabe ist keine Zahl!</span>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+                        <input type="text" value="" class="mdl-textfield__input" id="sample6" readonly>
+                        <input type="hidden" value="" name="sample6">
+                        <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                        <label for="sample6" class="mdl-textfield__label">Country</label>
+                        <ul for="sample6" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                            <li class="mdl-menu__item" data-val="DEU">Germany</li>
+                            <li class="mdl-menu__item" data-val="BLR">Belarus</li>
+                            <li class="mdl-menu__item" data-val="RUS">Russia</li>
+                        </ul>
+                    </div>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="addProductToPurchaseTable()">
+                        Hinzufügen
+                    </button>
+                </div>
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="statistics">
                     <h2 class="mdl-card__title-text" id="statistics_heading">Statistiken</h2>
                     <div class="mdl-card__supporting-text">
                         Hier können sie die Statistiken ihres Unternehmens einsehen.
                     </div>
-
                 </div>
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="products">
                     <h2 class="mdl-card__title-text" id="products_heading">Produkte</h2>
@@ -147,7 +196,7 @@
                             %>
                             <tr>
                                 <th><%= nameStr %></th>
-                                <th><%= priceStr %></th>
+                                <th><%= priceStr + " S"%></th>
                             </tr>
                             <%
                                 }
@@ -185,10 +234,14 @@
     </main>
 </div>
 </body>
-<script src="${pageContext.request.contextPath}../js/product.js">
-    var z = document.getElementById("purchase_order");
-    var y = document.getElementById("purchase_orders");
-    z.style.display = "none";
+<script> // src="${pageContext.request.contextPath}../js/product.js"
+    var PurchaseOrder = document.getElementById("purchase_order");
+    var PurchaseOrders = document.getElementById("purchase_orders");
+    var AddPurchase = document.getElementById("add_purchase");
+    var AddProductToPurchase = document.getElementById("add_product_to_purchase");
+    PurchaseOrder.style.display = "none";
+    AddPurchase.style.display = "none";
+    AddProductToPurchase.style.display = "none";
 
     //Funktion zum hinzufügen eines neuen Kaufauftrags
     function newTableEntryOrder(date,account,amount){
@@ -216,14 +269,41 @@
     }
 
     function edit(x){
-        y.style.display = "none";
-        z.style.display = "block";
+        PurchaseOrders.style.display = "none";
+        PurchaseOrder.style.display = "block";
+        AddPurchase.style.display = "none";
+        AddProductToPurchase.style.display = "none";
     }
     function back() {
-        y.style.display = "block";
-        z.style.display = "none";
+        PurchaseOrders.style.display = "block";
+        PurchaseOrder.style.display = "none";
+        AddPurchase.style.display = "none";
+        AddProductToPurchase.style.display = "none";
     }
-
+    function addPurchase() {
+        AddPurchase.style.display = "block";
+        PurchaseOrders.style.display = "none";
+        PurchaseOrder.style.display = "none";
+        AddProductToPurchase.style.display = "none";
+    }
+    function addProductToPurchase() {
+        AddPurchase.style.display = "none";
+        PurchaseOrders.style.display = "none";
+        PurchaseOrder.style.display = "none";
+        AddProductToPurchase.style.display = "block";
+    }
+    function addProductToPurchaseTable() {
+        AddPurchase.style.display = "block";
+        PurchaseOrders.style.display = "none";
+        PurchaseOrder.style.display = "none";
+        AddProductToPurchase.style.display = "none";
+    }
+    function addPurchaseToTable() {
+        AddPurchase.style.display = "none";
+        PurchaseOrders.style.display = "block";
+        PurchaseOrder.style.display = "none";
+        AddProductToPurchase.style.display = "none";
+    }
     var productarray = [];
     var product = pojo('name', 'price', 'code');
 
