@@ -234,7 +234,8 @@
     </main>
 </div>
 </body>
-<script> // src="${pageContext.request.contextPath}../js/product.js"
+<script src="${pageContext.request.contextPath}../js/product.js" ></script>
+<script>
     var PurchaseOrder = document.getElementById("purchase_order");
     var PurchaseOrders = document.getElementById("purchase_orders");
     var AddPurchase = document.getElementById("add_purchase");
@@ -305,7 +306,7 @@
         AddProductToPurchase.style.display = "none";
     }
     var productarray = [];
-    var product = pojo('name', 'price', 'code');
+    var product = pojo('name', 'price', 'code','amount');
 
     <% int i = 0;%>
     for(i = 0;i < <%= products.length %>; i++) {
