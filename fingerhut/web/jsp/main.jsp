@@ -156,8 +156,8 @@
     var url = "https://fingerhut388.appspot.com";
     var encryptedPurpose = "";
     var getURL;
-    var isOpera = (platform.name === 'Opera');
-    var isFirefox = (platform.name === 'Firefox') || (platform.name === 'Firefox for iOS');
+    var isOpera = (platform.name === 'Opera') && (platform.version >= 50);
+    var isFirefox = ((platform.name === 'Firefox') && (platform.version >= 44)) || ((platform.name === 'Firefox for iOS') && (platform.version >= 37));
     var isChrome = (platform.name === 'Chrome') || (platform.name === 'Chrome Mobile');
     var isAdmin = <%= mainTools.isCompanyAdmin() %>;
 

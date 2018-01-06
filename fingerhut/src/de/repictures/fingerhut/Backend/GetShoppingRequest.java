@@ -1,8 +1,6 @@
 package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Text;
-import de.repictures.fingerhut.Cryptor;
 import de.repictures.fingerhut.Datastore.*;
 
 import javax.servlet.ServletException;
@@ -12,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.security.PublicKey;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -22,34 +19,67 @@ public class GetShoppingRequest extends HttpServlet{
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String webstring = req.getParameter("code");
         if (webstring != null) webstring = URLDecoder.decode(webstring, "UTF-8");
+        String authAccountnumber = req.getParameter("authaccountnumber");
         String accountnumber = req.getParameter("accountnumber");
         String companyNumber = req.getParameter("companynumber");
         String shoppingListRaw = req.getParameter("shoppinglist");
         if (shoppingListRaw != null) shoppingListRaw = URLDecoder.decode(shoppingListRaw, "UTF-8");
+        boolean madeByUser = true;
+        String madeByUserStr = req.getParameter("madebyuser");
+        if (madeByUserStr != null) madeByUser = Boolean.parseBoolean(madeByUserStr);
 
         Account accountGetter = new Account(accountnumber);
+        Account authAccountGetter = new Account(authAccountnumber);
         Company companyGetter = new Company(companyNumber);
 
-        if (!Objects.equals(accountGetter.getRandomWebString(), webstring)){
+        if (accountGetter.account == null){
+            resp.getWriter().println(3);
+            return;
+        }
+
+        if (!Objects.equals(authAccountGetter.getRandomWebString(), webstring)){
             resp.getWriter().println(-1);
             return;
         }
 
         //Einkaufsauftragentität wird erstellt
-        List<String[]> newItems = new ArrayList<>();
-        String[] shoppingListSplittedItems = shoppingListRaw.split("ň");
-        for (String shoppingListSpittedItem : shoppingListSplittedItems) {
-            newItems.add(shoppingListSpittedItem.split("ò"));
-        }
-        PurchaseOrder purchaseOrder = new PurchaseOrder(companyGetter.account, req.getLocale());
-        purchaseOrder.updatePurchaseOrder(companyGetter.account, newItems, accountnumber);
+        PurchaseOrder purchaseOrder;
+        List<String[]> newItems;
+        if (shoppingListRaw.length() > 0) {
+            newItems = new ArrayList<>();
+            String[] shoppingListSplittedItems = shoppingListRaw.split("ň");
+            for (String shoppingListSpittedItem : shoppingListSplittedItems) {
+                newItems.add(shoppingListSpittedItem.split("ò"));
+            }
+            purchaseOrder = new PurchaseOrder(companyGetter.account, req.getLocale());
+            purchaseOrder.updatePurchaseOrder(companyGetter.account, newItems, accountnumber);
+            purchaseOrder.setMadeByUser(madeByUser);
+        } else {
+            newItems = new ArrayList<>();
+            purchaseOrder = new PurchaseOrder(companyGetter.account, req.getLocale());
+            purchaseOrder.purchaseOrder = new Entity("PurchaseOrder", companyGetter.account.getKey());
 
-        if(purchaseOrder.getIsSelfBuyList().contains(true)) {
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", req.getLocale());
+            purchaseOrder.setNumber();
+            purchaseOrder.setDateTime(f.format(calendar.getTime()));
+            purchaseOrder.setBuyerAccountnumber(accountnumber);
+            purchaseOrder.setProductCodesList(new ArrayList<>());
+            purchaseOrder.setPricesList(new ArrayList<>());
+            purchaseOrder.setIsSelfBuyList(new ArrayList<>());
+            purchaseOrder.setAmountsList(new ArrayList<>());
+            purchaseOrder.setCompleted(false);
+            purchaseOrder.saveAll();
+            int number = purchaseOrder.getNumber();
+            purchaseOrder = new PurchaseOrder(companyGetter.account, number, req.getLocale());
+        }
+
+        if(madeByUser && newItems.size() > 0 && purchaseOrder.getIsSelfBuyList().contains(true)) {
             //Verwendungszweck wird generiert und Gesamtpreis kalkuliert
             StringBuilder purposeBuilder = new StringBuilder();
             purposeBuilder.append("Ihr Einkauf bei ")
                     .append(companyGetter.getOwner())
-                    .append("\n");
+                    .append(":\n");
             double priceSum = 0.0;
 
             for (String[] item : newItems) {
@@ -111,8 +141,9 @@ public class GetShoppingRequest extends HttpServlet{
         messageContent.put("productNames", productNamesBuilder.toString());
         messageContent.put("productCodes", productCodesBuilder.toString());
         messageContent.put("completed", String.valueOf(purchaseOrder.getCompleted()));
+        messageContent.put("madeByUser", String.valueOf(purchaseOrder.getMadeByUser()));
         new SendMessage().sendMessage(messageContent, "/topics/" + companyNumber + "-shoppingRequests");
 
-        resp.getWriter().println(1);
+        resp.getWriter().println(URLEncoder.encode("1ò" + purchaseOrder.getNumber()));
     }
 }

@@ -72,6 +72,7 @@ public class PostShoppingRequests extends HttpServlet{
         JsonArray productNamesArray = new JsonArray();
         JsonArray productCodesArray = new JsonArray();
         JsonArray completedArray = new JsonArray();
+        JsonArray madeByUserArray = new JsonArray();
 
         for (Entity purchaseOrderEntity : purchaseOrders){
             //Read Amounts
@@ -105,6 +106,9 @@ public class PostShoppingRequests extends HttpServlet{
 
             //Read completed
             completedArray.add(purchaseOrdersGetter.getCompleted(purchaseOrderEntity));
+
+            //Read madeByUser
+            madeByUserArray.add(purchaseOrdersGetter.getMadeByUser(purchaseOrderEntity));
         }
 
         object.add("amounts", amountsArray);
@@ -116,6 +120,7 @@ public class PostShoppingRequests extends HttpServlet{
         object.add("productNames", productNamesArray);
         object.add("productCodes", productCodesArray);
         object.add("completed", completedArray);
+        object.add("madeByUser", madeByUserArray);
 
         multi.startResponse("text/plain");
         resp.getOutputStream().println(1);
@@ -128,10 +133,14 @@ public class PostShoppingRequests extends HttpServlet{
     }
 
     private JsonArray listToJsonArray(List list){
-        JsonArray array = new JsonArray();
-        for (Object o : list){
-            array.add(String.valueOf(o));
+        if (list == null){
+            return new JsonArray();
+        } else {
+            JsonArray array = new JsonArray();
+            for (Object o : list) {
+                array.add(String.valueOf(o));
+            }
+            return array;
         }
-        return array;
     }
 }

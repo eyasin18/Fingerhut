@@ -2,13 +2,14 @@ package de.repictures.fingerhut.Datastore;
 
 import com.google.appengine.api.datastore.*;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Logger;
 
 @SuppressWarnings("unchecked")
 public class PurchaseOrder{
+
 
     private DatastoreService datastore;
     public Entity purchaseOrder;
@@ -16,6 +17,7 @@ public class PurchaseOrder{
     private int number = 0;
     private SimpleDateFormat f;
     private Calendar calendar;
+    private Logger log = Logger.getLogger(PurchaseOrder.class.getName());
 
     public PurchaseOrder(Entity parentCompany, Locale locale){
         datastore = DatastoreServiceFactory.getDatastoreService();
@@ -123,15 +125,30 @@ public class PurchaseOrder{
         List<Entity> purchaseOrders = getPurchaseOrders(parentCompany.getKey());
         if (purchaseOrders.size() > 0){
             Entity maxNumberEntiy = Collections.max(purchaseOrders, new MaxNumberComparator());
-            long maxNumber = ((long) maxNumberEntiy.getProperty("number"));
+            long maxNumber = ((Number) maxNumberEntiy.getProperty("number")).longValue();
             number = Math.toIntExact(maxNumber) + 1;
         }
+        log.info("Number: " + number);
         purchaseOrder.setProperty("number", number);
     }
 
     public void setNumber(int number){
         purchaseOrder.setProperty("number", number);
         this.number = number;
+    }
+
+    public void setMadeByUser(boolean madeByUser) {
+        purchaseOrder.setProperty("made_by_user", madeByUser);
+    }
+
+    public boolean getMadeByUser() {
+        Object madeByUser = purchaseOrder.getProperty("made_by_user");
+        return madeByUser == null || (boolean) madeByUser;
+    }
+
+    public boolean getMadeByUser(Entity passedEntity) {
+        Object madeByUser = passedEntity.getProperty("made_by_user");
+        return madeByUser == null || (boolean) madeByUser;
     }
 
     private class MaxNumberComparator implements Comparator<Entity>{
@@ -143,12 +160,12 @@ public class PurchaseOrder{
     }
 
     public int getNumber(){
-        long number = (long) purchaseOrder.getProperty("number");
+        long number = ((Number) purchaseOrder.getProperty("number")).intValue();
         return Math.toIntExact(number);
     }
 
     public int getNumber(Entity passedEntity){
-        long number = (long) passedEntity.getProperty("number");
+        long number = ((Number) passedEntity.getProperty("number")).intValue();
         return Math.toIntExact(number);
     }
 
@@ -189,11 +206,21 @@ public class PurchaseOrder{
     }
 
     public List<String> getProductCodesList(){
-        return (List<String>) purchaseOrder.getProperty("product_codes_list");
+        List<String> productCodes = (List<String>) purchaseOrder.getProperty("product_codes_list");
+        if (productCodes == null){
+            return new ArrayList<String>();
+        } else {
+            return productCodes;
+        }
     }
 
     public List<String> getProductCodesList(Entity passedEntity){
-        return (List<String>) passedEntity.getProperty("product_codes_list");
+        List<String> productCodes = (List<String>) passedEntity.getProperty("product_codes_list");
+        if (productCodes == null){
+            return new ArrayList<String>();
+        } else {
+            return productCodes;
+        }
     }
 
     public void setPricesList(List<Double> pricesList){
@@ -201,11 +228,21 @@ public class PurchaseOrder{
     }
 
     public List<Double> getPricesList(){
-        return (List<Double>) purchaseOrder.getProperty("prices_list");
+        List<Double> pricesList = (List<Double>) purchaseOrder.getProperty("prices_list");
+        if (pricesList == null){
+            return new ArrayList<>();
+        } else {
+            return pricesList;
+        }
     }
 
     public List<Double> getPricesList(Entity passedEntity){
-        return (List<Double>) passedEntity.getProperty("prices_list");
+        List<Double> pricesList = (List<Double>) passedEntity.getProperty("prices_list");
+        if (pricesList == null){
+            return new ArrayList<>();
+        } else {
+            return pricesList;
+        }
     }
 
     public void setIsSelfBuyList(List<Boolean> isSelfBuyList){
@@ -213,11 +250,21 @@ public class PurchaseOrder{
     }
 
     public List<Boolean> getIsSelfBuyList(){
-        return (List<Boolean>) purchaseOrder.getProperty("is_self_buy_list");
+        List<Boolean> isSelfBuyList = (List<Boolean>) purchaseOrder.getProperty("is_self_buy_list");
+        if (isSelfBuyList == null){
+            return new ArrayList<>();
+        } else {
+            return isSelfBuyList;
+        }
     }
 
     public List<Boolean> getIsSelfBuyList(Entity passedEntity){
-        return (List<Boolean>) passedEntity.getProperty("is_self_buy_list");
+        List<Boolean> isSelfBuyList = (List<Boolean>) passedEntity.getProperty("is_self_buy_list");
+        if (isSelfBuyList == null){
+            return new ArrayList<>();
+        } else {
+            return isSelfBuyList;
+        }
     }
 
     public void setAmountsList(List<Long> amountsList){
@@ -225,11 +272,21 @@ public class PurchaseOrder{
     }
 
     public List<Long> getAmountsList(){
-        return (List<Long>) purchaseOrder.getProperty("amounts_list");
+        List<Long> amountsList = (List<Long>) purchaseOrder.getProperty("amounts_list");
+        if (amountsList == null){
+            return new ArrayList<>();
+        } else {
+            return amountsList;
+        }
     }
 
     public List<Long> getAmountsList(Entity passedEntity){
-        return (List<Long>) passedEntity.getProperty("amounts_list");
+        List<Long> amountsList = (List<Long>) passedEntity.getProperty("amounts_list");
+        if (amountsList == null){
+            return new ArrayList<>();
+        } else {
+            return amountsList;
+        }
     }
 
     public void setCompleted(boolean completed){

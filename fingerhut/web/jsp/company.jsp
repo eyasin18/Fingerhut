@@ -33,6 +33,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}../css/getmdl-select.min.css">
     <script defer src="${pageContext.request.contextPath}../js/getmdl-select.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js"></script>
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -207,7 +209,6 @@
                                 for(Product product : products){
                                     String nameStr = product.getName();
                                     double priceStr = product.getPrice();
-
                             %>
                             <tr>
                                 <th><%= nameStr %></th>
@@ -250,6 +251,7 @@
 </div>
 </body>
 <script src="${pageContext.request.contextPath}../js/product.js" ></script>
+<!-- Firebase Zeug -->
 <script>
     var PurchaseOrder = document.getElementById("purchase_order");
     var Products = document.getElementById("");
@@ -261,6 +263,84 @@
     PurchaseOrder.style.display = "none";
     AddPurchase.style.display = "none";
     AddProductToPurchase.style.display = "none";
+    /*if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('../js/firebase-messaging-sw.js', { scope: '/js/' }).then(function(reg) {
+
+            if(reg.installing) {
+                console.log('Service worker installing');
+            } else if(reg.waiting) {
+                console.log('Service worker installed');
+            } else if(reg.active) {
+                console.log('Service worker active');
+            }
+
+        }).catch(function(error) {
+            // registration failed
+            console.log('Registration failed with ' + error);
+        });
+    }*/
+    var config = {
+        apiKey: "AIzaSyCDc9cZesVuUdSgb1eJiTv1Pj_Rq3BzFTA",
+        authDomain: "fingerhut388.firebaseapp.com",
+        databaseURL: "https://fingerhut388.firebaseio.com",
+        projectId: "fingerhut388",
+        storageBucket: "fingerhut388.appspot.com",
+        messagingSenderId: "337864032929"
+    };
+    firebase.initializeApp(config);
+    var messaging = firebase.messaging();
+    var registrationToken;
+
+    messaging.getToken()
+        .then(function(currentToken) {
+            if (currentToken) {
+                console.log("Token received: " + currentToken);
+                registrationToken = currentToken;
+            } else {
+                // Show permission request.
+                console.log('No Instance ID token available. Request permission to generate one.');
+                messaging.requestPermission()
+                    .then(function() {
+                        console.log('Notification permission granted.');
+                        console.log("Token: " + messaging.getToken());
+                        // TODO(developer): Retrieve an Instance ID token for use with FCM.
+                        // [START_EXCLUDE]
+                        // In many cases once an app has been granted notification permission, it
+                        // should update its UI reflecting this.
+                        resetUI();
+                        // [END_EXCLUDE]
+                    })
+                    .catch(function(err) {
+                        console.log('Unable to get permission to notify.', err);
+                    });
+                //messaging.refreshAuthToken();
+                console.log("Token received: " + currentToken);
+            }
+        })
+        .catch(function(err) {
+            console.log('An error occurred while retrieving token. ', err);
+        });
+
+    // Callback fired if Instance ID token is updated.
+    messaging.onTokenRefresh(function() {
+        messaging.getToken()
+            .then(function(refreshedToken) {
+                console.log('Token refreshed.');
+                console.log("Refreshed token: " + refreshedToken);
+            })
+            .catch(function(err) {
+                console.log('Unable to retrieve refreshed token ', err);
+            });
+    });
+
+    messaging.onMessage(function (payload) {
+        console.log("Message received", payload);
+    });
+</script>
+<script>
+    var purchaseOrder = document.getElementById("purchase_order");
+    var purchaseOrders = document.getElementById("purchase_orders");
+    purchaseOrder.style.display = "none";
 
     //Funktion zum hinzufügen eines neuen Kaufauftrags
     function newTableEntryOrder(date,account,amount){
@@ -287,6 +367,12 @@
         cell3.innerHTML = "<button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' onclick='edit(this.parentNode.parentNode.rowIndex)'>Edit</button>";
     }
 
+    function edit(position) {
+        purchaseOrders.style.display = "none";
+        purchaseOrder.style.display = "block";
+        var purchaseOrderInfoTable = document.getElementById("purchase_info_table");
+    }
+
     function editPurchaseorders(){
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "block";
@@ -300,6 +386,28 @@
 
     function back() {
         PurchaseOrders.style.display = "flex";
+        purchaseOrders.style.display = "block";
+        purchaseOrder.style.display = "none";
+    }
+
+    function addPurchaseOrderItem(position) {
+
+    }
+
+    function registerFCMTopicAsync() {
+        var url = "https://iid.googleapis.com/iid/v1/" + registrationToken + "/rel/topics/<%=companynumber%>-shoppingRequests";
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.setRequestHeader("Content-Type", "application/json");
+        xmlHttp.setRequestHeader("Authorization", "key=AAAATqpEAqE:APA91bHDNQ6rnzBLpMgpuM_FZyrArDP5Fdu8nYtlEwIJ6PIAKxzaaoEcp4X0NYMok3A-BCjbRrLoCMZWZauGjkZ1wyx7NuQxliu08cZUPz1CvK5JFp3U72IrBWWNqGNxJMljc6e6vlQD");
+        xmlHttp.onreadystatechange = function() {
+            console.log(xmlHttp.status);
+            if (xmlHttp.readyState === 4 && xmlHttp.status === 200){
+                console.log(xmlHttp.responseText);
+            }
+        };
+        xmlHttp.open("POST", url, true); // true for asynchronous
+        xmlHttp.send(null);
+        PurchaseOrders.style.display = "block";
         PurchaseOrder.style.display = "none";
         AddPurchase.style.display = "none";
         AddProductToPurchase.style.display = "none";

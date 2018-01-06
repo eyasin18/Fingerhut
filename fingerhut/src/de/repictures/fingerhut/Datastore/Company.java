@@ -125,7 +125,7 @@ public class Company extends Account {
         return (String) passedEntity.getProperty("owner");
     }
 
-    public List<Entity> getProducts(Entity passedEntity){
+    public List<Entity> getSellingProductEntities(Entity passedEntity){
         try {
             ArrayList<Entity> products = new ArrayList<>();
             if (passedEntity.getProperty("products") != null) {
@@ -141,7 +141,7 @@ public class Company extends Account {
         }
     }
 
-    public List<Entity> getProducts(){
+    public List<Entity> getSellingProductEntities(){
         try {
             ArrayList<Entity> products = new ArrayList<>();
             if (company.getProperty("products") != null) {
@@ -154,6 +154,42 @@ public class Company extends Account {
         } catch (EntityNotFoundException e){
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public Product[] getSellingProducts(){
+        try {
+            if (company.getProperty("products") != null) {
+                ArrayList<String> productsStr = (ArrayList<String>) company.getProperty("products");
+                Product[] products = new Product[productsStr.size()];
+                for (int i = 0; i < productsStr.size(); i++) {
+                    Entity productEntity = datastore.get(KeyFactory.stringToKey(productsStr.get(i)));
+                    products[i] = new Product(productEntity);
+                }
+                return products;
+            }
+            return new Product[0];
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            return new Product[0];
+        }
+    }
+
+    public Product[] getSellingProducts(Entity passedEntity){
+        try {
+            if (passedEntity.getProperty("products") != null) {
+                ArrayList<String> productsStr = (ArrayList<String>) passedEntity.getProperty("products");
+                Product[] products = new Product[productsStr.size()];
+                for (int i = 0; i < productsStr.size(); i++) {
+                    Entity productEntity = datastore.get(KeyFactory.stringToKey(productsStr.get(i)));
+                    products[i] = new Product(productEntity);
+                }
+                return products;
+            }
+            return new Product[0];
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            return new Product[0];
         }
     }
 

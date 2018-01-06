@@ -72,20 +72,10 @@ public class CompletePurchaseOrder extends HttpServlet {
                         case "prices":
                             String pricesStr = String.valueOf(bodyPart.getContent());
                             pricesArray = Arrays.stream(pricesStr.split("ò")).map(Double::parseDouble).toArray(Double[]::new);
-                            /*String[] pricesStrArray = pricesStr.split("ò");
-                            pricesArray = new Double[pricesStrArray.length];
-                            for (int o = 0; i < pricesStrArray.length; i++){
-                                pricesArray[o] = Double.parseDouble(pricesStrArray[o]);
-                            }*/
                             break;
                         case "isselfbuy":
                             String isSelfBuyStr = String.valueOf(bodyPart.getContent());
                             isSelfBuyArray = Arrays.stream(isSelfBuyStr.split("ò")).map(Boolean::parseBoolean).toArray(Boolean[]::new);
-                            /*String[] isSelfBuyStrArray = isSelfBuyStr.split("ò");
-                            isSelfBuyArray = new Boolean[isSelfBuyStrArray.length];
-                            for (int o = 0; i < isSelfBuyStrArray.length; i++){
-                                isSelfBuyArray[o] = Boolean.parseBoolean(isSelfBuyStrArray[o]);
-                            }*/
                             break;
                     }
                 } else {
@@ -96,9 +86,6 @@ public class CompletePurchaseOrder extends HttpServlet {
             e.printStackTrace();
         }
 
-        /*log("Company Number: " + companynumber + "\nsellerAccountnumber: "+ sellerAccountnumber + "\nbuyerAccountnumber: " + buyerAccountnumber
-            + "\nwebstring: " + webstring + "\npurchaseOrderNumber: " + purchaseOrderNumber + "\nproductCodesArray: " + productCodesArray.toString() + "\namountsArray: " + amountsArray.toString()
-            + "\npricesArray: " + pricesArray.toString() + "\nisSelfBuyArray: " + isSelfBuyArray.toString());*/
         if (companynumber == null || sellerAccountnumber == null || buyerAccountnumber == null || webstring == null
                 || productCodesArray == null || amountsArray == null || pricesArray == null || isSelfBuyArray == null){
             resp.getWriter().println(0);
@@ -121,7 +108,7 @@ public class CompletePurchaseOrder extends HttpServlet {
             StringBuilder purposeBuilder = new StringBuilder();
             purposeBuilder.append("Ihr Einkauf bei ")
                     .append(companyGetter.getOwner())
-                    .append("\n");
+                    .append(":\n");
             double priceSum = 0.0;
 
             for (int i = 0; i < amountsArray.length; i++) {

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 public class PrivateLogin extends HttpServlet {
 
     private Logger log = Logger.getLogger(Account.class.getName());
+    public static int appVersion = 3;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -46,10 +47,19 @@ public class PrivateLogin extends HttpServlet {
         String authPart = req.getParameter("authPart");
         String deviceToken = req.getParameter("token");
         if (deviceToken != null) deviceToken = URLDecoder.decode(deviceToken, "UTF-8");
+        String appVersionStr = req.getParameter("appversion");
+        int appVersion = 0;
+        if (appVersionStr != null) appVersion = Integer.valueOf(appVersionStr);
 
         //Überprüfe ob alle Parameter empfangen wurden
-        if (accountnumber == null || inputPassword == null || serverTimeStamp == null || authPart == null || deviceToken == null){
+        if (accountnumber == null || inputPassword == null || serverTimeStamp == null || authPart == null || deviceToken == null || appVersion == 0){
             resp.getWriter().println("-1");
+            return;
+        }
+
+        //Überprüfe ob die App-Version aktuell ist
+        if (appVersion != PrivateLogin.appVersion){
+            resp.getWriter().println("-3");
             return;
         }
 

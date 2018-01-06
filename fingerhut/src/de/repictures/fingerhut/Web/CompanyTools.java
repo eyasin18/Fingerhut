@@ -5,7 +5,6 @@ import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Product;
 import de.repictures.fingerhut.Datastore.PurchaseOrder;
-import org.apache.http.HttpRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -41,12 +40,7 @@ public class CompanyTools {
 
     public Product[] querySellingProducts(String companynumber){
         Company companyGetter = new Company(companynumber);
-        List<Entity> productEntities = companyGetter.getProducts();
-        Product[] products = new Product[productEntities.size()];
-        for (int i = 0; i < productEntities.size(); i++){
-            products[i] = new Product(productEntities.get(i));
-        }
-        return products;
+        return companyGetter.getSellingProducts();
     }
 
     public PurchaseOrder[] queryPurchasOrders(String companynumber, HttpServletRequest req){
@@ -59,4 +53,17 @@ public class CompanyTools {
         return purchaseOrders;
     }
 
+    @Deprecated
+    public List<Product> getPurchaseOrdersProducts(PurchaseOrder[] purchaseOrders){
+        List<Product> purchaseOrdersProducts = new ArrayList<>();
+        for (PurchaseOrder purchaseOrder : purchaseOrders){
+            List<String> productCodes = purchaseOrder.getProductCodesList();
+            for (String productCode : productCodes){
+                if(purchaseOrdersProducts.stream().anyMatch(product -> product.getCode().equals(productCode))){
+                    purchaseOrdersProducts.add(new Product(productCode));
+                }
+            }
+        }
+        return purchaseOrdersProducts;
+    }
 }

@@ -14,21 +14,29 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class LoginConfirmation extends HttpServlet {
+
+    private Logger log = Logger.getLogger(this.getClass().getName());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String accountnumber = req.getParameter("accountnumber");
+        String sessionAccountnumber = req.getParameter("sessionaccountnumber");
         String webString = req.getParameter("webstring");
 
+        Account sessionAccountGetter = new Account(sessionAccountnumber);
         Account accountGetter = new Account(accountnumber);
 
-        if (!Objects.equals(webString, accountGetter.getRandomWebString())){
-            resp.getWriter().println();
-            resp.setStatus(HttpServletResponse.SC_CONFLICT);
+        log.info("Passed Webstring: " + webString + "\nSaved Webstring: " + sessionAccountGetter.getRandomWebString());
+        if (!Objects.equals(webString, sessionAccountGetter.getRandomWebString())){
+            log.info("hoi");
+            resp.getWriter().println("hoi");
+            resp.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
             return;
         }
+        log.info("hoi2");
 
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
@@ -41,6 +49,7 @@ public class LoginConfirmation extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String accountnumber = req.getParameter("accountnumber");
         if (accountnumber != null) accountnumber = URLDecoder.decode(accountnumber, "UTF-8");
+        String sessionAccountnumber = req.getParameter("sessionaccountnumber");
         String companynumber = req.getParameter("companynumber");
         if (companynumber != null) companynumber = URLDecoder.decode(companynumber, "UTF-8");
         String inputHashedSaltedPassword = req.getParameter("password");
@@ -48,11 +57,12 @@ public class LoginConfirmation extends HttpServlet {
         if (serverTimeStamp != null) serverTimeStamp = URLDecoder.decode(serverTimeStamp, "UTF-8");
         String webString = req.getParameter("webstring");
 
+        Account sessionAccountGetter = new Account(sessionAccountnumber);
         Account accountGetter = new Account(accountnumber);
         Company companyGetter = null;
         if (companynumber != null) companyGetter = new Company(companynumber);
 
-        if (!Objects.equals(webString, accountGetter.getRandomWebString())){
+        if (!Objects.equals(webString, sessionAccountGetter.getRandomWebString())){
             resp.getWriter().println(2);
             return;
         }
