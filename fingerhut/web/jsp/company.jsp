@@ -1,7 +1,8 @@
-<%@ page import="de.repictures.fingerhut.Web.MainTools" %>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<!-- Import die Tools/Methoden/Funktionen aus den Java-Klassen -->
 <%@ page import="de.repictures.fingerhut.Web.CompanyTools" %>
+<%@ page import="de.repictures.fingerhut.Web.MainTools" %>
 <%@ page import="de.repictures.fingerhut.Datastore.Product" %>
 <%@ page import="de.repictures.fingerhut.Datastore.PurchaseOrder" %>
 <%@ page import="java.util.ArrayList" %>
@@ -22,6 +23,7 @@
     }
     CompanyTools companyTools = new CompanyTools(accountnumber);
 %>
+
 <!doctype html>
 <html>
 <head>
@@ -38,17 +40,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
-            mdl-layout--fixed-header">
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+    <!-- Der Header der den Firmenname anzeigt -->
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
             <span class="mdl-layout-title">
+                <!-- Name der Firma wird ermittelt -->
             <%=
                 companyTools.getOwner(companynumber)
             %>
             </span>
         </div>
     </header>
+
+    <!--  Navigation -->
     <div class="mdl-layout__drawer">
         <nav class="mdl-navigation">
             <a class="mdl-navigation__link" href="#purchase_orders">Kaufaufträge</a>
@@ -57,12 +62,16 @@
             <a class="mdl-navigation__link" href="#employees">Mitarbeiter</a>
         </nav>
     </div>
+
     <main class="mdl-layout__content">
         <div class="page-content">
             <div class="mdl-grid">
+
+                <!-- Hier beginnt der Teil der für die Karte Kaufaufträge zuständig ist -->
+
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="purchase_orders">
                     <h2 class="mdl-card__title-text" id="purchase_heading">Kaufaufträge</h2>
-                    <table class="mdl-data-table mdl-js-data-table" id="purchase_table">
+                        <table class="mdl-data-table mdl-js-data-table" id="purchase_table">
                         <thead>
                             <tr>
                                 <th>Datum/Uhrzeit</th>
@@ -110,6 +119,7 @@
                         </button>
                     </div>
                 </div>
+
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="purchase_order">
                     <table class="mdl-data-table mdl-js-data-table" id="purchase_info_table">
                         <thead>
@@ -124,9 +134,10 @@
                         </tbody>
                     </table>
                     <div class ="wrapper">
-                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="back()" id="back_button">Fertig</button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backOrder()" id="back_button_order">Fertig</button>
                     </div>
                 </div>
+
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="add_purchase">
                     <div class="mdl-card__menu">
                         <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="addProductToPurchase()">
@@ -184,7 +195,7 @@
                 </div>
 
 
-                <!-- Hier beginnt der Teil der für de Karte Statistiken zuständig ist -->
+                <!-- Hier beginnt der Teil der für die Karte Statistiken zuständig ist -->
 
 
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="statistics">
@@ -193,6 +204,9 @@
                         Hier können sie die Statistiken ihres Unternehmens einsehen.
                     </div>
                 </div>
+
+                <!-- Hier beginnt der Teil der für die Karte Produkt zuständig ist ist -->
+
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="products">
                     <h2 class="mdl-card__title-text" id="products_heading">Produkte</h2>
                     <table class="mdl-data-table mdl-js-data-table" id="producttable">
@@ -209,7 +223,7 @@
                                     String nameStr = product.getName();
                                     double priceStr = product.getPrice();
                             %>
-                            <tr>
+                            <tr onclick="editProducts(this.rowIndex)">
                                 <th><%= nameStr %></th>
                                 <th><%= priceStr + " S"%></th>
                             </tr>
@@ -224,6 +238,25 @@
                         </button>
                     </div>
                 </div>
+                <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="product">
+                    <table class="mdl-data-table mdl-js-data-table" id="product_info_table">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Preis</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                    <div class ="wrapper">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="back()" id="back_button">Fertig</button>
+                    </div>
+                </div>
+
+                <!-- Hier beginnt der Teil der für die Karte Mitarbeiter zuständig ist -->
+
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="employees">
                     <h2 class="mdl-card__title-text" id="employee_heading">Mitarbeiter</h2>
                     <table class="mdl-data-table mdl-js-data-table">
@@ -250,19 +283,25 @@
 </div>
 </body>
 <script src="${pageContext.request.contextPath}../js/product.js" ></script>
+
 <!-- Firebase Zeug -->
+
 <script>
+    //Kaufaufträge betreffend
     var PurchaseOrder = document.getElementById("purchase_order");
-    var Products = document.getElementById("");
     var PurchaseOrders = document.getElementById("purchase_orders");
     var AddPurchase = document.getElementById("add_purchase");
     var AddProductToPurchase = document.getElementById("add_product_to_purchase");
-    var productarray = [];
-    var product = pojo('name', 'price', 'code','amount');
+
+    //Produkte betreffend
+    var Products = document.getElementById("products");
+    var Product = document.getElementById("product");
+
     var list = document.getElementById("dropdown_list");
     PurchaseOrder.style.display = "none";
     AddPurchase.style.display = "none";
     AddProductToPurchase.style.display = "none";
+
     for(var k = 0; k < productarray.length; k++)
     {
         var entry = document.createElement('li');
@@ -270,6 +309,7 @@
         entry.className ="mdl-menu__item";
         list.appendChild(entry);
     }
+
     /*if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('../js/firebase-messaging-sw.js', { scope: '/js/' }).then(function(reg) {
 
@@ -286,6 +326,7 @@
             console.log('Registration failed with ' + error);
         });
     }*/
+
     var config = {
         apiKey: "AIzaSyCDc9cZesVuUdSgb1eJiTv1Pj_Rq3BzFTA",
         authDomain: "fingerhut388.firebaseapp.com",
@@ -294,6 +335,7 @@
         storageBucket: "fingerhut388.appspot.com",
         messagingSenderId: "337864032929"
     };
+
     firebase.initializeApp(config);
     var messaging = firebase.messaging();
     var registrationToken;
@@ -374,7 +416,6 @@
         cell3.innerHTML = "<button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' onclick='edit(this.parentNode.parentNode.rowIndex)'>Edit</button>";
     }
 
-
     function editPurchaseorders(position){
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "block";
@@ -383,14 +424,23 @@
         var purchaseOrderInfoTable = document.getElementById("purchase_info_table");
     }
 
-    function editProducts(){
-
+    function editProducts(position){
+        Products.style.display = "none";
+        Product.style.display = "block";
+        AddPurchase.style.display = "none";
+        AddProductToPurchase.style.display = "none";
+        var productInfoTable = document.getElementById("product_info_table" );
     }
 
-    function back() {
+    function backOrder() {
         PurchaseOrders.style.display = "flex";
         purchaseOrders.style.display = "block";
         purchaseOrder.style.display = "none";
+    }
+
+    function backProduct(){
+        Products.style.display = "flex";
+
     }
 
     function addPurchaseOrderItem(position) {
@@ -444,7 +494,7 @@
         var cell3 = row.insertCell(2);
         cell2.innerHTML = Product;
         cell1.innerHTML = Amount;
-        cell3.innerHTML = getPricethroughName(Product) * parseFloat(Amount);
+        cell3.innerHTML = getPriceThroughName(Product) * parseFloat(Amount);
     }
 
     function addPurchaseToTable() {
@@ -454,6 +504,9 @@
         AddProductToPurchase.style.display = "none";
     }
 
+    //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
+    var product = pojo('name', 'price', 'code','amount');
+    var productarray = [];
     <% int i = 0;%>
     for(i = 0;i < <%= products.length %>; i++) {
 
@@ -465,7 +518,7 @@
         <% i++;%>
     }
 
-    function getPricethroughName(name){
+    function getPriceThroughName(name){//ermittelt den Preis eines Produktes indem der Name übergeben wird
         for(var j = 0; j < productarray.length; j++){
             if (name == productarray[j].name){
                 return parseFloat(productarray[j].price);
