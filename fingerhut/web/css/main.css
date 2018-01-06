@@ -11,6 +11,13 @@
 }
 #kontostand{
     margin-left: auto;
+    margin-bottom: auto;
+    margin-top: auto;
+}
+#balance{
+    margin-right: auto;
+    margin-bottom: auto;
+    margin-top: auto;
 }
 #business_icon{
     margin-right: auto;

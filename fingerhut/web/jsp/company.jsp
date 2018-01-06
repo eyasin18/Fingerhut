@@ -10,11 +10,13 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Calendar" %>
 <%@ page import="java.text.ParseException" %>
+<%@ page import="java.util.logging.Logger" %>
 
 <%
     String code = request.getParameter("webstring");
     String accountnumber = request.getParameter("accountnumber");
     String companynumber = request.getParameter("companynumber");
+    Logger log = Logger.getLogger("company.jsp");
     MainTools mainTools = new MainTools(accountnumber);
     if (!mainTools.isAuthentificated(code)){
         response.sendRedirect("https://fingerhut388.appspot.com/");
@@ -29,6 +31,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.green-light_green.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}../css/getmdl-select.min.css">
+    <script defer src="${pageContext.request.contextPath}../js/getmdl-select.min.js"></script>
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -69,16 +73,15 @@
                         <%
                             PurchaseOrder[] purchaseOrders = companyTools.queryPurchasOrders(companynumber, request);
                             for (PurchaseOrder purchaseOrder : purchaseOrders){
-
                                 //Preis berechnen
                                 double priceSum = 0.0;
                                 List<Long> amountsList = purchaseOrder.getAmountsList();
                                 List<Double> pricesList = purchaseOrder.getPricesList();
-                                for (int o = 0; o < amountsList.size(); o++){
-                                    priceSum += (amountsList.get(o) * pricesList.get(o));
-                                }
+                                if(amountsList!=null && pricesList!=null)
+                                    for (int o = 0; o < amountsList.size(); o++){
+                                        priceSum += (amountsList.get(o) * pricesList.get(o));
+                                    }
                                 String priceSumStr = new DecimalFormat("#.00").format(priceSum) + " S";
-
                                 //DateTime anpassen
                                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", request.getLocale());
                                 Calendar calendar = Calendar.getInstance();
@@ -119,7 +122,9 @@
                         <tbody>
                         </tbody>
                     </table>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="back()" id="back_button">Fertig</button>
+                    <div class ="wrapper">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="back()" id="back_button">Fertig</button>
+                    </div>
                 </div>
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="add_purchase">
                     <div class="mdl-card__menu">
@@ -127,10 +132,12 @@
                             <i class="material-icons">add</i>
                         </button>
                     </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample4">
-                        <label class="mdl-textfield__label" for="sample4">Kontonummer</label>
-                        <span class="mdl-textfield__error">Eingabe ist keine Zahl</span>
+                    <div class="wrapper">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label wrapper" id="add_purchase_textfield">
+                            <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample4">
+                            <label class="mdl-textfield__label" for="sample4">Kontonummer</label>
+                            <span class="mdl-textfield__error">Eingabe ist keine Zahl</span>
+                        </div>
                     </div>
                     <table class="mdl-data-table mdl-js-data-table" id="add_purchase_table">
                         <thead>
@@ -143,33 +150,36 @@
                         <tbody>
                         </tbody>
                     </table>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="addPurchaseToTable()">
-                        Fertig
-                    </button>
+                    <div class="wrapper">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addPurchaseToTable()" id="finish_button">
+                            Fertig
+                        </button>
+                    </div>
                 </div>
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="add_product_to_purchase">
+                    <div class="wrapper">
                     <div class="mdl-card__title">
-                        <h2 class="mdl-card__title-text">Neues Produkt zum Kaufauftrag hinzufügen</h2>
+                        <h2 class="mdl-card__title-text" id="add_product_to_purchase_heading">Neues Produkt zum Kaufauftrag hinzufügen</h2>
                     </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample5">
-                        <label class="mdl-textfield__label" for="sample5">Kontonummer</label>
+                        <label class="mdl-textfield__label" for="sample5">Anzahl</label>
                         <span class="mdl-textfield__error">Eingabe ist keine Zahl!</span>
                     </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
-                        <input type="text" value="" class="mdl-textfield__input" id="sample6" readonly>
-                        <input type="hidden" value="" name="sample6">
-                        <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
-                        <label for="sample6" class="mdl-textfield__label">Country</label>
-                        <ul for="sample6" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                            <li class="mdl-menu__item" data-val="DEU">Germany</li>
-                            <li class="mdl-menu__item" data-val="BLR">Belarus</li>
-                            <li class="mdl-menu__item" data-val="RUS">Russia</li>
-                        </ul>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height">
+                            <input type="text" value="" class="mdl-textfield__input" id="sample6" readonly>
+                            <input type="hidden" value="" name="sample6">
+                            <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                            <label for="sample6" class="mdl-textfield__label">Produkt</label>
+                            <ul for="sample6" class="mdl-menu mdl-menu--bottom-left mdl-js-menu" id="dropdown_list">
+                            </ul>
+                        </div>
                     </div>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="addProductToPurchaseTable()">
-                        Hinzufügen
-                    </button>
+                    <div class="wrapper">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" id="add_to_purchase_button" onclick="addProductToPurchaseTable()">
+                            Hinzufügen
+                        </button>
+                    </div>
                 </div>
 
 
@@ -246,6 +256,8 @@
     var PurchaseOrders = document.getElementById("purchase_orders");
     var AddPurchase = document.getElementById("add_purchase");
     var AddProductToPurchase = document.getElementById("add_product_to_purchase");
+    var productarray = [];
+    var product = pojo('name', 'price', 'code','amount');
     PurchaseOrder.style.display = "none";
     AddPurchase.style.display = "none";
     AddProductToPurchase.style.display = "none";
@@ -287,42 +299,56 @@
     }
 
     function back() {
-        PurchaseOrders.style.display = "block";
+        PurchaseOrders.style.display = "flex";
         PurchaseOrder.style.display = "none";
         AddPurchase.style.display = "none";
         AddProductToPurchase.style.display = "none";
     }
 
     function addPurchase() {
-        AddPurchase.style.display = "block";
+        AddPurchase.style.display = "inline-block";
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
     }
 
     function addProductToPurchase() {
+        var list = document.getElementById("dropdown_list");
         AddPurchase.style.display = "none";
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "none";
-        AddProductToPurchase.style.display = "block";
+        AddProductToPurchase.style.display = "inline-block";
+        for(var k = 0; k < productarray.length; k++)
+        {
+            var entry = document.createElement('li');
+            entry.appendChild(document.createTextNode(productarray[k].name));
+            list.appendChild(entry);
+        }
     }
 
     function addProductToPurchaseTable() {
-        AddPurchase.style.display = "block";
+        AddPurchase.style.display = "flex";
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
+        var table = document.getElementById("add_purchase_table");
+        var Product = document.getElementById("sample6").value;
+        var Amount = document.getElementById("sample5").value;
+        var row = table.insertRow(document.getElementById("add_purchase_table").rows.length);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        cell2.innerHTML = Product;
+        cell1.innerHTML = Amount;
+        cell3.innerHTML = getPricethroughName(Product) * parseFloat(Amount);
     }
 
     function addPurchaseToTable() {
         AddPurchase.style.display = "none";
-        PurchaseOrders.style.display = "block";
+        PurchaseOrders.style.display = "flex";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
     }
-
-    var productarray = [];
-    var product = pojo('name', 'price', 'code','amount');
 
     <% int i = 0;%>
     for(i = 0;i < <%= products.length %>; i++) {
@@ -334,5 +360,14 @@
         );
         <% i++;%>
     }
+
+    function getPricethroughName(name){
+        for(var j = 0; j < productarray.length; j++){
+            if (name == productarray[j].name){
+                return parseFloat(productarray[j].price);
+            }
+        }
+    }
+
 </script>
 </html>

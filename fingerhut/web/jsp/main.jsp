@@ -63,7 +63,7 @@
                 <div class="content-grid mdl-grid">
                     <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col content-grid mdl-grid">
                         <div class="mdl-card mdl-cell mdl-cell--6-col">
-                            <div class="mdl-card__title">
+                            <div id="balance">
                                 <script>
                                     <%
                                     String balancestring = mainTools.getBalance(accountnumber);

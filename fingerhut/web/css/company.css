@@ -35,6 +35,17 @@
     margin-right: auto;
     margin-bottom: 60px;
 }
-#add_purchase_table{
-    margin-top: 60px;
+#add_purchase_textfield{
+    margin-bottom: 20px;
+    text-align: center;
+}
+#back_button{
+    position: absolute;
+    margin-top: 3%;
+}
+.wrapper {
+    text-align: center;
+}
+#add_to_purchase_button{
+
 }
