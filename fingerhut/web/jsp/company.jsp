@@ -16,7 +16,6 @@
     String code = request.getParameter("webstring");
     String accountnumber = request.getParameter("accountnumber");
     String companynumber = request.getParameter("companynumber");
-    Logger log = Logger.getLogger("company.jsp");
     MainTools mainTools = new MainTools(accountnumber);
     if (!mainTools.isAuthentificated(code)){
         response.sendRedirect("https://fingerhut388.appspot.com/");
@@ -95,7 +94,7 @@
                                 sdf = new SimpleDateFormat("E HH:mm", request.getLocale());
                                 String dateTimeStr = sdf.format(calendar.getTime()) + " Uhr";
                         %>
-                            <tr onclick="editPurchaseorders()">
+                            <tr onclick="editPurchaseorders(this.rowIndex)">
                                 <th><%= dateTimeStr %></th>
                                 <th><%= purchaseOrder.getNumber() %></th>
                                 <th><%= priceSumStr %></th>
@@ -159,16 +158,16 @@
                     </div>
                 </div>
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="add_product_to_purchase">
-                    <div class="wrapper">
                     <div class="mdl-card__title">
                         <h2 class="mdl-card__title-text" id="add_product_to_purchase_heading">Neues Produkt zum Kaufauftrag hinzufügen</h2>
                     </div>
+                    <div class="wrapper">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample5">
                         <label class="mdl-textfield__label" for="sample5">Anzahl</label>
                         <span class="mdl-textfield__error">Eingabe ist keine Zahl!</span>
-                    </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height">
+                        </div>
                             <input type="text" value="" class="mdl-textfield__input" id="sample6" readonly>
                             <input type="hidden" value="" name="sample6">
                             <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
@@ -260,9 +259,17 @@
     var AddProductToPurchase = document.getElementById("add_product_to_purchase");
     var productarray = [];
     var product = pojo('name', 'price', 'code','amount');
+    var list = document.getElementById("dropdown_list");
     PurchaseOrder.style.display = "none";
     AddPurchase.style.display = "none";
     AddProductToPurchase.style.display = "none";
+    for(var k = 0; k < productarray.length; k++)
+    {
+        var entry = document.createElement('li');
+        entry.appendChild(document.createTextNode(productarray[k].name));
+        entry.className ="mdl-menu__item";
+        list.appendChild(entry);
+    }
     /*if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('../js/firebase-messaging-sw.js', { scope: '/js/' }).then(function(reg) {
 
@@ -367,17 +374,13 @@
         cell3.innerHTML = "<button class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' onclick='edit(this.parentNode.parentNode.rowIndex)'>Edit</button>";
     }
 
-    function edit(position) {
-        purchaseOrders.style.display = "none";
-        purchaseOrder.style.display = "block";
-        var purchaseOrderInfoTable = document.getElementById("purchase_info_table");
-    }
 
-    function editPurchaseorders(){
+    function editPurchaseorders(position){
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "block";
         AddPurchase.style.display = "none";
         AddProductToPurchase.style.display = "none";
+        var purchaseOrderInfoTable = document.getElementById("purchase_info_table");
     }
 
     function editProducts(){
@@ -421,17 +424,10 @@
     }
 
     function addProductToPurchase() {
-        var list = document.getElementById("dropdown_list");
         AddPurchase.style.display = "none";
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "inline-block";
-        for(var k = 0; k < productarray.length; k++)
-        {
-            var entry = document.createElement('li');
-            entry.appendChild(document.createTextNode(productarray[k].name));
-            list.appendChild(entry);
-        }
     }
 
     function addProductToPurchaseTable() {
