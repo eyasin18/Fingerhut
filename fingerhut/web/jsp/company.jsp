@@ -12,6 +12,7 @@
 <%@ page import="java.util.Calendar" %>
 <%@ page import="java.text.ParseException" %>
 <%@ page import="java.util.logging.Logger" %>
+<%@ page errorPage="errorpage.jsp" %>
 
 <%
     String code = request.getParameter("webstring");
@@ -130,6 +131,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+
                             </tbody>
                         </table>
                         <div class ="wrapper">
@@ -240,13 +242,14 @@
                             </button>
                         </div>
                     </div>
+
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="product">
                         <table class="mdl-data-table mdl-js-data-table" id="product_info_table">
                             <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Preis</th>
-                            </tr>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Preis</th>
+                                </tr>
                             </thead>
                             <tbody>
 
@@ -306,6 +309,7 @@
     PurchaseOrder.style.display = "none";
     AddPurchase.style.display = "none";
     AddProductToPurchase.style.display = "none";
+    Product.style.display = "none";
 
     for(var k = 0; k < productarray.length; k++)
     {
@@ -391,10 +395,6 @@
         console.log("Message received", payload);
     });
 
-    var purchaseOrder = document.getElementById("purchase_order");
-    var purchaseOrders = document.getElementById("purchase_orders");
-    purchaseOrder.style.display = "none";
-
     //Funktion zum hinzufügen eines neuen Kaufauftrags
     function newTableEntryOrder(date,account,amount){
         var table = document.getElementById("purchase_table");
@@ -434,17 +434,21 @@
         AddPurchase.style.display = "none";
         AddProductToPurchase.style.display = "none";
         var productInfoTable = document.getElementById("product_info_table" );
+        <%
+
+        %>
     }
 
     function backOrder() {
         PurchaseOrders.style.display = "flex";
-        purchaseOrders.style.display = "block";
-        purchaseOrder.style.display = "none";
+        PurchaseOrders.style.display = "block";
+        PurchaseOrder.style.display = "none";
     }
 
     function backProduct(){
         Products.style.display = "flex";
-
+        Products.style.display = "block";
+        Product.style.display = "none";
     }
 
     function addPurchaseOrderItem(position) {
