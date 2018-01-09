@@ -114,14 +114,14 @@ public class GetTransfer extends HttpServlet {
 
             String rawPurpose = "Web-Überweisung";
 
-            byte[] encryptedSenderPurpose = cryptor.encryptSymetricFromString(rawPurpose, randomSenderAesKey);
-            byte[] encryptedReceiverPurpose = cryptor.encryptSymetricFromString(rawPurpose, randomReceiverAesKey);
+            byte[] encryptedSenderPurpose = cryptor.encryptSymmetricFromString(rawPurpose, randomSenderAesKey);
+            byte[] encryptedReceiverPurpose = cryptor.encryptSymmetricFromString(rawPurpose, randomReceiverAesKey);
 
             senderPurposeStr = cryptor.bytesToHex(encryptedSenderPurpose);
             receiverPurposeStr = cryptor.bytesToHex(encryptedReceiverPurpose);
 
-            byte[] encryptedSenderAesKeyByte = cryptor.encryptAsymetric(randomSenderAesKey, senderPublicKey);
-            byte[] encryptedReceiverAesKeyByte = cryptor.encryptAsymetric(randomReceiverAesKey, receiverPublicKey);
+            byte[] encryptedSenderAesKeyByte = cryptor.encryptAsymmetric(randomSenderAesKey, senderPublicKey);
+            byte[] encryptedReceiverAesKeyByte = cryptor.encryptAsymmetric(randomReceiverAesKey, receiverPublicKey);
 
             senderAesKey = cryptor.bytesToHex(encryptedSenderAesKeyByte);
             receiverAesKey = cryptor.bytesToHex(encryptedReceiverAesKeyByte);

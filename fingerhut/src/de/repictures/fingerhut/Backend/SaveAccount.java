@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.Random;
 
 public class SaveAccount extends HttpServlet{
     @Override
@@ -21,7 +22,8 @@ public class SaveAccount extends HttpServlet{
         if(password != null){
             password = URLDecoder.decode(password, "UTF-8");
         } else {
-
+            Random rand = new Random();
+            password = String.format("%04d", rand.nextInt(10000));
         }
 
         //Account wird erstellt

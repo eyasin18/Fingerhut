@@ -23,7 +23,8 @@ public class Authenticate extends HttpServlet{
         Account accountBuilder = new Account(accountnumber);
         String authCode = accountBuilder.getAuthString();
         int accountnumberlength = accountnumber.length();
-        String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength+8), authCode.substring(accountnumberlength+8, accountnumberlength+16)};
+        String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength+8),
+                authCode.substring(accountnumberlength+8, accountnumberlength+16)};
         String output = URLEncoder.encode(authParts[1] + serverTimeStamp, "UTF-8");
         resp.getWriter().println(output);
     }
@@ -37,7 +38,8 @@ public class Authenticate extends HttpServlet{
 
         String authCode = accountBuilder.getAuthString();
         int accountnumberlength = accountnumber.length();
-        String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength+8), authCode.substring(accountnumberlength+8, accountnumberlength+16)};
+        String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength+8),
+                authCode.substring(accountnumberlength+8, accountnumberlength+16)};
 
         if (accountBuilder.account != null && Objects.equals(authParts[0], authPart)){
             String privateKey = accountBuilder.getPrivateKeyStr();

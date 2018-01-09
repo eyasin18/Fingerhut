@@ -37,7 +37,7 @@ public class PostQR extends HttpServlet{
         Blob qrBlob = accountBuilder.getQRBlob();
         byte[] qrData = qrBlob.getBytes();
 
-        qrData = cryptor.encryptSymetricFromByte(qrData, key);
+        qrData = cryptor.encryptSymmetricFromByte(qrData, key);
         response.write(qrData);
         response.flush();
         response.close();

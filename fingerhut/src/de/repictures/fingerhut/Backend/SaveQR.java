@@ -78,7 +78,7 @@ public class SaveQR extends HttpServlet {
         log.info("Password Length: " + password.length);
         byte[] encryptedAuthCode = cryptor.hexToBytes(encryptedAuthCodeHex);
         log.info("EncryptedAuthCode Length: " + encryptedAuthCode.length);
-        String authCode = cryptor.decryptSymetricToString(encryptedAuthCode, password);
+        String authCode = cryptor.decryptSymmetricToString(encryptedAuthCode, password);
         log.info("Decrypted Authcode: " + authCode);
 
 
@@ -93,7 +93,7 @@ public class SaveQR extends HttpServlet {
 
         encryptedImage = data;
         log.info("Encrypted Image length: " + encryptedImage.length);
-        byte[] image = cryptor.decryptSymetricToByte(encryptedImage, password);
+        byte[] image = cryptor.decryptSymmetricToByte(encryptedImage, password);
 
         log.info("Image size: " + image.length + " bytes");
         Blob imageBlob = new Blob(image);

@@ -54,7 +54,7 @@ public class Company extends Account {
             for (int i = 0; i < passwordKey.length; i++){
                 passwordKey[i] = passwordBytes[i % passwordBytes.length];
             }
-            byte[] encryptedPrivateKey = cryptor.encryptSymetricFromByte(privateKey, passwordKey);
+            byte[] encryptedPrivateKey = cryptor.encryptSymmetricFromByte(privateKey, passwordKey);
             encryptedPrivateKeyStr = cryptor.bytesToHex(encryptedPrivateKey);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

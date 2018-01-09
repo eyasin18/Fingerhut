@@ -77,7 +77,7 @@ public class Cryptor {
         }
     }
 
-    public byte[] encryptSymetricFromString(String input, byte[] key){
+    public byte[] encryptSymmetricFromString(String input, byte[] key){
         try{
             Cipher cipher = Cipher.getInstance("AES"); //Cipher Objekt wird erzeugt. Wir wollen auf AES verschlüsseln.
             SecretKey originalKey = new SecretKeySpec(key, 0, key.length, "AES"); //bytearray wir zum "SecretKey" gemacht (key [benutzter Schlüssel als bytearray], offset, [wie lang unser Schlüssel sein soll], algorithm [welchen verschlüsselungsargorythums verwenden wir?])
@@ -89,7 +89,7 @@ public class Cryptor {
         }
     }
 
-    public byte[] encryptSymetricFromByte(byte[] input, byte[] key){
+    public byte[] encryptSymmetricFromByte(byte[] input, byte[] key){
         try{
             Cipher cipher = Cipher.getInstance("AES"); //Cipher Objekt wird erzeugt. Wir wollen auf AES verschlüsseln.
             SecretKey originalKey = new SecretKeySpec(key, 0, key.length, "AES"); //bytearray wir zum "SecretKey" gemacht (key [benutzter Schlüssel als bytearray], offset, [wie lang unser Schlüssel sein soll], algorithm [welchen verschlüsselungsargorythums verwenden wir?])
@@ -101,7 +101,7 @@ public class Cryptor {
         }
     }
 
-    public String decryptSymetricToString(byte[] encryptedInput, byte[] key){
+    public String decryptSymmetricToString(byte[] encryptedInput, byte[] key){
         try {
             Cipher cipher = Cipher.getInstance("AES"); //Cipher Objekt wird erzeugt. Wir wollen auf AES entschlüsseln.
             SecretKey originalKey = new SecretKeySpec(key, 0, key.length, "AES"); //bytearray wir zum "SecretKey" gemacht (key [benutzter Schlüssel als bytearray], offset, [wie lang unser Schlüssel sein soll], algorithm [welchen verschlüsselungsargorythums verwenden wir?])
@@ -115,7 +115,7 @@ public class Cryptor {
         }
     }
 
-    public byte[] decryptSymetricToByte(byte[] encryptedInput, byte[] key){
+    public byte[] decryptSymmetricToByte(byte[] encryptedInput, byte[] key){
         try {
             Cipher cipher = Cipher.getInstance("AES"); //Cipher Objekt wird erzeugt. Wir wollen auf AES entschlüsseln.
             SecretKey originalKey = new SecretKeySpec(key, 0, key.length, "AES"); //bytearray wir zum "SecretKey" gemacht (key [benutzter Schlüssel als bytearray], offset, [wie lang unser Schlüssel sein soll], algorithm [welchen verschlüsselungsargorythums verwenden wir?])
@@ -128,7 +128,7 @@ public class Cryptor {
         }
     }
 
-    public byte[] encryptAsymetric(byte[] input, PublicKey publicKey){ // Verschlüsselt asymetrisch
+    public byte[] encryptAsymmetric(byte[] input, PublicKey publicKey){ // Verschlüsselt asymetrisch
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
@@ -140,7 +140,7 @@ public class Cryptor {
         }
     }
 
-    public byte[] decryptAsymetric(byte[] input, PrivateKey privateKey){ // Entschlüsselt asymetrisch
+    public byte[] decryptAsymmetric(byte[] input, PrivateKey privateKey){ // Entschlüsselt asymetrisch
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);

@@ -58,7 +58,7 @@ public class AccountSetter extends HttpServlet {
             for (int i = 0; i < passwordKey.length; i++){
                 passwordKey[i] = passwordBytes[i % passwordBytes.length];
             }
-            byte[] newPrivateKey = cryptor.encryptSymetricFromByte(privateKey, passwordKey);
+            byte[] newPrivateKey = cryptor.encryptSymmetricFromByte(privateKey, passwordKey);
             newPrivateKeyStr = cryptor.bytesToHex(newPrivateKey);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

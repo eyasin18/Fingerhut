@@ -249,14 +249,14 @@ public class Transfer {
         byte[] senderAesKey = cryptor.generateRandomAesKey();
         byte[] receiverAesKey = cryptor.generateRandomAesKey();
 
-        byte[] encryptedSenderPurpose = cryptor.encryptSymetricFromString(purpose, senderAesKey);
+        byte[] encryptedSenderPurpose = cryptor.encryptSymmetricFromString(purpose, senderAesKey);
         String encryptedSenderPurposeHex = cryptor.bytesToHex(encryptedSenderPurpose);
-        byte[] encryptedReceiverPurpose = cryptor.encryptSymetricFromString(purpose, receiverAesKey);
+        byte[] encryptedReceiverPurpose = cryptor.encryptSymmetricFromString(purpose, receiverAesKey);
         String encryptedReceiverPurposeHex = cryptor.bytesToHex(encryptedReceiverPurpose);
 
-        byte[] encryptedSenderAesKey = cryptor.encryptAsymetric(senderAesKey, senderPublicKey);
+        byte[] encryptedSenderAesKey = cryptor.encryptAsymmetric(senderAesKey, senderPublicKey);
         String encryptedSenderAesKeyHex = cryptor.bytesToHex(encryptedSenderAesKey);
-        byte[] encryptedReceiverAesKey = cryptor.encryptAsymetric(receiverAesKey, receiverPublicKey);
+        byte[] encryptedReceiverAesKey = cryptor.encryptAsymmetric(receiverAesKey, receiverPublicKey);
         String encryptedReceiverAesKeyHex = cryptor.bytesToHex(encryptedReceiverAesKey);
 
 

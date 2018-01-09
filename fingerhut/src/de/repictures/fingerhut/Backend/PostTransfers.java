@@ -104,7 +104,7 @@ public class PostTransfers extends HttpServlet {
                         }
                         PublicKey publicKey = cryptor.stringToPublicKey(publicKeyStr);
                         byte[] owner = ownerStr.getBytes("ISO-8859-1");
-                        byte[] encryptedOwner = cryptor.encryptAsymetric(owner, publicKey);
+                        byte[] encryptedOwner = cryptor.encryptAsymmetric(owner, publicKey);
                         output.append(cryptor.bytesToHex(encryptedOwner));
                         output.append("ò");
 
@@ -125,7 +125,7 @@ public class PostTransfers extends HttpServlet {
                         }
                         PublicKey publicKey = cryptor.stringToPublicKey(publicKeyStr);
                         byte[] owner = ownerStr.getBytes("ISO-8859-1");
-                        byte[] encryptedOwner = cryptor.encryptAsymetric(owner, publicKey);
+                        byte[] encryptedOwner = cryptor.encryptAsymmetric(owner, publicKey);
                         output.append(cryptor.bytesToHex(encryptedOwner));
                         output.append("ò");
 

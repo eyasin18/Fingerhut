@@ -1,7 +1,6 @@
 package de.repictures.fingerhut.Datastore;
 
 import com.google.appengine.api.datastore.*;
-import de.repictures.fingerhut.Backend.CompletePurchaseOrder;
 import de.repictures.fingerhut.Cryptor;
 
 import java.io.UnsupportedEncodingException;
@@ -61,7 +60,7 @@ public class Account {
             for (int i = 0; i < passwordKey.length; i++){
                 passwordKey[i] = passwordBytes[i % passwordBytes.length];
             }
-            byte[] encryptedPrivateKey = cryptor.encryptSymetricFromByte(privateKey, passwordKey);
+            byte[] encryptedPrivateKey = cryptor.encryptSymmetricFromByte(privateKey, passwordKey);
             encryptedPrivateKeyStr = cryptor.bytesToHex(encryptedPrivateKey);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -79,7 +78,7 @@ public class Account {
         setFeature(account,0, true);
         setPrivateKeyStr(account, encryptedPrivateKeyStr);
         setPublicKeyStr(account, publicKeyStr);
-        setAuthString(account);
+        setAuthString(account, accountnumber);
         saveAll(account);
     }
 
@@ -166,7 +165,7 @@ public class Account {
     public void setOwner(String owner){
         String encryptedPasswordHex = (String) account.getProperty("password");
         byte[] encryptedPassword = cryptor.hexToBytes(encryptedPasswordHex);
-        byte[] encryptedByteName = cryptor.encryptSymetricFromString(owner, encryptedPassword);
+        byte[] encryptedByteName = cryptor.encryptSymmetricFromString(owner, encryptedPassword);
         String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
         account.setProperty("owner", encryptedOwner);
     }
@@ -174,14 +173,14 @@ public class Account {
     public void setOwner(Entity accountEntity, String owner){
         String encryptedPasswordHex = (String) accountEntity.getProperty("password");
         byte[] encryptedPassword = cryptor.hexToBytes(encryptedPasswordHex);
-        byte[] encryptedByteName = cryptor.encryptSymetricFromString(owner, encryptedPassword);
+        byte[] encryptedByteName = cryptor.encryptSymmetricFromString(owner, encryptedPassword);
         String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
         accountEntity.setProperty("owner", encryptedOwner);
     }
 
     public void setOwner(String owner, String encryptedPasswordHex){
         byte[] encryptedPassword = cryptor.hexToBytes(encryptedPasswordHex);
-        byte[] encryptedByteName = cryptor.encryptSymetricFromString(owner, encryptedPassword);
+        byte[] encryptedByteName = cryptor.encryptSymmetricFromString(owner, encryptedPassword);
         String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
         account.setProperty("owner", encryptedOwner);
     }
@@ -191,7 +190,7 @@ public class Account {
         byte[] encryptedName = cryptor.hexToBytes(encryptedNameStr);
         String encryptedHexPasswordStr = (String) account.getProperty("password");
         byte[] encryptedPassword = cryptor.hexToBytes(encryptedHexPasswordStr);
-        return cryptor.decryptSymetricToString(encryptedName, encryptedPassword);
+        return cryptor.decryptSymmetricToString(encryptedName, encryptedPassword);
     }
 
     public String getOwner(Entity passedEntity){
@@ -199,7 +198,7 @@ public class Account {
         byte[] encryptedName = cryptor.hexToBytes(encryptedNameStr);
         String encryptedHexPasswordStr = (String) passedEntity.getProperty("password");
         byte[] encryptedPassword = cryptor.hexToBytes(encryptedHexPasswordStr);
-        return cryptor.decryptSymetricToString(encryptedName, encryptedPassword);
+        return cryptor.decryptSymmetricToString(encryptedName, encryptedPassword);
     }
 
     public String getEncryptedOwner(){
@@ -244,7 +243,7 @@ public class Account {
         passedEntity.setProperty("password", hashedPassword);
     }
 
-    public String getSaltetPassword(String salt){
+    public String getSaltedPassword(String salt){
         String password = (String) account.getProperty("password");
         return cryptor.hashToString(password + salt);
     }
@@ -393,6 +392,11 @@ public class Account {
     public void setAuthString(Entity passedEntity){
         String authString = cryptor.generateRandomString(16);
         passedEntity.setProperty("authString", authString);
+    }
+
+    public void setAuthString(Entity passedEntity, String accountnumber){
+        String authString = cryptor.generateRandomString(16);
+        passedEntity.setProperty("authString", accountnumber + authString);
     }
 
     public String getAuthString(){
