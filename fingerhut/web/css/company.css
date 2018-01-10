@@ -48,3 +48,6 @@
 .wrapper {
     text-align: center;
 }
+#add_product_to_purchase{
+    overflow: visible !important;
+}
