@@ -441,13 +441,13 @@
 
     function backOrder() {
         PurchaseOrders.style.display = "flex";
-        PurchaseOrders.style.display = "block";
+        PurchaseOrders.style.display = "flex";
         PurchaseOrder.style.display = "none";
     }
 
     function backProduct(){
         Products.style.display = "flex";
-        Products.style.display = "block";
+        Products.style.display = "flex";
         Product.style.display = "none";
     }
 
