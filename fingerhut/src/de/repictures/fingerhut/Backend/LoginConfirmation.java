@@ -60,23 +60,24 @@ public class LoginConfirmation extends HttpServlet {
         Account sessionAccountGetter = new Account(sessionAccountnumber);
         Account accountGetter = new Account(accountnumber);
         Company companyGetter = null;
+        resp.setStatus(HttpServletResponse.SC_OK);
         if (companynumber != null) companyGetter = new Company(companynumber);
 
         if (!Objects.equals(webString, sessionAccountGetter.getRandomWebString())){
-            resp.getWriter().println(2);
+            resp.getWriter().println("2");
             return;
         }
 
         if (companynumber == null && !Objects.equals(inputHashedSaltedPassword, accountGetter.getSaltedPassword(serverTimeStamp))){
-            resp.getWriter().println(3);
+            resp.getWriter().println("3");
             return;
         }
 
         if (companynumber != null && !Objects.equals(inputHashedSaltedPassword, companyGetter.getSaltedPassword(serverTimeStamp))){
-            resp.getWriter().println(3);
+            resp.getWriter().println("3");
             return;
         }
 
-        resp.getWriter().println(1);
+        resp.getWriter().println("1");
     }
 }

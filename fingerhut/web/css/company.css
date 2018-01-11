@@ -16,11 +16,13 @@
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
 }
+
 #purchase_heading{
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 60px;
 }
+
 #statistics_heading{
     margin-left: auto;
     margin-right: auto;
@@ -46,6 +48,6 @@
 .wrapper {
     text-align: center;
 }
-#add_to_purchase_button{
-
+#add_product_to_purchase{
+     overflow: visible;
 }

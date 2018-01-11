@@ -146,7 +146,7 @@
                             </button>
                         </div>
                         <div class="wrapper">
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label wrapper" id="add_purchase_textfield">
+                            <div class="mdl-card__title-text mdl-textfield mdl-js-textfield mdl-textfield--floating-label wrapper" id="add_purchase_textfield">
                                 <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample4">
                                 <label class="mdl-textfield__label" for="sample4">Kontonummer</label>
                                 <span class="mdl-textfield__error">Eingabe ist keine Zahl</span>
@@ -181,15 +181,16 @@
                                 <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample5">
                                 <label class="mdl-textfield__label" for="sample5">Anzahl</label>
                                 <span class="mdl-textfield__error">Eingabe ist keine Zahl!</span>
-                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height">
-
-                                </div>
-                                <input type="text" value="" class="mdl-textfield__input" id="sample6" readonly>
-                                <input type="hidden" value="" name="sample6">
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="dropdown_wrapper">
+                                <input type="text" value="" class="mdl-textfield__input" id="dropdown_field" readonly>
+                                <input type="hidden" value="" name="dropdown_field">
                                 <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
-                                <label for="sample6" class="mdl-textfield__label">Produkt</label>
-                                <ul for="sample6" class="mdl-menu mdl-menu--bottom-left mdl-js-menu" id="dropdown_list">
-
+                                <label for="dropdown_field" class="mdl-textfield__label">Produkt</label>
+                                <ul for="dropdown_field" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                                    <li class="mdl-menu__item">Produkt 1</li>
+                                    <li class="mdl-menu__item">Produkt 2</li>
+                                    <li class="mdl-menu__item">Produkt 3</li>
                                 </ul>
                             </div>
                         </div>
@@ -301,23 +302,21 @@
     var AddPurchase = document.getElementById("add_purchase");
     var AddProductToPurchase = document.getElementById("add_product_to_purchase");
 
+    //Statistiken betreffend
+    var Statistics = document.getElementById("statistics");
+
     //Produkte betreffend
     var Products = document.getElementById("products");
     var Product = document.getElementById("product");
 
-    var list = document.getElementById("dropdown_list");
+    //Mitarbeiter betreffend
+    var Employees = document.getElementById("employees");
+
     PurchaseOrder.style.display = "none";
     AddPurchase.style.display = "none";
     AddProductToPurchase.style.display = "none";
     Product.style.display = "none";
 
-    for(var k = 0; k < productarray.length; k++)
-    {
-        var entry = document.createElement('li');
-        entry.appendChild(document.createTextNode(productarray[k].name));
-        entry.className ="mdl-menu__item";
-        list.appendChild(entry);
-    }
 
     /*if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('../js/firebase-messaging-sw.js', { scope: '/js/' }).then(function(reg) {
@@ -441,13 +440,11 @@
 
     function backOrder() {
         PurchaseOrders.style.display = "flex";
-        PurchaseOrders.style.display = "block";
         PurchaseOrder.style.display = "none";
     }
 
     function backProduct(){
         Products.style.display = "flex";
-        Products.style.display = "block";
         Product.style.display = "none";
     }
 
@@ -479,13 +476,16 @@
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
+        Statistics.style.display = "none";
+        Products.style.display = "none";
+        Employees.style.display = "none";
     }
 
     function addProductToPurchase() {
         AddPurchase.style.display = "none";
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "none";
-        AddProductToPurchase.style.display = "inline-block";
+        AddProductToPurchase.style.display = "block";
     }
 
     function addProductToPurchaseTable() {
@@ -510,6 +510,9 @@
         PurchaseOrders.style.display = "flex";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
+        Statistics.style.display = "flex";
+        Products.style.display = "flex";
+        Employees.style.display = "flex";
     }
 
     //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
