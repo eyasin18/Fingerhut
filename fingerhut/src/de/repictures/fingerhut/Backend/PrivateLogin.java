@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 public class PrivateLogin extends HttpServlet {
 
     private Logger log = Logger.getLogger(Account.class.getName());
-    public static int appVersion = 3;
+    public static final int appVersion = 3;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -58,7 +58,7 @@ public class PrivateLogin extends HttpServlet {
         }
 
         //Überprüfe ob die App-Version aktuell ist
-        if (appVersion != PrivateLogin.appVersion){
+        if (appVersion < PrivateLogin.appVersion){
             resp.getWriter().println("-3");
             return;
         }
