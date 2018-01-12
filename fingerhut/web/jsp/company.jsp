@@ -146,9 +146,16 @@
                             </button>
                         </div>
                         <div class="wrapper">
-                            <div class="mdl-card__title-text mdl-textfield mdl-js-textfield mdl-textfield--floating-label wrapper" id="add_purchase_textfield">
+                            <div class="mdl-card__title-text mdl-textfield mdl-js-textfield mdl-textfield--floating-label wrapper" id="add_purchase_accountnumber_textfield">
                                 <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample4">
                                 <label class="mdl-textfield__label" for="sample4">Kontonummer</label>
+                                <span class="mdl-textfield__error">Eingabe ist keine Zahl</span>
+                            </div>
+                        </div>
+                        <div class="wrapper">
+                            <div class="mdl-card__title-text mdl-textfield mdl-js-textfield mdl-textfield--floating-label wrapper" id="add_purchase_pin_textfield">
+                                <input class="mdl-textfield__input" type="password" pattern="-?[0-9]*(\.[0-9]+)?" id="purchase_pin_textfield">
+                                <label class="mdl-textfield__label" for="purchase_pin_textfield">Pin des Käufers</label>
                                 <span class="mdl-textfield__error">Eingabe ist keine Zahl</span>
                             </div>
                         </div>
@@ -178,15 +185,16 @@
                         </div>
                         <div class="wrapper">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample5">
-                                <label class="mdl-textfield__label" for="sample5">Anzahl</label>
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="product_amount_field">
+                                <label class="mdl-textfield__label" for="product_amount_field">Anzahl</label>
                                 <span class="mdl-textfield__error">Eingabe ist keine Zahl!</span>
                             </div>
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="dropdown_wrapper">
-                                <input type="text" value="" class="mdl-textfield__input" id="dropdown_field" readonly>
+                                <input type="text" value="" class="mdl-textfield__input" id="dropdown_product_field"
+                                       readonly>
                                 <input type="hidden" value="" name="dropdown_field">
                                 <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
-                                <label for="dropdown_field" class="mdl-textfield__label">Produkt</label>
+                                <label for="dropdown_product_field" class="mdl-textfield__label">Produkt</label>
                                 <ul for="dropdown_field" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
                                     <li class="mdl-menu__item">Produkt 1</li>
                                     <li class="mdl-menu__item">Produkt 2</li>
@@ -316,6 +324,8 @@
     AddPurchase.style.display = "none";
     AddProductToPurchase.style.display = "none";
     Product.style.display = "none";
+
+    fillDropdown();
 
 
     /*if ('serviceWorker' in navigator) {
@@ -494,15 +504,16 @@
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
         var table = document.getElementById("add_purchase_table");
-        var Product = document.getElementById("sample6").value;
-        var Amount = document.getElementById("sample5").value;
+        var product = document.getElementById("dropdown_product_field").value;
+        var amount = document.getElementById("product_amount_field").value;
         var row = table.insertRow(document.getElementById("add_purchase_table").rows.length);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
         var cell3 = row.insertCell(2);
-        cell2.innerHTML = Product;
-        cell1.innerHTML = Amount;
-        cell3.innerHTML = getPriceThroughName(Product) * parseFloat(Amount);
+        cell2.innerHTML = product;
+        cell1.innerHTML = amount;
+        //cell3.innerHTML = getPriceThroughName(product) * parseFloat(amount);
+        document.getElementById("product_amount_field").value = "";
     }
 
     function addPurchaseToTable() {
@@ -534,6 +545,11 @@
             if (name == productarray[j].name){
                 return parseFloat(productarray[j].price);
             }
+        }
+    }
+    function fillDropdown(){
+        for(var i = 0;i < productarray.length; i++){
+            console.log(productarray[i].name)
         }
     }
 
