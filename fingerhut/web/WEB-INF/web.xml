@@ -200,6 +200,14 @@
         <servlet-name>SetTaxes</servlet-name>
         <url-pattern>/dsettax</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>EditAccount</servlet-name>
+        <jsp-file>/jsp/blub.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EditAccount</servlet-name>
+        <url-pattern>/editaccount</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>jsp/index.jsp</welcome-file>
     </welcome-file-list>

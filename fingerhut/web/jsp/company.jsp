@@ -188,7 +188,7 @@
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="product_amount_field">
                                 <label class="mdl-textfield__label" for="product_amount_field">Anzahl</label>
-                                <span class="mdl-textfield__error">Eingabe ist keine Zahl!</span>
+                                <span class="mdl-textfield__error" id="product_amount_error"></span>
                             </div>
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="dropdown_wrapper">
                                 <input type="text" value="" class="mdl-textfield__input" id="dropdown_product_field"
@@ -197,9 +197,9 @@
                                 <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                                 <label for="dropdown_product_field" class="mdl-textfield__label">Produkt</label>
                                 <ul for="dropdown_field" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                                    <li class="mdl-menu__item">Produkt 1</li>
-                                    <li class="mdl-menu__item">Produkt 2</li>
-                                    <li class="mdl-menu__item">Produkt 3</li>
+                                    <li class="mdl-menu__item" data-val="1">Produkt 1</li>
+                                    <li class="mdl-menu__item" data-val="2">Produkt 2</li>
+                                    <li class="mdl-menu__item" data-val="3">Produkt 3</li>
                                 </ul>
                             </div>
                         </div>
@@ -325,6 +325,20 @@
     AddPurchase.style.display = "none";
     AddProductToPurchase.style.display = "none";
     Product.style.display = "none";
+
+    //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
+    var product = pojo('name', 'price', 'code','amount');
+    var productarray = [];
+    <% int i = 0;%>
+    for(i = 0;i < <%= products.length %>; i++) {
+
+        productarray[i] = pojo(
+            '<%= products[i].getName()%>',
+            '<%= products[i].getPrice()%>',
+            '<%= products[i].getCode() %>'
+        );
+        <% i++;%>
+    }
 
     fillDropdown();
 
@@ -500,21 +514,27 @@
     }
 
     function addProductToPurchaseTable() {
-        AddPurchase.style.display = "flex";
-        PurchaseOrders.style.display = "none";
-        PurchaseOrder.style.display = "none";
-        AddProductToPurchase.style.display = "none";
-        var table = document.getElementById("add_purchase_table");
-        var product = document.getElementById("dropdown_product_field").value;
-        var amount = document.getElementById("product_amount_field").value;
-        var row = table.insertRow(document.getElementById("add_purchase_table").rows.length);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        var cell3 = row.insertCell(2);
-        cell2.innerHTML = product;
-        cell1.innerHTML = amount;
-        //cell3.innerHTML = getPriceThroughName(product) * parseFloat(amount);
-        document.getElementById("product_amount_field").value = "";
+        if (isNaN(document.getElementById("product_amount_field").value) || document.getElementById("product_amount_field").value < 1) {
+            document.getElementById('product_amount_error').textContent = "Eingabe ist keine Zahl!";
+        } else {
+            if(document.getElementById("dropdown_product_field").value !== "") {
+                AddPurchase.style.display = "flex";
+                PurchaseOrders.style.display = "none";
+                PurchaseOrder.style.display = "none";
+                AddProductToPurchase.style.display = "none";
+                var table = document.getElementById("add_purchase_table");
+                var product = document.getElementById("dropdown_product_field").value;
+                var amount = document.getElementById("product_amount_field").value;
+                var row = table.insertRow(document.getElementById("add_purchase_table").rows.length);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                cell2.innerHTML = product;
+                cell1.innerHTML = amount;
+                //cell3.innerHTML = getPriceThroughName(product) * parseFloat(amount);
+                document.getElementById("product_amount_field").value = "";
+            }
+        }
     }
 
     function addPurchaseToTable() {
@@ -525,20 +545,6 @@
         Statistics.style.display = "flex";
         Products.style.display = "flex";
         Employees.style.display = "flex";
-    }
-
-    //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
-    var product = pojo('name', 'price', 'code','amount');
-    var productarray = [];
-    <% int i = 0;%>
-    for(i = 0;i < <%= products.length %>; i++) {
-
-        productarray[i] = pojo(
-            '<%= products[i].getName()%>',
-            '<%= products[i].getPrice()%>',
-            '<%= products[i].getCode() %>'
-        );
-        <% i++;%>
     }
 
     function getPriceThroughName(name){//ermittelt den Preis eines Produktes indem der Name übergeben wird
