@@ -34,6 +34,7 @@
         <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.green-light_green.min.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}../css/getmdl-select.min.css">
+        <link rel="manifest" href="../json/manifest.json">
         <script defer src="${pageContext.request.contextPath}../js/getmdl-select.min.js"></script>
         <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js"></script>

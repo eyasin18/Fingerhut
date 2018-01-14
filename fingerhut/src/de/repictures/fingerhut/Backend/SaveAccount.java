@@ -32,7 +32,8 @@ public class SaveAccount extends HttpServlet{
         Entity createdAccount = account.getAccount(accountnumber);
 
         //Ergebnis wird ausgegeben
-        resp.getWriter().println("Kontonummer: " + account.getAccountnumber(createdAccount)
-                + " Klartextpasswort: " + password);
+        resp.getWriter().println(account.getAccountnumber(createdAccount)
+                + "\n" + password
+                + "\n" + account.getAuthString(createdAccount));
     }
 }
