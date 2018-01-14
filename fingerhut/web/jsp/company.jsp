@@ -326,19 +326,22 @@
     AddProductToPurchase.style.display = "none";
     Product.style.display = "none";
 
+
     //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
     var product = pojo('name', 'price', 'code','amount');
     var productarray = [];
-    <% int i = 0;%>
-    for(i = 0;i < <%= products.length %>; i++) {
-
-        productarray[i] = pojo(
-            '<%= products[i].getName()%>',
-            '<%= products[i].getPrice()%>',
-            '<%= products[i].getCode() %>'
+    <% int counter = 0;%>
+    for(var i = 0;i < <%= products.length %>; i++) {
+        productarray[i] = product(
+            '<%= products[counter].getName() %>',
+            '<%= products[counter].getPrice() %>',
+            '<%= products[counter].getCode() %>'
         );
-        <% i++;%>
+        <% counter = counter + 1; %>
+        console.log(<%= counter %>);
     }
+
+    console.log(typeof productarray);
 
     fillDropdown();
 
@@ -556,9 +559,9 @@
     }
     function fillDropdown(){
         for(var i = 0;i < productarray.length; i++){
-            console.log(productarray[i].name)
+            console.log(productarray[i].name);
+            console.log(i);
         }
     }
-
 </script>
 </html>
