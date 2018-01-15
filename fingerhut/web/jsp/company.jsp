@@ -330,20 +330,23 @@
     //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
     var product = pojo('name', 'price', 'code','amount');
     var productarray = [];
-    <% int counter = 0;%>
-    for(var i = 0;i < <%= products.length %>; i++) {
-        productarray[i] = product(
-            '<%= products[counter].getName() %>',
-            '<%= products[counter].getPrice() %>',
-            '<%= products[counter].getCode() %>'
-        );
-        <% counter = counter + 1; %>
-        console.log(<%= counter %>);
-    }
-
-    console.log(typeof productarray);
-
-    fillDropdown();
+    var iterate = 0;
+    <%
+        for(int i = 0; i < products.length; i++){
+            %>
+            var getName = '<%= products[i].getName() %>';
+            var getPrice = <%= products[i].getPrice() %>;
+            var getCode = <%= products[i].getPrice() %>;
+            productarray[iterate] = product(
+                getName,
+                getPrice,
+                getCode
+            );
+            iterate++;
+            <%
+        }
+    %>
+    //fillDropdown();
 
 
     /*if ('serviceWorker' in navigator) {
@@ -559,8 +562,7 @@
     }
     function fillDropdown(){
         for(var i = 0;i < productarray.length; i++){
-            console.log(productarray[i].name);
-            console.log(i);
+
         }
     }
 </script>
