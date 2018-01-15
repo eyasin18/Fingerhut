@@ -92,20 +92,8 @@ public class PostTransfers extends HttpServlet {
                         plusminus = '-';
                         output.append("ò");
 
-                        //Lese den entschlüsselten Kontobesitzernamen aus dem Speicher und verschlüssele diesen asymetrisch mit dem öff. Schlüssel des Anfragenstellers
-                        String ownerStr;
-                        String publicKeyStr;
-                        try {
-                            ownerStr = accountGetter.getOwner(receiver);
-                            publicKeyStr = accountGetter.getPublicKeyStr(account);
-                        } catch (StringIndexOutOfBoundsException e){
-                            ownerStr = companyGetter.getOwner(receiver);
-                            publicKeyStr = companyGetter.getPublicKeyStr(account);
-                        }
-                        PublicKey publicKey = cryptor.stringToPublicKey(publicKeyStr);
-                        byte[] owner = ownerStr.getBytes("ISO-8859-1");
-                        byte[] encryptedOwner = cryptor.encryptAsymmetric(owner, publicKey);
-                        output.append(cryptor.bytesToHex(encryptedOwner));
+                        //Lese den verschlüsselten Kontobesitzernamen aus dem Speicher
+                        output.append(transferGetter.getReceiverNameForSender(transfer));
                         output.append("ò");
 
                         //Lese die Kontonummer des Empfängers
@@ -113,20 +101,8 @@ public class PostTransfers extends HttpServlet {
                     } else {
                         output.append("ò");
 
-                        //Lese den entschlüsselten Kontobesitzernamen aus dem Speicher und verschlüssele diesen asymetrisch mit dem öff. Schlüssel des Anfragenstellers
-                        String ownerStr;
-                        String publicKeyStr;
-                        try {
-                            ownerStr = accountGetter.getOwner(sender);
-                            publicKeyStr = accountGetter.getPublicKeyStr(account);
-                        } catch (StringIndexOutOfBoundsException e){
-                            ownerStr = companyGetter.getOwner(sender);
-                            publicKeyStr = companyGetter.getPublicKeyStr(account);
-                        }
-                        PublicKey publicKey = cryptor.stringToPublicKey(publicKeyStr);
-                        byte[] owner = ownerStr.getBytes("ISO-8859-1");
-                        byte[] encryptedOwner = cryptor.encryptAsymmetric(owner, publicKey);
-                        output.append(cryptor.bytesToHex(encryptedOwner));
+                        //Lese den verschlüsselten Kontobesitzernamen aus dem Speicher
+                        output.append(transferGetter.getSenderNameForReceiver(transfer));
                         output.append("ò");
 
                         //Lese die Kontonummer des Auftraggebers

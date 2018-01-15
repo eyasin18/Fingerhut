@@ -232,6 +232,38 @@ public class Transfer {
         return (String) passedEntity.getProperty("type");
     }
 
+    public void setReceiverNameForSender(String encryptedSender){
+        transfer.setProperty("encrypted_receiver_name_for_sender", encryptedSender);
+    }
+
+    public void setReceiverNameForSender(Entity passedEntity, String encryptedSender){
+        passedEntity.setProperty("encrypted_receiver_name_for_sender", encryptedSender);
+    }
+
+    public String getReceiverNameForSender(){
+        return (String) transfer.getProperty("encrypted_receiver_name_for_sender");
+    }
+
+    public String getReceiverNameForSender(Entity passedEntity){
+        return (String) passedEntity.getProperty("encrypted_receiver_name_for_sender");
+    }
+
+    public void setSenderNameForReceiver(String encryptedReceiver){
+        transfer.setProperty("encrypted_sender_name_for_receiver", encryptedReceiver);
+    }
+
+    public void setSenderNameForReceiver(Entity passedEntity, String encryptedReceiver){
+        passedEntity.setProperty("encrypted_sender_name_for_receiver", encryptedReceiver);
+    }
+
+    public String getSenderNameForReceiver(){
+        return (String) transfer.getProperty("encrypted_sender_name_for_receiver");
+    }
+
+    public String getSenderNameForReceiver(Entity passedEntity){
+        return (String) passedEntity.getProperty("encrypted_sender_name_for_receiver");
+    }
+
     public void saveAll(){
         datastore.put(transfer);
     }

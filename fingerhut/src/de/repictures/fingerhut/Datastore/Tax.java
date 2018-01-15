@@ -26,7 +26,7 @@ public class Tax {
             Key vatKey = KeyFactory.createKey("id", 1);
             Entity vatEntity = datastoreService.get(vatKey);
             List<Long> taxes = (List<Long>) vatEntity.getProperty("percentage");
-            return taxes.get(0).intValue();
+            return Math.toIntExact(taxes.get(0));
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
             return 0;

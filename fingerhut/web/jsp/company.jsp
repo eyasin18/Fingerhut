@@ -364,7 +364,6 @@
             // registration failed
             console.log('Registration failed with ' + error);
         });
-    }*/
 
     var config = {
         apiKey: "AIzaSyCDc9cZesVuUdSgb1eJiTv1Pj_Rq3BzFTA",
@@ -424,6 +423,7 @@
     messaging.onMessage(function (payload) {
         console.log("Message received", payload);
     });
+    }*/
 
     //Funktion zum hinzufügen eines neuen Kaufauftrags
     function newTableEntryOrder(date,account,amount){

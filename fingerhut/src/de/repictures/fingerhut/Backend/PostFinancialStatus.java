@@ -1,6 +1,7 @@
 package de.repictures.fingerhut.Backend;
 
 import de.repictures.fingerhut.Datastore.Account;
+import de.repictures.fingerhut.Datastore.Tax;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -36,7 +37,7 @@ public class PostFinancialStatus extends HttpServlet {
             String output = "1ò" +
                     account.getAccountnumber() +
                     "ò" +
-                    account.getEncryptedOwner() +
+                    Tax.getVAT() +
                     "ò" +
                     account.getBalance();
             resp.getWriter().println(URLEncoder.encode(output, "UTF-8"));

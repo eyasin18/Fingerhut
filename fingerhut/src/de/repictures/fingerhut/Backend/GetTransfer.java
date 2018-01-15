@@ -83,6 +83,10 @@ public class GetTransfer extends HttpServlet {
         if (senderAesKey != null)senderAesKey = URLDecoder.decode(senderAesKey, "UTF-8");
         String receiverAesKey = req.getParameter("receiverkey");
         if (receiverAesKey != null)receiverAesKey = URLDecoder.decode(receiverAesKey, "UTF-8");
+        String senderName = req.getParameter("sendername");
+        if(senderName != null) senderName = URLDecoder.decode(senderName, "UTF-8");
+        String receiverName = req.getParameter("receivername");
+        if(receiverName != null) receiverName = URLDecoder.decode(receiverName, "UTF-8");
         String webString = req.getParameter("code");
 
         //Die entsprechenden Entitäts-Builder werden initialisiert
@@ -101,7 +105,7 @@ public class GetTransfer extends HttpServlet {
             return;
         }
 
-        if (senderPurposeStr == null || receiverPurposeStr == null){
+        if (senderPurposeStr == null || receiverPurposeStr == null || receiverName == null || senderName == null){
             Cryptor cryptor = new Cryptor();
             String senderPublicKeyStr = senderBuilder.getPublicKeyStr();
             String receiverPublicKeyStr = receiverBuilder.getPublicKeyStr();
@@ -116,9 +120,13 @@ public class GetTransfer extends HttpServlet {
 
             byte[] encryptedSenderPurpose = cryptor.encryptSymmetricFromString(rawPurpose, randomSenderAesKey);
             byte[] encryptedReceiverPurpose = cryptor.encryptSymmetricFromString(rawPurpose, randomReceiverAesKey);
+            byte[] encryptedSenderName = cryptor.encryptSymmetricFromString(senderAccountnumber, randomReceiverAesKey);
+            byte[] encryptedReceiverName = cryptor.encryptSymmetricFromString(receiverAccountnumber, randomSenderAesKey);
 
             senderPurposeStr = cryptor.bytesToHex(encryptedSenderPurpose);
             receiverPurposeStr = cryptor.bytesToHex(encryptedReceiverPurpose);
+            senderName = cryptor.bytesToHex(encryptedSenderName);
+            receiverName = cryptor.bytesToHex(encryptedReceiverName);
 
             byte[] encryptedSenderAesKeyByte = cryptor.encryptAsymmetric(randomSenderAesKey, senderPublicKey);
             byte[] encryptedReceiverAesKeyByte = cryptor.encryptAsymmetric(randomReceiverAesKey, receiverPublicKey);
@@ -159,6 +167,8 @@ public class GetTransfer extends HttpServlet {
             transferBuilder.setReceiverPurpose(receiverPurpose);
             transferBuilder.setReceiverAesKey(receiverAesKey);
             transferBuilder.setType("Überweisung");
+            transferBuilder.setSenderNameForReceiver(senderName);
+            transferBuilder.setReceiverNameForSender(receiverName);
             transferBuilder.saveAll();
 
             //Die jeweiligen Accountentitäten werden aktualisiert
