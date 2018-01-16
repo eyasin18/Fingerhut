@@ -196,10 +196,7 @@
                                 <input type="hidden" value="" name="dropdown_field">
                                 <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                                 <label for="dropdown_product_field" class="mdl-textfield__label">Produkt</label>
-                                <ul for="dropdown_field" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                                    <li class="mdl-menu__item" data-val="1">Produkt 1</li>
-                                    <li class="mdl-menu__item" data-val="2">Produkt 2</li>
-                                    <li class="mdl-menu__item" data-val="3">Produkt 3</li>
+                                <ul for="dropdown_field" class="mdl-menu mdl-menu--bottom-left mdl-js-menu" id="dropdown_list">
                                 </ul>
                             </div>
                         </div>
@@ -346,7 +343,7 @@
             <%
         }
     %>
-    //fillDropdown();
+    fillDropdown();
 
 
     /*if ('serviceWorker' in navigator) {
@@ -561,8 +558,12 @@
         }
     }
     function fillDropdown(){
+        var dropdown_list = document.getElementById("dropdown_list");
         for(var i = 0;i < productarray.length; i++){
-
+            var line = document.createElement("li");
+            line.classList.add("mdl-menu__item");
+            line.innerHTML = productarray[i].name;
+            dropdown_list.appendChild(line);
         }
     }
 </script>

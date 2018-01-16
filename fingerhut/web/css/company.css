@@ -49,5 +49,11 @@
     text-align: center;
 }
 #add_product_to_purchase{
-     overflow: visible;
+    overflow: visible;
+}
+#purchase_info_table{
+    margin-bottom: 20px;
+}
+#back_button_order{
+    margin-bottom: 20px;
 }
