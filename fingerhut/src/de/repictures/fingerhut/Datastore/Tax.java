@@ -21,14 +21,14 @@ public class Tax {
     }
 
     public static int getVAT(){
-        try {
-            DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
-            Key vatKey = KeyFactory.createKey("id", 1);
-            Entity vatEntity = datastoreService.get(vatKey);
-            List<Long> taxes = (List<Long>) vatEntity.getProperty("percentage");
-            return Math.toIntExact(taxes.get(0));
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        Key vatKey = KeyFactory.createKey("id", 1);
+        Query taxQuery = new Query("Tax", vatKey);
+        List<Entity> vatList = datastoreService.prepare(taxQuery).asList(FetchOptions.Builder.withDefaults());
+        if (vatList.size() > 0){
+            List<Long> taxes = (List<Long>) vatList.get(0).getProperty("percentage");
+            return taxes.get(0).intValue();
+        } else {
             return 0;
         }
     }
@@ -45,15 +45,15 @@ public class Tax {
     }
 
     public static int getProfitTax(){
-        try {
-            DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
-            Key vatKey = KeyFactory.createKey("id", 2);
-            Entity vatEntity = datastoreService.get(vatKey);
-            List<Long> taxes = (List<Long>) vatEntity.getProperty("percentage");
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        Key vatKey = KeyFactory.createKey("id", 2);
+        Query taxQuery = new Query("Tax", vatKey);
+        List<Entity> vatList = datastoreService.prepare(taxQuery).asList(FetchOptions.Builder.withDefaults());
+        if (vatList.size() > 0){
+            List<Long> taxes = (List<Long>) vatList.get(0).getProperty("percentage");
             return taxes.get(0).intValue();
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-            return 100;
+        } else {
+            return 0;
         }
     }
 
@@ -71,13 +71,13 @@ public class Tax {
     }
 
     public static List<Long> getWageTax(){
-        try {
-            DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
-            Key vatKey = KeyFactory.createKey("id", 3);
-            Entity vatEntity = datastoreService.get(vatKey);
-            return (List<Long>) vatEntity.getProperty("percentage");
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        Key vatKey = KeyFactory.createKey("id", 3);
+        Query taxQuery = new Query("Tax", vatKey);
+        List<Entity> vatList = datastoreService.prepare(taxQuery).asList(FetchOptions.Builder.withDefaults());
+        if (vatList.size() > 0){
+            return  (List<Long>) vatList.get(0).getProperty("percentage");
+        } else {
             return new ArrayList<>();
         }
     }
@@ -94,14 +94,14 @@ public class Tax {
     }
 
     public static int getPackageCustom(){
-        try {
-            DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
-            Key vatKey = KeyFactory.createKey("id", 4);
-            Entity vatEntity = datastoreService.get(vatKey);
-            List<Long> taxes = (List<Long>) vatEntity.getProperty("percentage");
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        Key vatKey = KeyFactory.createKey("id", 4);
+        Query taxQuery = new Query("Tax", vatKey);
+        List<Entity> vatList = datastoreService.prepare(taxQuery).asList(FetchOptions.Builder.withDefaults());
+        if (vatList.size() > 0){
+            List<Long> taxes = (List<Long>) vatList.get(0).getProperty("percentage");
             return taxes.get(0).intValue();
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
+        } else {
             return 0;
         }
     }
@@ -118,14 +118,14 @@ public class Tax {
     }
 
     public static int getMeatCustom(){
-        try {
-            DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
-            Key vatKey = KeyFactory.createKey("id", 5);
-            Entity vatEntity = datastoreService.get(vatKey);
-            List<Long> taxes = (List<Long>) vatEntity.getProperty("percentage");
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        Key vatKey = KeyFactory.createKey("id", 5);
+        Query taxQuery = new Query("Tax", vatKey);
+        List<Entity> vatList = datastoreService.prepare(taxQuery).asList(FetchOptions.Builder.withDefaults());
+        if (vatList.size() > 0){
+            List<Long> taxes = (List<Long>) vatList.get(0).getProperty("percentage");
             return taxes.get(0).intValue();
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
+        } else {
             return 0;
         }
     }
