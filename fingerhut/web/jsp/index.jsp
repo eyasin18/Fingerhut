@@ -11,6 +11,10 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page errorPage="errorpage.jsp" %> <!-- gibt die Seite an, die im Fehlerfall angezeigt werden soll -->
+
+<% //String number = null; Integer.parseInt(number); %> <!-- erzeugt Error zum testen der Errorpage -->
+
 <html>
     <head>
         <meta charset="utf-8">

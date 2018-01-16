@@ -12,6 +12,8 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page errorPage="errorpage.jsp" %> <!-- gibt die Seite an, die im Fehlerfall angezeigt werden soll -->
+
 <%
     String code = request.getParameter("code");
     String accountnumber = request.getParameter("accountnumber");

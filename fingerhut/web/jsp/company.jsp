@@ -12,7 +12,7 @@
 <%@ page import="java.util.Calendar" %>
 <%@ page import="java.text.ParseException" %>
 <%@ page import="java.util.logging.Logger" %>
-<%@ page errorPage="errorpage.jsp" %>
+<%@ page errorPage="errorpage.jsp" %> <!-- gibt die Seite an, die im Fehlerfall angezeigt werden soll -->
 
 <%
     String code = request.getParameter("webstring");
@@ -557,6 +557,7 @@
             }
         }
     }
+
     function fillDropdown(){
         var dropdown_list = document.getElementById("dropdown_list");
         for(var i = 0;i < productarray.length; i++){
