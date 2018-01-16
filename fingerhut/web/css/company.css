@@ -38,12 +38,11 @@
     margin-bottom: 60px;
 }
 #add_purchase_accountnumber_textfield{
-    margin-bottom: 20px;
-    text-align: center;
+    margin-top: 60px;
 }
 #back_button{
     position: absolute;
-    margin-top: 3%;
+    margin-top: 20px;
 }
 .wrapper {
     text-align: center;
@@ -56,4 +55,12 @@
 }
 #back_button_order{
     margin-bottom: 20px;
+}
+#finish_button{
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+#cancel_purchase_button{
+    margin-bottom: 20px;
+    margin-top: 20px;
 }

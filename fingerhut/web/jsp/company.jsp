@@ -76,7 +76,7 @@
                             <thead>
                                 <tr>
                                     <th>Datum/Uhrzeit</th>
-                                    <th>Nummer</th>
+                                    <th>Käufer</th>
                                     <th>Betrag</th>
                                 </tr>
                             </thead>
@@ -106,7 +106,7 @@
                             %>
                                 <tr onclick="editPurchaseorders(this.rowIndex)">
                                     <th><%= dateTimeStr %></th>
-                                    <th><%= purchaseOrder.getNumber() %></th>
+                                    <th><%= purchaseOrder.getBuyerAccountnumber() %></th>
                                     <th><%= priceSumStr %></th>
                                 </tr>
                             <%
@@ -120,6 +120,8 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- Mehr Informationen zum Kaufauftrag Karte -->
 
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="purchase_order">
                         <table class="mdl-data-table mdl-js-data-table" id="purchase_info_table">
@@ -139,6 +141,8 @@
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backOrder()" id="back_button_order">Fertig</button>
                         </div>
                     </div>
+
+                    <!-- Kaufauftrag hinzufügen Karte -->
 
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="add_purchase">
                         <div class="mdl-card__menu">
@@ -160,26 +164,22 @@
                                 <span class="mdl-textfield__error">Eingabe ist keine Zahl</span>
                             </div>
                         </div>
-                        <table class="mdl-data-table mdl-js-data-table" id="add_purchase_table">
-                            <thead>
-                                <tr>
-                                    <th>Anzahl</th>
-                                    <th>Produkt</th>
-                                    <th>Preis</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <div id ="add_purchase_div">
 
-                            </tbody>
-                        </table>
+                        </div>
+                        <h6 class="title" id="purchase_order_price_sum"></h6>
                         <div class="wrapper">
-                            <div>
                                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addPurchaseToTable()" id="finish_button">
                                     Fertig
                                 </button>
-                            </div>
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" id="cancel_purchase_button" onclick="cancelPurchase()">
+                                    Abbrechen
+                                </button>
                         </div>
                     </div>
+
+                    <!-- Produkte zu Kaufauftrag hinzufügen Karte -->
+
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="add_product_to_purchase">
                         <div class="mdl-card__title">
                             <h2 class="mdl-card__title-text" id="add_product_to_purchase_heading">Neues Produkt zum Kaufauftrag hinzufügen</h2>
@@ -203,6 +203,9 @@
                         <div class="wrapper">
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" id="add_to_purchase_button" onclick="addProductToPurchaseTable()">
                                 Hinzufügen
+                            </button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" id="cancel_add_t_purchase_button" onclick="cancelProductToPurchase()">
+                                Abbrechen
                             </button>
                         </div>
                     </div>
@@ -266,8 +269,6 @@
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backProduct()" id="back_button_product">Fertig</button>
                         </div>
                     </div>
-
-
 
                 <!-- Hier beginnt der Teil der für die Karte Mitarbeiter zuständig ist -->
 
@@ -507,6 +508,18 @@
         Statistics.style.display = "none";
         Products.style.display = "none";
         Employees.style.display = "none";
+        document.getElementById("add_purchase_div").innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"add_purchase_table\">\n" +
+            "                            <thead>\n" +
+            "                                <tr>\n" +
+            "                                    <th>Anzahl</th>\n" +
+            "                                    <th>Produkt</th>\n" +
+            "                                    <th>Preis</th>\n" +
+            "                                </tr>\n" +
+            "                            </thead>\n" +
+            "                            <tbody id=\"add_purchase_table_body\">\n" +
+            "\n" +
+            "                            </tbody>\n" +
+            "                        </table>"
     }
 
     function addProductToPurchase() {
@@ -517,6 +530,7 @@
     }
 
     function addProductToPurchaseTable() {
+        var purchase_price_sum = document.getElementById(purchase_order_price_sum);
         if (isNaN(document.getElementById("product_amount_field").value) || document.getElementById("product_amount_field").value < 1) {
             document.getElementById('product_amount_error').textContent = "Eingabe ist keine Zahl!";
         } else {
@@ -534,8 +548,11 @@
                 var cell3 = row.insertCell(2);
                 cell2.innerHTML = product;
                 cell1.innerHTML = amount;
-                //cell3.innerHTML = getPriceThroughName(product) * parseFloat(amount);
+                cell3.innerHTML = String(getPriceThroughName(product) * parseFloat(amount));
                 document.getElementById("product_amount_field").value = "";
+                for(var i = 0; i < table.rows.length; i++){
+
+                }
             }
         }
     }
@@ -552,7 +569,7 @@
 
     function getPriceThroughName(name){//ermittelt den Preis eines Produktes indem der Name übergeben wird
         for(var j = 0; j < productarray.length; j++){
-            if (name == productarray[j].name){
+            if (name === productarray[j].name){
                 return parseFloat(productarray[j].price);
             }
         }
@@ -566,6 +583,36 @@
             line.innerHTML = productarray[i].name;
             dropdown_list.appendChild(line);
         }
+    }
+
+    function cancelPurchase() {
+        AddPurchase.style.display = "none";
+        PurchaseOrders.style.display = "flex";
+        PurchaseOrder.style.display = "none";
+        AddProductToPurchase.style.display = "none";
+        Statistics.style.display = "flex";
+        Products.style.display = "flex";
+        Employees.style.display = "flex";
+        document.getElementById("add_purchase_div").innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"add_purchase_table\">\n" +
+            "                            <thead>\n" +
+            "                                <tr>\n" +
+            "                                    <th>Anzahl</th>\n" +
+            "                                    <th>Produkt</th>\n" +
+            "                                    <th>Preis</th>\n" +
+            "                                </tr>\n" +
+            "                            </thead>\n" +
+            "                            <tbody id=\"add_purchase_table_body\">\n" +
+            "\n" +
+            "                            </tbody>\n" +
+            "                        </table>"
+    }
+
+    function cancelProductToPurchase() {
+        AddPurchase.style.display = "flex";
+        PurchaseOrders.style.display = "none";
+        PurchaseOrder.style.display = "none";
+        AddProductToPurchase.style.display = "none";
+        document.getElementById("product_amount_field").value = "";
     }
 </script>
 </html>
