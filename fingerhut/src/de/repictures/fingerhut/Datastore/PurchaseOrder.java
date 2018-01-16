@@ -1,6 +1,9 @@
 package de.repictures.fingerhut.Datastore;
 
 import com.google.appengine.api.datastore.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,13 +54,11 @@ public class PurchaseOrder{
         purchaseOrder = getPurchaseOrder(parentCompany.getKey(), buyerAccountnumber);
     }
 
-    public void updatePurchaseOrder(Entity parentCompany, List<String[]> items, String buyerAccountnumber){
+    public void updatePurchaseOrder(Entity parentCompany, String shoppingListJson, String buyerAccountnumber){
         List<String> produtCodesList = new ArrayList<>();
         List<Double> pricesList = new ArrayList<>();
         List<Boolean> isSelfBuyList = new ArrayList<>();
         List<Long> amountsList = new ArrayList<>();
-
-        //purchaseOrder = getPurchaseOrder(parentCompany.getKey(), buyerAccountnumber);
 
         if (purchaseOrder == null){
             purchaseOrder = new Entity("PurchaseOrder", parentCompany.getKey());
@@ -69,14 +70,17 @@ public class PurchaseOrder{
             amountsList = getAmountsList();
         }
 
-        for (String[] item : items){
-            produtCodesList.add(item[0]);
-            double price = Double.parseDouble(item[1]);
-            pricesList.add(price);
-            Boolean isSelfBuy = Boolean.parseBoolean(item[2]);
-            isSelfBuyList.add(isSelfBuy);
-            int amount = Integer.parseInt(item[3]);
-            amountsList.add((long) amount);
+        JsonObject object = new JsonParser().parse(shoppingListJson).getAsJsonObject();
+        JsonArray productCodesArray = object.getAsJsonArray("product_codes");
+        JsonArray pricesArray = object.getAsJsonArray("prices_array");
+        JsonArray isSelfBuyArray = object.getAsJsonArray("is_self_buy");
+        JsonArray amountsArray = object.getAsJsonArray("amounts");
+
+        for (int i = 0; i < productCodesArray.size(); i++){
+            produtCodesList.add(productCodesArray.get(i).getAsString());
+            pricesList.add(pricesArray.get(i).getAsDouble());
+            isSelfBuyList.add(isSelfBuyArray.get(i).getAsBoolean());
+            amountsList.add(amountsArray.get(i).getAsLong());
         }
 
         setDateTime(f.format(calendar.getTime()));

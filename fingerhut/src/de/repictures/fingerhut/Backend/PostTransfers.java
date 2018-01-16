@@ -27,6 +27,7 @@ public class PostTransfers extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String accountnumber = req.getParameter("accountnumber");
         String startStr = req.getParameter("start");
+        String webstring = req.getParameter("code");
         int start = 0;
         if (startStr != null) start = Integer.parseInt(startStr);
         boolean itemsLeft = true;
@@ -34,6 +35,14 @@ public class PostTransfers extends HttpServlet {
         Company companyGetter = new Company();
         Account accountGetter = new Account();
         Entity account = accountGetter.getAccount(accountnumber);
+
+        if (!Objects.equals(accountGetter.getRandomWebString(account), webstring)){
+            MultipartResponse multi = new MultipartResponse(resp);
+            multi.startResponse("text/plain");
+            resp.getOutputStream().println(0);
+            multi.endResponse();
+            multi.finish();
+        }
 
         //Überprüfe ob wir eine Valide Kontonummer bekommen haben
         if (account != null){
@@ -124,6 +133,9 @@ public class PostTransfers extends HttpServlet {
 
                         //Gebe dem Backend zurück, dass der Nutzer der Auftraggeber war
                         output.append("true");
+                        output.append("ò");
+                        //Kontonummer des Empfängers ausgeben
+                        output.append(accountGetter.getAccountnumber(receiver));
                     } else if(Objects.equals(accountGetter.getAccountnumber(receiver), accountnumber)){
                         //Lese den Verwendungszweck der mit einem zufälligem Schlüssel verschlüsselt ist, der asymetrisch verschlüsselt auf dem Server liegt
                         output.append(transferGetter.getReceiverPurpose(transfer).getValue());
@@ -135,6 +147,9 @@ public class PostTransfers extends HttpServlet {
 
                         //Gebe dem Backend zurück, dass der Nutzer der Empfänger war
                         output.append("false");
+                        output.append("ò");
+                        //Kontonummer des Empfängers ausgeben
+                        output.append(accountGetter.getAccountnumber(sender));
                     } else {
                         output.append("You were not involved in this transfer!");
                     }
@@ -152,6 +167,9 @@ public class PostTransfers extends HttpServlet {
             //Werte werden zurückgegeben
             MultipartResponse multi = new MultipartResponse(resp);
             multi.startResponse("text/plain");
+            resp.getOutputStream().println(1);
+            multi.endResponse();
+            multi.startResponse("text/plain");
             resp.getOutputStream().println(URLEncoder.encode(output.toString(), "UTF-8"));
             multi.endResponse();
             multi.startResponse("text/plain");
@@ -160,6 +178,9 @@ public class PostTransfers extends HttpServlet {
             multi.finish();
         } else {
             MultipartResponse multi = new MultipartResponse(resp);
+            multi.startResponse("text/plain");
+            resp.getOutputStream().println(1);
+            multi.endResponse();
             multi.startResponse("text/plain");
             resp.getOutputStream().println(URLEncoder.encode("ĵ", "UTF-8"));
             multi.endResponse();

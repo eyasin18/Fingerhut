@@ -286,11 +286,13 @@ public class Transfer {
         byte[] encryptedReceiverPurpose = cryptor.encryptSymmetricFromString(purpose, receiverAesKey);
         String encryptedReceiverPurposeHex = cryptor.bytesToHex(encryptedReceiverPurpose);
 
+        byte[] encryptedSenderNameForReceiver = cryptor.encryptSymmetricFromString(accountGetter.getAccountnumber(), receiverAesKey);
+        byte[] encryptedReceiverNameForSender = cryptor.encryptSymmetricFromString(companyGetter.getOwner(), senderAesKey);
+
         byte[] encryptedSenderAesKey = cryptor.encryptAsymmetric(senderAesKey, senderPublicKey);
         String encryptedSenderAesKeyHex = cryptor.bytesToHex(encryptedSenderAesKey);
         byte[] encryptedReceiverAesKey = cryptor.encryptAsymmetric(receiverAesKey, receiverPublicKey);
         String encryptedReceiverAesKeyHex = cryptor.bytesToHex(encryptedReceiverAesKey);
-
 
         Calendar calendar = Calendar.getInstance(locale);
         SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", locale);
@@ -302,8 +304,10 @@ public class Transfer {
         transferBuilder.setAmount((float) priceSum);
         transferBuilder.setDateTime();
         transferBuilder.setSenderPurpose(new Text(encryptedSenderPurposeHex));
+        transferBuilder.setSenderNameForReceiver(cryptor.bytesToHex(encryptedSenderNameForReceiver));
         transferBuilder.setSenderAesKey(encryptedSenderAesKeyHex);
         transferBuilder.setReceiverPurpose(new Text(encryptedReceiverPurposeHex));
+        transferBuilder.setReceiverNameForSender(cryptor.bytesToHex(encryptedReceiverNameForSender));
         transferBuilder.setReceiverAesKey(encryptedReceiverAesKeyHex);
         transferBuilder.setType("Einkauf");
         transferBuilder.saveAll();

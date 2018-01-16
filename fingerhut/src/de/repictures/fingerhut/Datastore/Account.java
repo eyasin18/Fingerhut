@@ -145,6 +145,10 @@ public class Account {
         account.setProperty("balance", balance);
     }
 
+    public void setBalance(double balance){
+        account.setProperty("balance", balance);
+    }
+
     public void setBalance(Entity passedEntity, String balanceStr){
         float balance = Float.parseFloat(balanceStr);
         passedEntity.setProperty("balance", balance);
@@ -160,6 +164,14 @@ public class Account {
 
     public String getBalance(Entity passedEntity){
         return String.valueOf((double) passedEntity.getProperty("balance"));
+    }
+
+    public double getBalanceDouble(){
+        return (double) account.getProperty("balance");
+    }
+
+    public double getBalanceDouble(Entity passedEntity){
+        return (double) passedEntity.getProperty("balance");
     }
 
     public void setOwner(String owner){

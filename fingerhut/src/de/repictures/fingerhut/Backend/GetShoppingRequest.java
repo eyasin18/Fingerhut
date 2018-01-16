@@ -1,6 +1,9 @@
 package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.repictures.fingerhut.Datastore.*;
 
 import javax.servlet.ServletException;
@@ -44,18 +47,11 @@ public class GetShoppingRequest extends HttpServlet{
 
         //Einkaufsauftragentität wird erstellt
         PurchaseOrder purchaseOrder;
-        List<String[]> newItems;
         if (shoppingListRaw.length() > 0) {
-            newItems = new ArrayList<>();
-            String[] shoppingListSplittedItems = shoppingListRaw.split("ň");
-            for (String shoppingListSpittedItem : shoppingListSplittedItems) {
-                newItems.add(shoppingListSpittedItem.split("ò"));
-            }
             purchaseOrder = new PurchaseOrder(companyGetter.account, req.getLocale());
-            purchaseOrder.updatePurchaseOrder(companyGetter.account, newItems, accountnumber);
+            purchaseOrder.updatePurchaseOrder(companyGetter.account, shoppingListRaw, accountnumber);
             purchaseOrder.setMadeByUser(madeByUser);
         } else {
-            newItems = new ArrayList<>();
             purchaseOrder = new PurchaseOrder(companyGetter.account, req.getLocale());
             purchaseOrder.purchaseOrder = new Entity("PurchaseOrder", companyGetter.account.getKey());
 
@@ -74,24 +70,36 @@ public class GetShoppingRequest extends HttpServlet{
             purchaseOrder = new PurchaseOrder(companyGetter.account, number, req.getLocale());
         }
 
-        if(madeByUser && newItems.size() > 0 && purchaseOrder.getIsSelfBuyList().contains(true)) {
+        if(madeByUser && shoppingListRaw.length() > 0 && purchaseOrder.getIsSelfBuyList().contains(true)) {
+
+            JsonObject object = new JsonParser().parse(shoppingListRaw).getAsJsonObject();
+            JsonArray productCodesArray = object.getAsJsonArray("product_codes");
+            JsonArray pricesArray = object.getAsJsonArray("prices_array");
+            JsonArray isSelfBuyArray = object.getAsJsonArray("is_self_buy");
+            JsonArray amountsArray = object.getAsJsonArray("amounts");
+
             //Verwendungszweck wird generiert und Gesamtpreis kalkuliert
             StringBuilder purposeBuilder = new StringBuilder();
             purposeBuilder.append("Ihr Einkauf bei ")
                     .append(companyGetter.getOwner())
                     .append(":\n");
             double priceSum = 0.0;
+            double taxes = 0.0;
+            double vat = Tax.getVAT();
+            vat = vat/100;
 
-            for (String[] item : newItems) {
-                if (!Boolean.parseBoolean(item[2])) {
+            for (int i = 0; i < productCodesArray.size(); i++) {
+                if (!isSelfBuyArray.get(i).getAsBoolean()) {
                     continue;
                 }
-                Product product = new Product(item[0]);
-                int count = Integer.parseInt(item[3]);
+                Product product = new Product(productCodesArray.get(i).getAsString());
+                int count = amountsArray.get(i).getAsInt();
                 if (count > 1) purposeBuilder.append(count).append(" x ").append(product.getName()).append("\n");
                 else purposeBuilder.append(product.getName()).append("\n");
 
-                double itemPrice = Double.parseDouble(item[1]);
+                double itemPrice = pricesArray.get(i).getAsDouble();
+                taxes += (count*(itemPrice*vat));
+                itemPrice = (itemPrice + itemPrice*vat);
                 priceSum += (count * itemPrice);
             }
 
@@ -101,6 +109,10 @@ public class GetShoppingRequest extends HttpServlet{
             }
 
             Transfer.buyItems(accountGetter, companyGetter, resp.getLocale(), purposeBuilder.toString(), priceSum);
+            Company finanzministerium = new Company("0098");
+            double finanzministeriumBalance = finanzministerium.getBalanceDouble();
+            finanzministerium.setBalance(finanzministeriumBalance + taxes);
+            finanzministerium.saveAll();
         }
 
         StringBuilder amountsBuilder = new StringBuilder();
@@ -144,6 +156,6 @@ public class GetShoppingRequest extends HttpServlet{
         messageContent.put("madeByUser", String.valueOf(purchaseOrder.getMadeByUser()));
         new SendMessage().sendMessage(messageContent, "/topics/" + companyNumber + "-shoppingRequests");
 
-        resp.getWriter().println(URLEncoder.encode("1ò" + purchaseOrder.getNumber()));
+        resp.getWriter().println(URLEncoder.encode("1ò" + purchaseOrder.getNumber(), "UTF-8"));
     }
 }

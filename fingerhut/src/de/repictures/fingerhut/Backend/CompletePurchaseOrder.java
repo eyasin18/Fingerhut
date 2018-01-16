@@ -110,6 +110,9 @@ public class CompletePurchaseOrder extends HttpServlet {
                     .append(companyGetter.getOwner())
                     .append(":\n");
             double priceSum = 0.0;
+            double taxes = 0.0;
+            double vat = Tax.getVAT();
+            vat = vat/100;
 
             for (int i = 0; i < amountsArray.length; i++) {
                 if (isSelfBuyArray[i]) continue;
@@ -119,10 +122,22 @@ public class CompletePurchaseOrder extends HttpServlet {
                 else purposeBuilder.append(product.getName()).append("\n");
 
                 double itemPrice = pricesArray[i];
+                taxes += (amount*(itemPrice*vat));
+                itemPrice = (itemPrice + itemPrice*vat);
                 priceSum += (amount * itemPrice);
             }
 
+
+            if (priceSum > Float.parseFloat(buyerAccountGetter.getBalance())) {
+                resp.getWriter().println(3);
+                return;
+            }
+
             Transfer.buyItems(buyerAccountGetter, companyGetter, req.getLocale(), purposeBuilder.toString(), priceSum);
+            Company finanzministerium = new Company("0098");
+            double finanzministeriumBalance = finanzministerium.getBalanceDouble();
+            finanzministerium.setBalance(finanzministeriumBalance + taxes);
+            finanzministerium.saveAll();
         }
 
         purchaseOrderSetter.setPricesList(Arrays.asList(pricesArray));
