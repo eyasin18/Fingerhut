@@ -1,4 +1,4 @@
-var product_pojo = function () {
+var purchase_orders_pojo = function () {
     var members = arguments;
 
     return function () {
