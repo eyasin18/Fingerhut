@@ -300,7 +300,7 @@
         </main>
     </div>
 </body>
-<script src="${pageContext.request.contextPath}../js/product.js" ></script>
+<script src="${pageContext.request.contextPath}../js/pojo.js" ></script>
 
 <!-- Firebase Zeug -->
 
@@ -328,7 +328,7 @@
 
 
     //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
-    var product = product_pojo('name', 'price', 'code','amount');
+    var product = pojo('name', 'price', 'code', 'amount');
     var productarray = [];
     var iterate = 0;
     <%
@@ -347,8 +347,8 @@
         }
     %>
 
-    //füllt den Productarray mit Purchase Order Objekten die über die unten stehenden Attribute verfügen (fast alle properties der PurchaseOrder Entitäten)
-    var purchase_order = purchase_orders_pojo('amounts_list', 'buyer_accountnumber', 'completed','date_time', 'is_self_buy_list','number', 'prices_list','product_codes_list');
+    //füllt den purchase_order_array mit Purchase Order Objekten die über die unten stehenden Attribute verfügen (fast alle properties der PurchaseOrder Entitäten)
+    var purchase_order = pojo('amounts_list', 'buyer_accountnumber', 'completed', 'date_time', 'is_self_buy_list', 'number', 'prices_list', 'product_codes_list');
     var purchase_order_array = [];
     var iterate1 = 0;
     <%
@@ -378,7 +378,7 @@
 %>
 
     fillDropdown();
-    console.log(purchase_order_array[1].getProductCodesList);
+    console.log(purchase_order_array[1].product_codes_list);
 
 
     /*if ('serviceWorker' in navigator) {
