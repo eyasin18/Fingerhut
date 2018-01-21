@@ -134,7 +134,9 @@
                                 </tr>
                             </thead>
                             <tbody>
+                            <%
 
+                            %>
                             </tbody>
                         </table>
                         <div class ="wrapper">
@@ -298,7 +300,7 @@
         </main>
     </div>
 </body>
-<script src="${pageContext.request.contextPath}../js/product.js" ></script>
+<script src="${pageContext.request.contextPath}../js/pojo.js" ></script>
 
 <!-- Firebase Zeug -->
 
@@ -326,7 +328,7 @@
 
 
     //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
-    var product = pojo('name', 'price', 'code','amount');
+    var product = pojo('name', 'price', 'code', 'amount');
     var productarray = [];
     var iterate = 0;
     <%
@@ -334,7 +336,7 @@
             %>
             var getName = '<%= products[i].getName() %>';
             var getPrice = <%= products[i].getPrice() %>;
-            var getCode = <%= products[i].getPrice() %>;
+            var getCode = <%= products[i].getCode() %>;
             productarray[iterate] = product(
                 getName,
                 getPrice,
@@ -344,7 +346,39 @@
             <%
         }
     %>
+
+    //füllt den purchase_order_array mit Purchase Order Objekten die über die unten stehenden Attribute verfügen (fast alle properties der PurchaseOrder Entitäten)
+    var purchase_order = pojo('amounts_list', 'buyer_accountnumber', 'completed', 'date_time', 'is_self_buy_list', 'number', 'prices_list', 'product_codes_list');
+    var purchase_order_array = [];
+    var iterate1 = 0;
+    <%
+        for(int i = 0; i < purchaseOrders.length; i++){
+            %>
+    var getAmountsList = '<%= purchaseOrders[i].getAmountsList() %>';
+    var getBuyerAccountnumber = <%= purchaseOrders[i].getBuyerAccountnumber() %>;
+    var getCompleted = <%= purchaseOrders[i].getCompleted() %>;
+    var getDateTime = '<%= purchaseOrders[i].getDateTime() %>';
+    var getIsSelfBuyList = <%= purchaseOrders[i].getIsSelfBuyList() %>;
+    var getNumber = <%= purchaseOrders[i].getNumber() %>;
+    var getPricesList = '<%= purchaseOrders[i].getPricesList() %>';
+    var getProductCodesList = <%= purchaseOrders[i].getProductCodesList() %>;
+    purchase_order_array[iterate1] = purchase_order(
+        getAmountsList,
+        getBuyerAccountnumber,
+        getCompleted,
+        getDateTime,
+        getIsSelfBuyList,
+        getNumber,
+        getPricesList,
+        getProductCodesList
+    );
+    iterate1++;
+    <%
+}
+%>
+
     fillDropdown();
+    console.log(purchase_order_array[1].product_codes_list);
 
 
     /*if ('serviceWorker' in navigator) {
@@ -571,6 +605,14 @@
         for(var j = 0; j < productarray.length; j++){
             if (name === productarray[j].name){
                 return parseFloat(productarray[j].price);
+            }
+        }
+    }
+
+    function getNameThroughCode(code){//ermittelt den Name eines Produktes indem der Barcode übergeben wird
+        for(var j = 0; j < productarray.length; j++){
+            if (code === productarray[j].code){
+                return parseFloat(productarray[j].name);
             }
         }
     }
