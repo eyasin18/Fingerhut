@@ -610,6 +610,9 @@
         Statistics.style.display = "flex";
         Products.style.display = "flex";
         Employees.style.display = "flex";
+        document.getElementById("purchase_order_price_sum").innerText =  "Preis (brutto):";
+        document.getElementById("purchase_order_taxable").innerText =  "Preis (netto):";
+
     }
 
     function getPriceThroughName(name){//ermittelt den Preis eines Produktes indem der Name übergeben wird
@@ -658,6 +661,8 @@
             "\n" +
             "                            </tbody>\n" +
             "                        </table>"
+        document.getElementById("purchase_order_price_sum").innerText =  "Preis (brutto):";
+        document.getElementById("purchase_order_taxable").innerText =  "Preis (netto):";
     }
 
     function cancelProductToPurchase() {
@@ -666,6 +671,7 @@
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
         document.getElementById("product_amount_field").value = "";
+
     }
 </script>
 </html>
