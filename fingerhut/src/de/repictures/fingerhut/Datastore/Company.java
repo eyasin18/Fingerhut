@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "Duplicates"})
 public class Company extends Account {
 
     private Entity company;
@@ -191,6 +191,78 @@ public class Company extends Account {
             e.printStackTrace();
             return new Product[0];
         }
+    }
+
+    public void setEmployeeList(List<Entity> employeeList){
+        account.setProperty("employees", employeeList);
+    }
+
+    public void setEmployeeList(Entity passedEntity, List<Entity> employeeList){
+        passedEntity.setProperty("employees", employeeList);
+    }
+
+    public List<Entity> getEmployeeList(){
+        List<Entity> employeeList = (List<Entity>) account.getProperty("employees");
+        if (employeeList == null) return new ArrayList<>();
+        else return employeeList;
+    }
+
+    public List<Entity> getEmployeeList(Entity passedEntity){
+        List<Entity> employeeList = (List<Entity>) passedEntity.getProperty("employees");
+        if (employeeList == null) return new ArrayList<>();
+        else return employeeList;
+    }
+
+    /**
+        0 = Privatunternehmen
+        1 = Zentralbank
+        2 = Ministerium
+        3 = Parlament
+        4 = Polizei
+        5 = Agrarwirtschaft
+        6 = Bau
+        7 = Chemie & Rohstoffe
+        8 = Dienstleistungen & Handwerk
+        9 = E-Commerce & Versandhandel
+        10 = Energie & Umwelt
+        11 = Finanzen, Versicherungen & Immobilien
+        12 = Freizeit
+        13 = Gesellschaft
+        14 = Handel
+        15 = Internet
+        16 = Konsum & Fast Moving Consumer Goods
+        17 = Länder
+        18 = Leben
+        19 = Medien & Marketing
+        20 = Metall & Elektronik
+        21 = Pharma & Gesundheit
+        22 = Technik & Telekommunikation
+        23 = Tourismus & Gastronomie
+        24 = Verkehr & Logistik
+        25 = Verwaltung und Verteidigung
+        26 = Wirtschaft & Politik
+     */
+
+    public void setSector(long sector){
+        if (sector < 0 || sector > 26) return;
+        account.setProperty("sector", sector);
+    }
+
+    public void setSector(Entity passedEntity, long sector){
+        if (sector < 0 || sector > 26) return;
+        passedEntity.setProperty("sector", sector);
+    }
+
+    public long getSector(){
+        Number sectorNr = (Number) account.getProperty("sector");
+        if (sectorNr != null) return sectorNr.longValue();
+        else return 0;
+    }
+
+    public long getSector(Entity passedEntity){
+        Number sectorNr = (Number) passedEntity.getProperty("sector");
+        if (sectorNr != null) return sectorNr.longValue();
+        else return 0;
     }
 
     @Deprecated

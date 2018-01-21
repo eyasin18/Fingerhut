@@ -13,16 +13,13 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class PrivateLogin extends HttpServlet {
 
     private Logger log = Logger.getLogger(Account.class.getName());
-    public static final int appVersion = 6;
+    public static final int appVersion = 7;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -78,11 +75,27 @@ public class PrivateLogin extends HttpServlet {
                 return;
             }
 
+            Calendar cooldownTimeCalendar = account.getCooldownTime(queriedAccounts.get(0));
+            if (cooldownTimeCalendar != null && cooldownTimeCalendar.after(Calendar.getInstance(Locale.getDefault()))){
+                SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", Locale.getDefault());
+                String cooldownTimeStr = f.format(cooldownTimeCalendar.getTime());
+                resp.getWriter().println(URLEncoder.encode("4ò" + cooldownTimeStr, "UTF-8"));
+                return;
+            }
+
+            long failedAttempts = account.countUpLoginAttempts(queriedAccounts.get(0));
+            if (failedAttempts > 9){
+                resp.getWriter().println("5");
+                return;
+            }
+
             //Vergleiche salte das gespeicherte Passwort und vergleiche es mit dem empfangenem Passwort
             String savedPassword = account.getSaltedPassword(queriedAccounts.get(0), serverTimeStamp);
             log.info("\nInputPassword: " + inputPassword + "\nSavedSaltedPassword: " + savedPassword + "\nSavedHashedPassword: " + account.getHashedPassword(queriedAccounts.get(0))
             + "\nServer Timestamp: " + serverTimeStamp);
             if (Objects.equals(savedPassword, inputPassword)){
+                account.setLoginAttempts(queriedAccounts.get(0), 0);
+                account.saveAll(queriedAccounts.get(0));
 
                 //Speichere das DeviceToken
                 account.deleteDeviceTokenFromAllAccounts(deviceToken);
@@ -109,7 +122,16 @@ public class PrivateLogin extends HttpServlet {
                 resp.setStatus(200);
                 resp.getWriter().println(URLEncoder.encode(response, "UTF-8"));
             } else {
-                resp.getWriter().println("1");
+                if (failedAttempts > 3){
+                    double cooldownSeconds = Math.pow(2, failedAttempts);
+                    Calendar cooldownTime = Calendar.getInstance(Locale.getDefault());
+                    cooldownTime.add(Calendar.SECOND, (int) cooldownSeconds);
+                    account.setCooldownTime(queriedAccounts.get(0), cooldownTime.getTime());
+                    account.saveAll(queriedAccounts.get(0));
+                    resp.getWriter().println(URLEncoder.encode("1ò" + failedAttempts, "UTF-8"));
+                } else {
+                    resp.getWriter().println(URLEncoder.encode("1ò" + failedAttempts, "UTF-8"));
+                }
             }
         } else {
             resp.getWriter().println("0");

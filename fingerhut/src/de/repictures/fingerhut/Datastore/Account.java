@@ -8,10 +8,13 @@ import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "Duplicates"})
 public class Account {
 
     public Entity account;
@@ -174,6 +177,7 @@ public class Account {
         return (double) passedEntity.getProperty("balance");
     }
 
+    @Deprecated
     public void setOwner(String owner){
         String encryptedPasswordHex = (String) account.getProperty("password");
         byte[] encryptedPassword = cryptor.hexToBytes(encryptedPasswordHex);
@@ -182,6 +186,7 @@ public class Account {
         account.setProperty("owner", encryptedOwner);
     }
 
+    @Deprecated
     public void setOwner(Entity accountEntity, String owner){
         String encryptedPasswordHex = (String) accountEntity.getProperty("password");
         byte[] encryptedPassword = cryptor.hexToBytes(encryptedPasswordHex);
@@ -190,6 +195,7 @@ public class Account {
         accountEntity.setProperty("owner", encryptedOwner);
     }
 
+    @Deprecated
     public void setOwner(String owner, String encryptedPasswordHex){
         byte[] encryptedPassword = cryptor.hexToBytes(encryptedPasswordHex);
         byte[] encryptedByteName = cryptor.encryptSymmetricFromString(owner, encryptedPassword);
@@ -197,6 +203,7 @@ public class Account {
         account.setProperty("owner", encryptedOwner);
     }
 
+    @Deprecated
     public String getOwner(){
         String encryptedNameStr = (String) account.getProperty("owner");
         byte[] encryptedName = cryptor.hexToBytes(encryptedNameStr);
@@ -205,6 +212,7 @@ public class Account {
         return cryptor.decryptSymmetricToString(encryptedName, encryptedPassword);
     }
 
+    @Deprecated
     public String getOwner(Entity passedEntity){
         String encryptedNameStr = (String) passedEntity.getProperty("owner");
         byte[] encryptedName = cryptor.hexToBytes(encryptedNameStr);
@@ -318,7 +326,7 @@ public class Account {
      * 1 = Authentifizierungs QR-Codes lesen und schreiben
      * 3 = Kaufaufträge
      * 4 = Account erstellen
-     * 5 = Rechte zuweisen
+     * 5 = Mitarbeiter verwalten
      * 6 = Account erstellen
      * 7 = Statistiken
      */
@@ -353,6 +361,10 @@ public class Account {
         if (passedEntity.getProperty("feature_list") != null)
             featureList = (ArrayList<Long>) passedEntity.getProperty("feature_list");
         return featureList;
+    }
+
+    public void deleteCompany(){
+        account.setProperty("company", null);
     }
 
     public void setCompany(Entity passedEntity, String companyNumber){
@@ -537,6 +549,168 @@ public class Account {
 
     public String getRandomWebString(Entity passedEntity){
         return (String) passedEntity.getProperty("randomWebString");
+    }
+
+    public void setLoginAttempts(long attempts){
+        account.setProperty("login_attempts", attempts);
+    }
+
+    public void setLoginAttempts(Entity passedEntity, long attempts){
+        passedEntity.setProperty("login_attempts", attempts);
+    }
+
+    public long countUpLoginAttempts(){
+        Number attemptsNr = (Number) account.getProperty("login_attempts");
+        long attempts = 0;
+        if (attemptsNr != null) attempts = attemptsNr.longValue();
+        attempts++;
+        account.setProperty("login_attempts", attempts);
+        saveAll();
+        return attempts;
+    }
+
+    public long countUpLoginAttempts(Entity passedEntity){
+        Number attemptsNr = (Number) passedEntity.getProperty("login_attempts");
+        long attempts = 0;
+        if (attemptsNr != null) attempts = attemptsNr.longValue();
+        attempts++;
+        passedEntity.setProperty("login_attempts", attempts);
+        saveAll(passedEntity);
+        return attempts;
+    }
+
+    public long getLoginAttempts(){
+        Number attemptsNr = (Number) account.getProperty("login_attempts");
+        if (attemptsNr == null) return 0;
+        else return attemptsNr.longValue();
+    }
+
+    public long getLoginAttempts(Entity passedEntity){
+        Number attemptsNr = (Number) passedEntity.getProperty("login_attempts");
+        if (attemptsNr == null) return 0;
+        else return attemptsNr.longValue();
+    }
+
+    public void setCooldownTime(Date cooldownTime){
+        account.setProperty("login_cooldown", cooldownTime);
+    }
+
+    public void setCooldownTime(Entity passedEntity, Date cooldownTime){
+        passedEntity.setProperty("login_cooldown", cooldownTime);
+    }
+
+    public Calendar getCooldownTime(){
+        Date date = (Date) account.getProperty("login_cooldown");
+        if (date == null) return null;
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        return calendar;
+    }
+
+    public Calendar getCooldownTime(Entity passedEntity){
+        Date date = (Date) passedEntity.getProperty("login_cooldown");
+        if (date == null) return null;
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        return calendar;
+    }
+
+    public void setWage(double wage){
+        account.setProperty("wage", wage);
+    }
+
+    public void setWage(Entity passedEntity, double wage){
+        passedEntity.setProperty("wage", wage);
+    }
+
+    public double getWage(){
+        Number wageNr = (Number) account.getProperty("wage");
+        if (wageNr != null) return wageNr.doubleValue();
+        else return 1.0;
+    }
+
+    public double getWage(Entity passedEntity){
+        Number wageNr = (Number) passedEntity.getProperty("wage");
+        if (wageNr != null) return wageNr.doubleValue();
+        else return 1.0;
+    }
+
+    public void setWorkingPeriods(List<Calendar> startTimes, List<Calendar> endTimes){
+        List<String> startTimesStr = new ArrayList<>();
+        List<String> endTimesStr = new ArrayList<>();
+        DateFormat format = new SimpleDateFormat("EEE HH:mm z");
+        for (int i = 0; i < startTimes.size(); i++){
+            startTimesStr.add(format.format(startTimes.get(0).getTime()));
+            endTimesStr.add(format.format(endTimes.get(0).getTime()));
+        }
+        account.setProperty("working_start_times", startTimesStr);
+        account.setProperty("working_end_times", endTimesStr);
+    }
+
+    public void setWorkingPeriods(Entity passedEntity, List<Calendar> startTimes, List<Calendar> endTimes){
+        List<String> startTimesStr = new ArrayList<>();
+        List<String> endTimesStr = new ArrayList<>();
+        DateFormat format = new SimpleDateFormat("EEE HH:mm z");
+        for (int i = 0; i < startTimes.size(); i++){
+            startTimesStr.add(format.format(startTimes.get(0).getTime()));
+            endTimesStr.add(format.format(endTimes.get(0).getTime()));
+        }
+        passedEntity.setProperty("working_start_times", startTimesStr);
+        passedEntity.setProperty("working_end_times", endTimesStr);
+    }
+
+    public List<Calendar> getWorkingPeriods(boolean isEndPeriod){
+        try {
+            DateFormat format = new SimpleDateFormat("EEE HH:mm z");
+            List<String> workingPeriodsStr = new ArrayList<>();
+            List<Calendar> workingPeriods = new ArrayList<>();
+            if (isEndPeriod && account.getProperty("working_end_times") != null)
+                workingPeriodsStr = (List<String>) account.getProperty("working_end_times");
+            else if (!isEndPeriod && account.getProperty("working_start_times") != null)
+                workingPeriodsStr = (List<String>) account.getProperty("working_start_times");
+
+            for (int i = 0; i < workingPeriodsStr.size(); i++) {
+                Calendar calendar = new GregorianCalendar();
+                calendar.setTime(format.parse(workingPeriodsStr.get(i)));
+                workingPeriods.set(i, calendar);
+            }
+            return workingPeriods;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Calendar> getWorkingPeriods(Entity passedEntity, boolean isEndPeriod){
+        try {
+            DateFormat format = new SimpleDateFormat("EEE HH:mm z");
+            List<String> workingPeriodsStr = new ArrayList<>();
+            List<Calendar> workingPeriods = new ArrayList<>();
+            if (isEndPeriod && passedEntity.getProperty("working_end_times") != null)
+                workingPeriodsStr = (List<String>) passedEntity.getProperty("working_end_times");
+            else if (!isEndPeriod && passedEntity.getProperty("working_start_times") != null)
+                workingPeriodsStr = (List<String>) passedEntity.getProperty("working_start_times");
+
+            for (int i = 0; i < workingPeriodsStr.size(); i++) {
+                Calendar calendar = new GregorianCalendar();
+                calendar.setTime(format.parse(workingPeriodsStr.get(i)));
+                workingPeriods.set(i, calendar);
+            }
+            return workingPeriods;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<String> getWorkingPeriodsStr(boolean isEndPeriod){
+        List<String> workingPeriodsStr = new ArrayList<>();
+        if (isEndPeriod && account.getProperty("working_end_times") != null)
+            workingPeriodsStr = (List<String>) account.getProperty("working_end_times");
+        else if (!isEndPeriod && account.getProperty("working_start_times") != null)
+            workingPeriodsStr = (List<String>) account.getProperty("working_start_times");
+
+        return workingPeriodsStr;
     }
 
     public void saveAll(){

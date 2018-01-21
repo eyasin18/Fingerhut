@@ -30,6 +30,9 @@ public class GetShoppingRequest extends HttpServlet{
         boolean madeByUser = true;
         String madeByUserStr = req.getParameter("madebyuser");
         if (madeByUserStr != null) madeByUser = Boolean.parseBoolean(madeByUserStr);
+        boolean completed = false;
+        String completedStr = req.getParameter("madebyuser");
+        if (completedStr != null) completed = Boolean.parseBoolean(completedStr);
 
         Account accountGetter = new Account(accountnumber);
         Account authAccountGetter = new Account(authAccountnumber);
@@ -64,7 +67,7 @@ public class GetShoppingRequest extends HttpServlet{
             purchaseOrder.setPricesList(new ArrayList<>());
             purchaseOrder.setIsSelfBuyList(new ArrayList<>());
             purchaseOrder.setAmountsList(new ArrayList<>());
-            purchaseOrder.setCompleted(false);
+            purchaseOrder.setCompleted(completed);
             purchaseOrder.saveAll();
             int number = purchaseOrder.getNumber();
             purchaseOrder = new PurchaseOrder(companyGetter.account, number, req.getLocale());
