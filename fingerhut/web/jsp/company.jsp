@@ -12,6 +12,7 @@
 <%@ page import="java.util.Calendar" %>
 <%@ page import="java.text.ParseException" %>
 <%@ page import="java.util.logging.Logger" %>
+<%@ page import="de.repictures.fingerhut.Datastore.Tax" %>
 <%@ page errorPage="errorpage.jsp" %> <!-- gibt die Seite an, die im Fehlerfall angezeigt werden soll -->
 
 <%
@@ -169,7 +170,9 @@
                         <div id ="add_purchase_div">
 
                         </div>
-                        <h6 class="title" id="purchase_order_price_sum"></h6>
+                        <h6 class="title wrapper" id="purchase_order_price_sum">Preis (brutto): </h6>
+                        <h6 class="title wrapper" id="tax">Mehrwertsteuer: <%=Tax.getVAT() %>%</h6>
+                        <h6 class="title wrapper" id="purchase_order_taxable">Preis (netto): </h6>
                         <div class="wrapper">
                                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addPurchaseToTable()" id="finish_button">
                                     Fertig
@@ -355,7 +358,7 @@
         for(int i = 0; i < purchaseOrders.length; i++){
             %>
     var getAmountsList = '<%= purchaseOrders[i].getAmountsList() %>';
-    var getBuyerAccountnumber = <%= purchaseOrders[i].getBuyerAccountnumber() %>;
+    var getBuyerAccountnumber = "<%= purchaseOrders[i].getBuyerAccountnumber() %>";
     var getCompleted = <%= purchaseOrders[i].getCompleted() %>;
     var getDateTime = '<%= purchaseOrders[i].getDateTime() %>';
     var getIsSelfBuyList = <%= purchaseOrders[i].getIsSelfBuyList() %>;
@@ -378,7 +381,11 @@
 %>
 
     fillDropdown();
-    console.log(purchase_order_array[1].product_codes_list);
+    //for(var i = 0; i<purchase_order_array.length ; i++)
+    //{
+        console.log(purchase_order_array[0].prices_list);
+        console.log(purchase_order_array[0].product_codes_list);
+    //}
 
 
     /*if ('serviceWorker' in navigator) {
@@ -564,7 +571,7 @@
     }
 
     function addProductToPurchaseTable() {
-        var purchase_price_sum = document.getElementById(purchase_order_price_sum);
+        var purchase_price_sum = 0;
         if (isNaN(document.getElementById("product_amount_field").value) || document.getElementById("product_amount_field").value < 1) {
             document.getElementById('product_amount_error').textContent = "Eingabe ist keine Zahl!";
         } else {
@@ -580,13 +587,17 @@
                 var cell1 = row.insertCell(0);
                 var cell2 = row.insertCell(1);
                 var cell3 = row.insertCell(2);
+                var tax = <%=Tax.getVAT() %>;
                 cell2.innerHTML = product;
                 cell1.innerHTML = amount;
                 cell3.innerHTML = String(getPriceThroughName(product) * parseFloat(amount));
                 document.getElementById("product_amount_field").value = "";
-                for(var i = 0; i < table.rows.length; i++){
-
-                }
+                    for (var r = 1, n = table.rows.length; r < n; r++) {
+                            purchase_price_sum += parseFloat(table.rows[r].cells[2].innerHTML);
+                    }
+                document.getElementById("purchase_order_price_sum").innerText =  "Preis (brutto): " + String(purchase_price_sum);
+                document.getElementById("tax").innerText = "Mehrwertsteuer: " + String(tax) + "%";
+                document.getElementById("purchase_order_taxable").innerText =  "Preis (netto): " + String(purchase_price_sum + (purchase_price_sum * (tax / 100)));
             }
         }
     }
