@@ -31,7 +31,7 @@ public class GetShoppingRequest extends HttpServlet{
         String madeByUserStr = req.getParameter("madebyuser");
         if (madeByUserStr != null) madeByUser = Boolean.parseBoolean(madeByUserStr);
         boolean completed = false;
-        String completedStr = req.getParameter("madebyuser");
+        String completedStr = req.getParameter("completed");
         if (completedStr != null) completed = Boolean.parseBoolean(completedStr);
 
         Account accountGetter = new Account(accountnumber);
