@@ -331,7 +331,7 @@
 
 
     //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
-    var product = pojo('name', 'price', 'code', 'amount');
+    var product = pojo('name', 'price', 'code', 'amount' , 'selfBuy');
     var productarray = [];
     var iterate = 0;
     <%
@@ -340,10 +340,12 @@
             var getName = '<%= products[i].getName() %>';
             var getPrice = <%= products[i].getPrice() %>;
             var getCode = <%= products[i].getCode() %>;
+            var getSelfBuy = <%= products[i].getSelfBuy() %>;
             productarray[iterate] = product(
                 getName,
                 getPrice,
-                getCode
+                getCode,
+                getSelfBuy
             );
             iterate++;
             <%
@@ -612,6 +614,7 @@
         Employees.style.display = "flex";
         document.getElementById("purchase_order_price_sum").innerText =  "Preis (brutto):";
         document.getElementById("purchase_order_taxable").innerText =  "Preis (netto):";
+        console.log(getShoppingList());
 
     }
 
@@ -626,7 +629,23 @@
     function getNameThroughCode(code){//ermittelt den Name eines Produktes indem der Barcode übergeben wird
         for(var j = 0; j < productarray.length; j++){
             if (code === productarray[j].code){
-                return parseFloat(productarray[j].name);
+                return productarray[j].name;
+            }
+        }
+    }
+
+    function getCodeThroughName(name) {//ermittelt den Code eines Produktes indem der Name übergeben wird
+        for(var j = 0; j < productarray.length; j++){
+            if (name === productarray[j].name){
+                return productarray[j].code;
+            }
+        }
+    }
+
+    function getSelfBuyThroughName(name) {//ermittelt den SelfBuy Wert eines Produktes indem der Name übergeben wird
+        for(var j = 0; j < productarray.length; j++){
+            if (name === productarray[j].name){
+                return productarray[j].selfBuy;
             }
         }
     }
@@ -672,6 +691,26 @@
         AddProductToPurchase.style.display = "none";
         document.getElementById("product_amount_field").value = "";
 
+    }
+
+    function getShoppingList(){
+        var productCodesArray = [];
+        var pricesArray = [];
+        var isSelfBuyArray = [];
+        var amountsArray = [];
+        for(var i = 1; i < document.getElementById("add_purchase_table").rows.length; i++){
+            var name = document.getElementById("add_purchase_table").rows[i].cells[1].innerHTML;
+            productCodesArray[i-1] = getCodeThroughName(name);
+            pricesArray[i-1] = String(getPriceThroughName(name));
+            isSelfBuyArray[i-1] = getSelfBuyThroughName(name);
+            amountsArray[i-1] = document.getElementById("add_purchase_table").rows[i].cells[0].innerHTML;
+        }
+        return{
+            "product_codes" : productCodesArray,
+            "prices_array" : pricesArray,
+            "is_self_buy" : isSelfBuyArray,
+            "amounts" : amountsArray
+        }
     }
 </script>
 </html>
