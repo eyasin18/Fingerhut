@@ -614,7 +614,16 @@
         Employees.style.display = "flex";
         document.getElementById("purchase_order_price_sum").innerText =  "Preis (brutto):";
         document.getElementById("purchase_order_taxable").innerText =  "Preis (netto):";
-        console.log(getShoppingList());
+        if(document.getElementById("add_purchase_table").rows.length > 1){
+            console.log(getShoppingList());
+            /*var getUrl = "https://fingerhut388.appspot.com"+ "/getshoppingrequest?code=" + <//%code%>
+            + "&authaccountnumber=" +
+            + "&accountnumber=" + */<%//accountnumber%>
+            /*+ "&companynumber=" + */<%//companynumber%>
+            /*+ "&shoppinglist=" + getShoppingList()
+            + "&madebyuser=true"
+            &completed=boolean*/
+        }
 
     }
 
@@ -698,18 +707,18 @@
         var pricesArray = [];
         var isSelfBuyArray = [];
         var amountsArray = [];
-        for(var i = 1; i < document.getElementById("add_purchase_table").rows.length; i++){
+        for (var i = 1; i < document.getElementById("add_purchase_table").rows.length; i++) {
             var name = document.getElementById("add_purchase_table").rows[i].cells[1].innerHTML;
-            productCodesArray[i-1] = getCodeThroughName(name);
-            pricesArray[i-1] = String(getPriceThroughName(name));
-            isSelfBuyArray[i-1] = getSelfBuyThroughName(name);
-            amountsArray[i-1] = document.getElementById("add_purchase_table").rows[i].cells[0].innerHTML;
+            productCodesArray[i - 1] = getCodeThroughName(name);
+            pricesArray[i - 1] = String(getPriceThroughName(name));
+            isSelfBuyArray[i - 1] = getSelfBuyThroughName(name);
+            amountsArray[i - 1] = document.getElementById("add_purchase_table").rows[i].cells[0].innerHTML;
         }
-        return{
-            "product_codes" : productCodesArray,
-            "prices_array" : pricesArray,
-            "is_self_buy" : isSelfBuyArray,
-            "amounts" : amountsArray
+        return {
+            "product_codes": productCodesArray,
+            "prices_array": pricesArray,
+            "is_self_buy": isSelfBuyArray,
+            "amounts": amountsArray
         }
     }
 </script>

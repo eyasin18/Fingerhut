@@ -1,7 +1,7 @@
 
 var url = "https://fingerhut388.appspot.com"; //URL-Addresse der Index.jsp
 
-//Füllt die Textfelder mit Beschriften
+//Füllt die Textfelder mit Beschriftungen
 document.getElementById('username_label').textContent = strings.accountnumber;
 document.getElementById('username_error').textContent = strings.noNumberInputError;
 document.getElementById('userpass_label').textContent = strings.pin;
