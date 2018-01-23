@@ -13,7 +13,7 @@
 
 <%@ page errorPage="errorpage.jsp" %> <!-- gibt die Seite an, die im Fehlerfall angezeigt werden soll -->
 
-<% //String number = null; Integer.parseInt(number); %> <!-- erzeugt Error zum testen der Errorpage -->
+<% String number = null; Integer.parseInt(number); %> <!-- erzeugt Error zum testen der Errorpage -->
 
 <html>
     <head>

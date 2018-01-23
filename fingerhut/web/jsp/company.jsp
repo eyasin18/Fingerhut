@@ -41,6 +41,11 @@
         <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js"></script>
         <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            <%=
+        companyTools.getOwner(companynumber)
+        %>
+        </title>
     </head>
 <body>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
@@ -359,24 +364,24 @@
     <%
         for(int i = 0; i < purchaseOrders.length; i++){
             %>
-    var getAmountsList = '<%= purchaseOrders[i].getAmountsList() %>';
-    var getBuyerAccountnumber = "<%= purchaseOrders[i].getBuyerAccountnumber() %>";
-    var getCompleted = <%= purchaseOrders[i].getCompleted() %>;
-    var getDateTime = '<%= purchaseOrders[i].getDateTime() %>';
-    var getIsSelfBuyList = <%= purchaseOrders[i].getIsSelfBuyList() %>;
-    var getNumber = <%= purchaseOrders[i].getNumber() %>;
-    var getPricesList = '<%= purchaseOrders[i].getPricesList() %>';
-    var getProductCodesList = <%= purchaseOrders[i].getProductCodesList() %>;
-    purchase_order_array[iterate1] = purchase_order(
-        getAmountsList,
-        getBuyerAccountnumber,
-        getCompleted,
-        getDateTime,
-        getIsSelfBuyList,
-        getNumber,
-        getPricesList,
-        getProductCodesList
-    );
+        var getAmountsList = '<%= purchaseOrders[i].getAmountsList() %>';
+        var getBuyerAccountnumber = "<%= purchaseOrders[i].getBuyerAccountnumber() %>";
+        var getCompleted = <%= purchaseOrders[i].getCompleted() %>;
+        var getDateTime = '<%= purchaseOrders[i].getDateTime() %>';
+        var getIsSelfBuyList = <%= purchaseOrders[i].getIsSelfBuyList() %>;
+        var getNumber = <%= purchaseOrders[i].getNumber() %>;
+        var getPricesList = '<%= purchaseOrders[i].getPricesList() %>';
+        var getProductCodesList = <%= purchaseOrders[i].getProductCodesList() %>;
+        purchase_order_array[iterate1] = purchase_order(
+            getAmountsList,
+            getBuyerAccountnumber,
+            getCompleted,
+            getDateTime,
+            getIsSelfBuyList,
+            getNumber,
+            getPricesList,
+            getProductCodesList
+        );
     iterate1++;
     <%
 }
