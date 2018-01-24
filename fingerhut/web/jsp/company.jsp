@@ -13,6 +13,7 @@
 <%@ page import="java.text.ParseException" %>
 <%@ page import="java.util.logging.Logger" %>
 <%@ page import="de.repictures.fingerhut.Datastore.Tax" %>
+<%@ page import="java.lang.reflect.Array" %>
 <%@ page errorPage="errorpage.jsp" %> <!-- gibt die Seite an, die im Fehlerfall angezeigt werden soll -->
 
 <%
@@ -358,7 +359,7 @@
     %>
 
     //füllt den purchase_order_array mit Purchase Order Objekten die über die unten stehenden Attribute verfügen (fast alle properties der PurchaseOrder Entitäten)
-    var purchase_order = pojo('amounts_list', 'buyer_accountnumber', 'completed', 'date_time', 'is_self_buy_list', 'number', 'prices_list', 'product_codes_list');
+    var purchase_order = pojo('amounts_list', 'buyer_accountnumber', 'completed', 'date_time', 'is_self_buy_list', 'number', 'product_codes_list');
     var purchase_order_array = [];
     var iterate1 = 0;
     <%
@@ -370,7 +371,7 @@
         var getDateTime = '<%= purchaseOrders[i].getDateTime() %>';
         var getIsSelfBuyList = <%= purchaseOrders[i].getIsSelfBuyList() %>;
         var getNumber = <%= purchaseOrders[i].getNumber() %>;
-        var getPricesList = '<%= purchaseOrders[i].getPricesList() %>';
+        var getPricesList = <%= purchaseOrders[i].getPricesList() %>;
         var getProductCodesList = <%= purchaseOrders[i].getProductCodesList() %>;
         purchase_order_array[iterate1] = purchase_order(
             getAmountsList,
@@ -379,18 +380,26 @@
             getDateTime,
             getIsSelfBuyList,
             getNumber,
-            getPricesList,
             getProductCodesList
         );
     iterate1++;
     <%
 }
 %>
+    <%
+        for(int iterator = 0; iterator < purchaseOrders.length; iterator++){
+            %>
+            var iterator = <%= iterator%>;
+            purchase_order_array[iterator].prices_list = <%= purchaseOrders[iterator].getPricesList() %>;
+        <%
+        }
+    %>
 
     fillDropdown();
     //for(var i = 0; i<purchase_order_array.length ; i++)
     //{
-        console.log(purchase_order_array[0].prices_list);
+    purchase_order_array[0].prices_list = <%= purchaseOrders[0].getPricesList() %>;
+    console.log(purchase_order_array[0].prices_list);
         console.log(purchase_order_array[0].product_codes_list);
     //}
 
