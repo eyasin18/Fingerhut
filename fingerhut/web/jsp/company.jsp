@@ -160,16 +160,16 @@
                             </button>
                         </div>
                         <div class="wrapper">
-                            <div class="mdl-card__title-text mdl-textfield mdl-js-textfield mdl-textfield--floating-label wrapper" id="add_purchase_accountnumber_textfield">
-                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample4">
-                                <label class="mdl-textfield__label" for="sample4">Kontonummer</label>
+                            <div class="mdl-card__title-text mdl-textfield mdl-js-textfield mdl-textfield--floating-label wrapper" id="accountnumber_textfield">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="add_purchase_accountnumber_textfield">
+                                <label class="mdl-textfield__label" for="add_purchase_accountnumber_textfield">Kontonummer</label>
                                 <span class="mdl-textfield__error">Eingabe ist keine Zahl</span>
                             </div>
                         </div>
                         <div class="wrapper">
-                            <div class="mdl-card__title-text mdl-textfield mdl-js-textfield mdl-textfield--floating-label wrapper" id="add_purchase_pin_textfield">
-                                <input class="mdl-textfield__input" type="password" pattern="-?[0-9]*(\.[0-9]+)?" id="purchase_pin_textfield">
-                                <label class="mdl-textfield__label" for="purchase_pin_textfield">Pin des Käufers</label>
+                            <div class="mdl-card__title-text mdl-textfield mdl-js-textfield mdl-textfield--floating-label wrapper">
+                                <input class="mdl-textfield__input" type="password" pattern="-?[0-9]*(\.[0-9]+)?" id="add_purchase_pin_textfield">
+                                <label class="mdl-textfield__label" for="add_purchase_pin_textfield">Pin des Käufers</label>
                                 <span class="mdl-textfield__error">Eingabe ist keine Zahl</span>
                             </div>
                         </div>
@@ -619,26 +619,18 @@
     }
 
     function addPurchaseToTable() {
-        AddPurchase.style.display = "none";
-        PurchaseOrders.style.display = "flex";
-        PurchaseOrder.style.display = "none";
-        AddProductToPurchase.style.display = "none";
-        Statistics.style.display = "flex";
-        Products.style.display = "flex";
-        Employees.style.display = "flex";
-        document.getElementById("purchase_order_price_sum").innerText =  "Preis (brutto):";
-        document.getElementById("purchase_order_taxable").innerText =  "Preis (netto):";
         if(document.getElementById("add_purchase_table").rows.length > 1){
-            console.log(getShoppingList());
-            /*var getUrl = "https://fingerhut388.appspot.com"+ "/getshoppingrequest?code=" + <//%code%>
-            + "&authaccountnumber=" +
-            + "&accountnumber=" + */<%//accountnumber%>
-            /*+ "&companynumber=" + */<%//companynumber%>
-            /*+ "&shoppinglist=" + getShoppingList()
-            + "&madebyuser=true"
-            &completed=boolean*/
+            gerhardt();
+            AddPurchase.style.display = "none";
+            PurchaseOrders.style.display = "flex";
+            PurchaseOrder.style.display = "none";
+            AddProductToPurchase.style.display = "none";
+            Statistics.style.display = "flex";
+            Products.style.display = "flex";
+            Employees.style.display = "flex";
+            document.getElementById("purchase_order_price_sum").innerText =  "Preis (brutto):";
+            document.getElementById("purchase_order_taxable").innerText =  "Preis (netto):";
         }
-
     }
 
     function getPriceThroughName(name){//ermittelt den Preis eines Produktes indem der Name übergeben wird
@@ -716,6 +708,13 @@
 
     }
 
+    //Kaufaugträge hinzufügen
+    var decodedServerTime;
+    var hashedSaltedPassword;
+    var encodedServerTime;
+    var hash = sjcl.hash.sha256.hash(document.getElementById("add_purchase_accountnumber_textfield").value);
+    var hashHex = sjcl.codec.hex.fromBits(hash);
+
     function getShoppingList(){
         var productCodesArray = [];
         var pricesArray = [];
@@ -725,15 +724,93 @@
             var name = document.getElementById("add_purchase_table").rows[i].cells[1].innerHTML;
             productCodesArray[i - 1] = getCodeThroughName(name);
             pricesArray[i - 1] = String(getPriceThroughName(name));
-            isSelfBuyArray[i - 1] = getSelfBuyThroughName(name);
+            isSelfBuyArray[i - 1] = "true";
             amountsArray[i - 1] = document.getElementById("add_purchase_table").rows[i].cells[0].innerHTML;
         }
-        return {
+        return JSON.stringify({
             "product_codes": productCodesArray,
             "prices_array": pricesArray,
             "is_self_buy": isSelfBuyArray,
             "amounts": amountsArray
+        })
+    }
+
+    function httpAsync(theUrl, method, callerid) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState === 4 && xmlHttp.status === 200){
+                console.log(xmlHttp.responseText);
+                if (method === "GET") processGetResponse(decodeURIComponent(xmlHttp.responseText), callerid);
+                else if (method === "POST") processPostResponse(decodeURIComponent(xmlHttp.responseText), callerid);
+            }
+            else if (xmlHttp.readyState === 4 && xmlHttp.status === 206){
+                console.log("Webstring nicht aktuell");
+            }
+        };
+        xmlHttp.open(method, theUrl, true); // true for asynchronous
+        xmlHttp.send(null);
+    }
+
+    function processGetResponse(responseText, callerid) {
+        var responseSplit = responseText.split("ò");
+        var response = parseInt(responseSplit[0]);
+        switch (callerid) {
+            case 1:
+                switch (response) {
+                    case 3:
+                        console.log("Account existiert nicht");
+                        break;
+                    case 2:
+                        console.log("Käufer hat nicht genug Geld");
+                        break;
+                    case 1:
+                        console.log("Erfolgreich");
+                        break;
+                    case -1:
+                        console.log("Webstring ist nicht aktuell");
+                        break;
+                }
+                break;
+            case 2:
+                encodedServerTime = responseSplit[0];
+                decodedServerTime = decodeURIComponent(responseSplit[0]);
+                hashedSaltedPassword = hashHex + decodedServerTime;
+                var postUrlStr = "https://fingerhut388.appspot.com" + "confirmlogin?accountnumber="
+                    + document.getElementById("add_purchase_accountnumber_textfield").value
+                    + "&sessionaccountnumber=" + <%=accountnumber%> +"&webstring=" + <%=code%>
+                    + "&password=" + hashedSaltedPassword.toUpperCase() + "servertimestamp=" + encodedServerTime;
+                httpAsync(postUrlStr,"POST","1");
+                break;
         }
+    }
+
+    function processPostResponse(responseText, callerid) {
+        switch (responseText){
+            case 1:
+                console.log("Alles Gut!");
+                var getUrl = "https://fingerhut388.appspot.com" + "/getshoppingrequest?code=" + <%=code%>
+                    +"&authaccountnumber=" + <%=accountnumber%>
+                    +"&accountnumber=" + document.getElementById("add_purchase_accountnumber_textfield").value
+                    + "&companynumber=" + <%=companynumber%>
+                    +"&shoppinglist=" + getShoppingList()
+                    + "&madebyuser=true"
+                    + "&completed=true";
+                httpAsync(getUrl, "GET", "1")
+                break;
+            case 2:
+                console.log("Auth String nicht aktuell");
+                break;
+            case 3:
+                console.log("Passwort falsch!");
+                break;
+        }
+    }
+
+    function gerhardt() {
+        var getUrlStr = "https://fingerhut388.appspot.com" + "confirmlogin?accountnumber="
+            + document.getElementById("add_purchase_accountnumber_textfield").value
+            + "&sessionaccountnumber=" + <%=accountnumber%> +"&webstring=";
+        httpAsync(getUrlStr, "GET", "2")
     }
 </script>
 </html>
