@@ -209,6 +209,14 @@
         <url-pattern>/postemployees</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>GetEmployee</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.GetEmployee</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetEmployee</servlet-name>
+        <url-pattern>/getemployee</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>TransferWage</servlet-name>
         <servlet-class>de.repictures.fingerhut.Crons.TransferWage</servlet-class>
     </servlet>

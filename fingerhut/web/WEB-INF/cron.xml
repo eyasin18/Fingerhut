@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <cronentries>
-    <!--<cron>
+    <cron>
         <url>/cron/transferwage</url>
         <description>Lohnueberweisung</description>
-        <schedule>every 30 minutes from 8:00 to 16:00</schedule>
-        <timezone>DE</timezone>
-    </cron> -->
+        <schedule>every 30 minutes from 8:00 to 16:01</schedule>
+        <timezone>Europe/Berlin</timezone>
+    </cron>
 </cronentries>

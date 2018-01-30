@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +32,7 @@ public class PostEmployees extends HttpServlet {
         Account authAccount = new Account(authAccountnumber);
         JsonObject object = new JsonObject();
 
-        if (!authAccount.getFeatures().contains(5L)){
+        if (!authAccount.getFeatures().contains(3L)){
             object.addProperty("responseCode", 2);
             resp.getWriter().println(object.toString());
             return;
@@ -53,22 +54,31 @@ public class PostEmployees extends HttpServlet {
         JsonArray wageArray = new JsonArray();
         JsonArray startTimesArray = new JsonArray();
         JsonArray endTimesArray = new JsonArray();
+        JsonArray featuresArray = new JsonArray();
 
         for (Entity anAccountList : accountList) {
             Account account = new Account(anAccountList);
             accountnumberArray.add(account.getAccountnumber());
             wageArray.add(account.getWage());
             Gson gson = new Gson();
-            List<String> startTimesStr = account.getWorkingPeriodsStr(false);
-            if (startTimesStr.size() > 0) {
-                JsonArray oStartTimesArray = gson.toJsonTree(startTimesStr).getAsJsonArray();
-                startTimesArray.add(oStartTimesArray);
+            List<Number> startTimesInt = account.getWorkPeriod(false);
+            JsonArray oStartTimesArray = new JsonArray();
+            if (startTimesInt.size() > 0) {
+                oStartTimesArray = gson.toJsonTree(startTimesInt).getAsJsonArray();
             }
-            List<String> endTimesStr = account.getWorkingPeriodsStr(true);
-            if (endTimesStr.size() > 0) {
-                JsonArray oEndTimesArray = gson.toJsonTree(endTimesStr).getAsJsonArray();
-                endTimesArray.add(oEndTimesArray);
+            startTimesArray.add(oStartTimesArray);
+            List<Number> endTimesInt = account.getWorkPeriod(true);
+            JsonArray oEndTimesArray = new JsonArray();
+            if (endTimesInt.size() > 0) {
+                oEndTimesArray = gson.toJsonTree(endTimesInt).getAsJsonArray();
             }
+            endTimesArray.add(oEndTimesArray);
+            ArrayList<Long> featuresList = account.getFeatures();
+            JsonArray oFeaturesArray = new JsonArray();
+            if (featuresList.size() > 0){
+                oFeaturesArray = gson.toJsonTree(featuresList).getAsJsonArray();
+            }
+            featuresArray.add(oFeaturesArray);
         }
 
         object.addProperty("responseCode", 1);
@@ -76,6 +86,7 @@ public class PostEmployees extends HttpServlet {
         object.add("wages", wageArray);
         object.add("start_times", startTimesArray);
         object.add("end_times", endTimesArray);
+        object.add("features", featuresArray);
         resp.getWriter().println(object.toString());
     }
 }

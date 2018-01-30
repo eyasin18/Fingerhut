@@ -118,6 +118,10 @@ public class PrivateLogin extends HttpServlet {
                 account.setCompany(queriedAccounts.get(0), "0002");
                 Company companyGetter = new Company(account.getCompany(queriedAccounts.get(0)));
                 output.append(companyGetter.getAccountnumber());
+                output.append("ò");
+                output.append(companyGetter.getSector());
+                output.append("ò");
+                output.append(companyGetter.getOwner());
                 String response = "2ò" + account.getKey(queriedAccounts.get(0)) + "ò" + output.toString();
                 resp.setStatus(200);
                 resp.getWriter().println(URLEncoder.encode(response, "UTF-8"));

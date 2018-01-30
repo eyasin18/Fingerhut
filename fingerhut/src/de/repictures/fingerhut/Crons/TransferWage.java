@@ -6,6 +6,7 @@ import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Tax;
 import de.repictures.fingerhut.Datastore.Transfer;
+import org.apache.http.HttpResponse;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,92 +23,96 @@ import java.util.List;
 
 public class TransferWage extends HttpServlet {
 
-    private Calendar currentTime;
+    private int currentTime;
     private Company finanzministerium;
+    private HttpServletResponse resp;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         finanzministerium = new Company("0098");
+        this.resp = resp;
 
-        Date monwedBegin, monwedEnd, thursdayBegin, thursdayEnd, fridayBegin, fridayEnd, saturdayBegin, saturdayEnd;
-        try {
-            DateFormat f = new SimpleDateFormat("HH:mm z");
-            monwedBegin = f.parse("08:00 UTC+01:00");
-            monwedEnd = f.parse("15:30 UTC+01:00");
-            thursdayBegin = f.parse("08:00 UTC+01:00");
-            thursdayEnd = f.parse("13:00 UTC+01:00");
-            fridayBegin = f.parse("09:00 UTC+01:00");
-            fridayEnd = f.parse("16:30 UTC+01:00");
-            saturdayBegin = f.parse("09:30 UTC+01:00");
-            saturdayEnd = f.parse("14:30 UTC+01:00");
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return;
-        }
+        int mondayBegin, mondayEnd, tuesdayBegin, tuesdayEnd, wednesdayBegin, wednesdayEnd, thursdayBegin, thursdayEnd, fridayBegin, fridayEnd, saturdayBegin, saturdayEnd;
+        mondayBegin = Account.getMinutesFromValues(0, 8, 0); //8:00 Uhr
+        mondayEnd = Account.getMinutesFromValues(0, 15, 30); //15:30 Uhr
+        tuesdayBegin = Account.getMinutesFromValues(1, 8, 0); //8:00 Uhr
+        tuesdayEnd = Account.getMinutesFromValues(1, 15, 30); //15:30
+        wednesdayBegin = Account.getMinutesFromValues(2, 8, 0); //08:00
+        wednesdayEnd = Account.getMinutesFromValues(2, 15, 30); //15:30
+        thursdayBegin = Account.getMinutesFromValues(3, 8, 0); //08:00
+        thursdayEnd = Account.getMinutesFromValues(3, 13, 0); //13:00
+        fridayBegin = Account.getMinutesFromValues(4, 9, 0); //09:00
+        fridayEnd = Account.getMinutesFromValues(4, 16, 30); //16:30
+        saturdayBegin = Account.getMinutesFromValues(5, 9, 30); //09:30
+        saturdayEnd = Account.getMinutesFromValues(5, 14, 30); //14:30
 
-        currentTime = Calendar.getInstance();
-        int day = currentTime.get(Calendar.DAY_OF_WEEK);
+        Calendar currentTime = Calendar.getInstance();
+        int day = currentTime.get(Calendar.DAY_OF_WEEK) - 2;
+        int hours = currentTime.get(Calendar.HOUR_OF_DAY);
+        int minutes = ((int) currentTime.get(Calendar.MINUTE)/30)*30;
+        this.currentTime = Account.getMinutesFromValues(day, hours, minutes);
         switch (day){
-            /*case 2:
-                if (currentTime.after(monwedBegin) && currentTime.before(monwedEnd)){
-                    checkTimes(currentTime);
+            case 0:
+                if (this.currentTime > mondayBegin && this.currentTime < mondayEnd+1){
+                    checkTimes();
+                }
+                break;
+            case 1:
+                if (this.currentTime > tuesdayBegin && this.currentTime < tuesdayEnd+1){
+                    checkTimes();
+                }
+                break;
+            case 2:
+                if (this.currentTime > wednesdayBegin && this.currentTime < wednesdayEnd+1){
+                    checkTimes();
                 }
                 break;
             case 3:
-                if (currentTime.after(monwedBegin) && currentTime.before(monwedEnd)){
-                    checkTimes(currentTime);
+                if (this.currentTime > thursdayEnd && this.currentTime < thursdayBegin+1){
+                    checkTimes();
                 }
                 break;
             case 4:
-                if (currentTime.after(monwedBegin) && currentTime.before(monwedEnd)){
-                    checkTimes(currentTime);
+                if (this.currentTime > fridayBegin && this.currentTime < fridayEnd+1){
+                    checkTimes();
                 }
                 break;
             case 5:
-                if (currentTime.after(thursdayBegin) && currentTime.before(thursdayEnd)){
-                    checkTimes(currentTime);
+                if (this.currentTime > saturdayBegin && this.currentTime < saturdayEnd+1){
+                    checkTimes();
                 }
                 break;
-            case 6:
-                if (currentTime.after(fridayBegin) && currentTime.before(fridayEnd)){
-                    checkTimes(currentTime);
-                }
-                break;
-            case 7:
-                if (currentTime.after(saturdayBegin) && currentTime.before(saturdayEnd)){
-                    checkTimes(currentTime);
-                }
-                break;*/
             default:
-                checkTimes();
                 break;
         }
     }
 
-    private void checkTimes(){
+    private void checkTimes() throws IOException {
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
         Query purchaseOrderQuery = new Query("Account");
         List<Entity> accounts = datastoreService.prepare(purchaseOrderQuery).asList(FetchOptions.Builder.withDefaults());
 
         for(Entity account : accounts){
             Account accountGetter = new Account(account);
-            List<Calendar> startTimes = accountGetter.getWorkingPeriods(false);
-            List<Calendar> endTimes = accountGetter.getWorkingPeriods(true);
-            boolean isCurrentTimeWholeHour = currentTime.get(Calendar.MINUTE) < 28 || currentTime.get(Calendar.MINUTE) > 57;
+            if (accountGetter.account == null) continue;
+            if (accountGetter.getCompany() == null) continue;
+            List<Number> startTimes = accountGetter.getWorkPeriod(false);
+            List<Number> endTimes = accountGetter.getWorkPeriod(true);
+            boolean isCurrentTimeWholeHour = Account.getMinutesOfHourFromMinutes(currentTime) == 0;
             for (int i = 0; i < startTimes.size(); i++){
-                boolean isStartTimeWholeHour = startTimes.get(i).get(Calendar.MINUTE) < 28 || startTimes.get(i).get(Calendar.MINUTE) > 57;
-                if (currentTime.get(Calendar.DAY_OF_WEEK) == startTimes.get(i).get(Calendar.DAY_OF_WEEK)
-                        && endTimes.get(i).after(currentTime)
-                        && startTimes.get(i).before(currentTime)
-                        && (isStartTimeWholeHour && isCurrentTimeWholeHour || !isStartTimeWholeHour && !isCurrentTimeWholeHour)
-                        && currentTime.get(Calendar.HOUR) > startTimes.get(i).get(Calendar.HOUR)){
+                boolean isStartTimeWholeHour = Account.getMinutesOfHourFromMinutes(startTimes.get(i).intValue()) == 0;
+                if ((isStartTimeWholeHour && isCurrentTimeWholeHour || !isStartTimeWholeHour && !isCurrentTimeWholeHour)
+                        && Account.getDaysFromMinutes(currentTime) == Account.getDaysFromMinutes(startTimes.get(i).intValue())
+                        && endTimes.get(i).intValue() > currentTime
+                        && startTimes.get(i).intValue() < currentTime){
                     payWage(accountGetter);
+                    break;
                 }
             }
         }
     }
 
-    private void payWage(Account accountGetter) {
+    private void payWage(Account accountGetter) throws IOException {
         Company payingCompany = new Company(accountGetter.getCompany());
 
         double companyBalance = payingCompany.getBalanceDouble();
@@ -115,21 +120,22 @@ public class TransferWage extends HttpServlet {
 
         if (companyHasNotEnoughMoney(companyBalance, wage)){
             //TODO: Unternehmen insolvent
+            log("Company " + payingCompany.getAccountnumber() + " has no money");
         }
 
         double fractionalPart = wage % 1;
-        int integralPart = Math.toIntExact((long) (wage - fractionalPart));
+        double integralPart = (double) (wage - fractionalPart);
         List<Long> taxList = Tax.getWageTax();
 
         //Prozentsatz berechnen
-        long integralPercentage = 0;
+        double integralPercentage = 0;
         for (int i = 0; i < integralPart; i++){
             if (i < taxList.size()) integralPercentage += taxList.get(i);
             else integralPercentage += 100;
         }
         integralPercentage = (integralPercentage/integralPart);
-        long fractionPercentage = 0;
-        if (integralPart < taxList.size()) fractionPercentage = taxList.get(integralPart);
+        double fractionPercentage = 0;
+        if (integralPart < taxList.size()) fractionPercentage = taxList.get((int) integralPart);
         else fractionPercentage = 100;
 
         //Brutto in Netto und Abgabe spalten
@@ -137,7 +143,7 @@ public class TransferWage extends HttpServlet {
         double netWage = (wage - tax);
 
         //Geld transferieren
-        Transfer.transferWage(netWage, tax, currentTime, payingCompany, accountGetter);
+        Transfer.transferWage(netWage, tax, payingCompany, accountGetter);
         companyBalance = (companyBalance-wage);
         double receiverBalance = accountGetter.getBalanceDouble() + netWage;
         double fmBalance = finanzministerium.getBalanceDouble() + tax;
@@ -147,14 +153,11 @@ public class TransferWage extends HttpServlet {
         payingCompany.saveAll();
         accountGetter.saveAll();
         finanzministerium.saveAll();
+        resp.getWriter().println("\nTax: " + tax + "\nNet wage: " + netWage + "\nFinanzministerium: " + finanzministerium.getBalanceDouble() + "\nKonto: " + accountGetter.getBalanceDouble());
     }
 
     private boolean companyHasNotEnoughMoney(double companyBalance, double wage) {
-        return (currentTime.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY
-                || currentTime.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY
-                || currentTime.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY
-                || currentTime.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY
-                || (currentTime.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY && currentTime.get(Calendar.HOUR) < 12))
+        return currentTime < Account.getMinutesFromValues(4, 12, 0)
                 && (companyBalance - wage) < -31.00
 
                 || (companyBalance - wage) < 0.00;

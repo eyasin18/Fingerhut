@@ -327,9 +327,10 @@ public class Transfer {
         companyGetter.saveAll();
     }
 
-    public static void transferWage(double netWage, double tax, Calendar currentTime, Company payingCompany, Account receivingAccount){
+    public static void transferWage(double netWage, double tax, Company payingCompany, Account receivingAccount){
+        Calendar currentTime = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("EEEE HH:mm", Locale.GERMANY);
-        DecimalFormat df = new DecimalFormat("#.##");
+        DecimalFormat df = new DecimalFormat("#.00");
         String purpose = "Ihr Lohn für " + format.format(currentTime.getTime()) + " Uhr"
                 + "\nBruttobetrag: " + df.format(netWage + tax) + "S"
                 + "\nIhnen wurden " + df.format(tax) + "S als Lohnsteuer abgezogen"

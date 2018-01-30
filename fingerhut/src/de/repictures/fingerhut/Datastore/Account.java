@@ -324,29 +324,35 @@ public class Account {
      * Liste der Features:
      * 0 = Produkt hinzufügen
      * 1 = Authentifizierungs QR-Codes lesen und schreiben
-     * 3 = Kaufaufträge
-     * 4 = Account erstellen
-     * 5 = Mitarbeiter verwalten
-     * 6 = Account erstellen
-     * 7 = Statistiken
+     * 2 = Kaufaufträge
+     * 3 = Mitarbeiter verwalten
+     * 4 = Statistiken
      */
 
     public void setFeature(Entity passedEntity, long featureNumber, boolean add){
         ArrayList<Long> featureList = new ArrayList<>();
         if (passedEntity.getProperty("feature_list") != null)
             featureList = (ArrayList<Long>) passedEntity.getProperty("feature_list");
-        if (add) featureList.add(featureNumber);
-        else featureList.remove(featureNumber);
-        passedEntity.setProperty("feature_list", featureList);
+        if (!featureList.contains(featureNumber)) {
+            if (add) featureList.add(featureNumber);
+            else featureList.remove(featureNumber);
+            passedEntity.setProperty("feature_list", featureList);
+        }
     }
 
     public void setFeature(long featureNumber, boolean add){
         ArrayList<Long> featureList = new ArrayList<>();
         if (account.getProperty("feature_list") != null)
             featureList = (ArrayList<Long>) account.getProperty("feature_list");
-        if (add) featureList.add(featureNumber);
-        else featureList.remove(featureNumber);
-        account.setProperty("feature_list", featureList);
+        if (!featureList.contains(featureNumber)) {
+            if (add) featureList.add(featureNumber);
+            else featureList.remove(featureNumber);
+            account.setProperty("feature_list", featureList);
+        }
+    }
+
+    public void setFeatures(ArrayList<Long> features){
+        account.setProperty("feature_list", features);
     }
 
     public ArrayList<Long> getFeatures(){
@@ -379,7 +385,8 @@ public class Account {
 
     public Entity getCompany(){
         try {
-            return datastore.get((Key) account.getProperty("company"));
+            if (account.getProperty("company") == null) return null;
+            else return datastore.get((Key) account.getProperty("company"));
         } catch (EntityNotFoundException e) {
             log.warning(e.toString());
             return null;
@@ -388,7 +395,8 @@ public class Account {
 
     public Entity getCompany(Entity passedEntity){
         try {
-            return datastore.get((Key) passedEntity.getProperty("company"));
+            if (passedEntity.getProperty("company") == null) return null;
+            else return datastore.get((Key) passedEntity.getProperty("company"));
         } catch (EntityNotFoundException e) {
             log.warning(e.toString());
             return null;
@@ -635,33 +643,68 @@ public class Account {
         else return 1.0;
     }
 
+    public void setWorkPeriods(List<Integer> startTimes, List<Integer> endTimes){
+        account.setProperty("work_start_times", startTimes);
+        account.setProperty("work_end_times", endTimes);
+    }
+
+    public void setWorkPeriods(Entity passedEntity, List<Integer> startTimes, List<Integer> endTimes){
+        passedEntity.setProperty("work_start_times", startTimes);
+        passedEntity.setProperty("work_end_times", endTimes);
+    }
+
+    public List<Number> getWorkPeriod(boolean isEndTime){
+        List<Number> times = new ArrayList<>();
+        if (isEndTime && account.getProperty("work_end_times") != null){
+            times = (List<Number>) account.getProperty("work_end_times");
+        } else if (account.getProperty("work_start_times") != null){
+            times = (List<Number>) account.getProperty("work_start_times");
+        }
+        return times;
+    }
+
+    public List<Number> getWorkPeriod(Entity passedEntity, boolean isEndTime){
+        List<Number> times = new ArrayList<>();
+        if (isEndTime && passedEntity.getProperty("work_end_times") != null){
+            times = (List<Number>) passedEntity.getProperty("work_end_times");
+        } else if (passedEntity.getProperty("work_start_times") != null){
+            times = (List<Number>) passedEntity.getProperty("work_start_times");
+        }
+        return times;
+    }
+
+    @Deprecated
     public void setWorkingPeriods(List<Calendar> startTimes, List<Calendar> endTimes){
         List<String> startTimesStr = new ArrayList<>();
         List<String> endTimesStr = new ArrayList<>();
-        DateFormat format = new SimpleDateFormat("EEE HH:mm z");
+        DateFormat format = new SimpleDateFormat("EEE HH:mm Z", Locale.US);
+        format.setTimeZone(TimeZone.getTimeZone("GMT+1"));
         for (int i = 0; i < startTimes.size(); i++){
-            startTimesStr.add(format.format(startTimes.get(0).getTime()));
-            endTimesStr.add(format.format(endTimes.get(0).getTime()));
+            startTimesStr.add(format.format(startTimes.get(i).getTime()));
+            endTimesStr.add(format.format(endTimes.get(i).getTime()));
         }
         account.setProperty("working_start_times", startTimesStr);
         account.setProperty("working_end_times", endTimesStr);
     }
 
+    @Deprecated
     public void setWorkingPeriods(Entity passedEntity, List<Calendar> startTimes, List<Calendar> endTimes){
         List<String> startTimesStr = new ArrayList<>();
         List<String> endTimesStr = new ArrayList<>();
-        DateFormat format = new SimpleDateFormat("EEE HH:mm z");
+        DateFormat format = new SimpleDateFormat("EEE HH:mm Z", Locale.US);
+        format.setTimeZone(TimeZone.getTimeZone("GMT+1"));
         for (int i = 0; i < startTimes.size(); i++){
-            startTimesStr.add(format.format(startTimes.get(0).getTime()));
-            endTimesStr.add(format.format(endTimes.get(0).getTime()));
+            startTimesStr.add(format.format(startTimes.get(i).getTime()));
+            endTimesStr.add(format.format(endTimes.get(i).getTime()));
         }
         passedEntity.setProperty("working_start_times", startTimesStr);
         passedEntity.setProperty("working_end_times", endTimesStr);
     }
 
+    @Deprecated
     public List<Calendar> getWorkingPeriods(boolean isEndPeriod){
         try {
-            DateFormat format = new SimpleDateFormat("EEE HH:mm z");
+            DateFormat format = new SimpleDateFormat("EEE HH:mm Z", Locale.US);
             List<String> workingPeriodsStr = new ArrayList<>();
             List<Calendar> workingPeriods = new ArrayList<>();
             if (isEndPeriod && account.getProperty("working_end_times") != null)
@@ -670,8 +713,10 @@ public class Account {
                 workingPeriodsStr = (List<String>) account.getProperty("working_start_times");
 
             for (int i = 0; i < workingPeriodsStr.size(); i++) {
-                Calendar calendar = new GregorianCalendar();
+                Calendar calendar = new GregorianCalendar(Locale.GERMANY);
                 calendar.setTime(format.parse(workingPeriodsStr.get(i)));
+                calendar.setTimeZone(TimeZone.getTimeZone("GMT+1"));
+                log.info("Time: " + calendar.getTime().toString());
                 workingPeriods.set(i, calendar);
             }
             return workingPeriods;
@@ -681,9 +726,10 @@ public class Account {
         }
     }
 
+    @Deprecated
     public List<Calendar> getWorkingPeriods(Entity passedEntity, boolean isEndPeriod){
         try {
-            DateFormat format = new SimpleDateFormat("EEE HH:mm z");
+            DateFormat format = new SimpleDateFormat("EEE HH:mm Z", Locale.US);
             List<String> workingPeriodsStr = new ArrayList<>();
             List<Calendar> workingPeriods = new ArrayList<>();
             if (isEndPeriod && passedEntity.getProperty("working_end_times") != null)
@@ -694,6 +740,8 @@ public class Account {
             for (int i = 0; i < workingPeriodsStr.size(); i++) {
                 Calendar calendar = new GregorianCalendar();
                 calendar.setTime(format.parse(workingPeriodsStr.get(i)));
+                calendar.setTimeZone(TimeZone.getTimeZone("GMT+1"));
+                log.info("Time: " + calendar.getTime().toString());
                 workingPeriods.set(i, calendar);
             }
             return workingPeriods;
@@ -703,6 +751,7 @@ public class Account {
         }
     }
 
+    @Deprecated
     public List<String> getWorkingPeriodsStr(boolean isEndPeriod){
         List<String> workingPeriodsStr = new ArrayList<>();
         if (isEndPeriod && account.getProperty("working_end_times") != null)
@@ -719,5 +768,41 @@ public class Account {
 
     public void saveAll(Entity passedEntity){
         datastore.put(passedEntity);
+    }
+
+    public static int getDaysFromMinutes(int minutes){
+        return minutes/1440;
+    }
+
+    public static int getHoursFromMinutes(int minutes){
+        int minutesOfDay = minutes%1440;
+        return minutesOfDay/60;
+    }
+
+    public static int getMinutesOfHourFromMinutes(int minutes){
+        int minutesOfDay = minutes%1440;
+        return minutesOfDay%60;
+    }
+
+    public static int getMinutesFromValues(int days, int hours, int minutes){
+        return days*1440 + hours*60 + minutes;
+    }
+
+    public static long getDaysFromMinutes(long minutes){
+        return minutes/1440;
+    }
+
+    public static long getHoursFromMinutes(long minutes){
+        long minutesOfDay = minutes%1440;
+        return minutesOfDay/60;
+    }
+
+    public static long getMinutesOfHourFromMinutes(long minutes){
+        long minutesOfDay = minutes%1440;
+        return minutesOfDay%60;
+    }
+
+    public static long getMinutesFromValues(long days, long hours, long minutes){
+        return days*1440 + hours*60 + minutes;
     }
 }

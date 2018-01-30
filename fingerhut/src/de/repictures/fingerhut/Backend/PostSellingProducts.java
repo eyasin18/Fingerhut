@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Product;
+import de.repictures.fingerhut.Datastore.Tax;
 import de.repictures.fingerhut.MultipartResponse;
 
 import javax.servlet.ServletException;
@@ -32,8 +33,8 @@ public class PostSellingProducts extends HttpServlet {
         Product[] products = companyGetter.getSellingProducts();
 
         JsonObject jsonObject = new JsonObject();
-        JsonArray productsArray = new JsonArray();
 
+        JsonArray productsArray = new JsonArray();
         for (Product product : products){
             JsonArray productJson = new JsonArray();
             productJson.add(product.getCode());
@@ -43,6 +44,12 @@ public class PostSellingProducts extends HttpServlet {
             productsArray.add(productJson);
         }
         jsonObject.add("products", productsArray);
+
+        JsonArray taxArray = new JsonArray();
+        for (long tax : Tax.getWageTax()){
+            taxArray.add(tax);
+        }
+        jsonObject.add("wage_taxes", taxArray);
 
         multi.startResponse("text/plain");
         resp.getOutputStream().println(1);
