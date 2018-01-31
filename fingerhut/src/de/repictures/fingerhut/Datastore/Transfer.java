@@ -3,14 +3,12 @@ package de.repictures.fingerhut.Datastore;
 import com.google.appengine.api.datastore.*;
 import de.repictures.fingerhut.Cryptor;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.PublicKey;
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 @SuppressWarnings({"unchecked", "Duplicates"})
@@ -330,6 +328,7 @@ public class Transfer {
     public static void transferWage(double netWage, double tax, Company payingCompany, Account receivingAccount){
         Calendar currentTime = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("EEEE HH:mm", Locale.GERMANY);
+        format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
         DecimalFormat df = new DecimalFormat("#.00");
         String purpose = "Ihr Lohn für " + format.format(currentTime.getTime()) + " Uhr"
                 + "\nBruttobetrag: " + df.format(netWage + tax) + "S"

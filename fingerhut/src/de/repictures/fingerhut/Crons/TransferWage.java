@@ -20,17 +20,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class TransferWage extends HttpServlet {
 
     private int currentTime;
     private Company finanzministerium;
-    private HttpServletResponse resp;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         finanzministerium = new Company("0098");
-        this.resp = resp;
 
         int mondayBegin, mondayEnd, tuesdayBegin, tuesdayEnd, wednesdayBegin, wednesdayEnd, thursdayBegin, thursdayEnd, fridayBegin, fridayEnd, saturdayBegin, saturdayEnd;
         mondayBegin = Account.getMinutesFromValues(0, 8, 0); //8:00 Uhr
@@ -48,9 +47,10 @@ public class TransferWage extends HttpServlet {
 
         Calendar currentTime = Calendar.getInstance();
         int day = currentTime.get(Calendar.DAY_OF_WEEK) - 2;
-        int hours = currentTime.get(Calendar.HOUR_OF_DAY);
+        int hours = currentTime.get(Calendar.HOUR_OF_DAY) + 1;
         int minutes = ((int) currentTime.get(Calendar.MINUTE)/30)*30;
         this.currentTime = Account.getMinutesFromValues(day, hours, minutes);
+        resp.getWriter().println(this.currentTime + "\n" + day + " " + hours + " " + minutes + "\n" + wednesdayBegin + "\n" + wednesdayEnd);
         switch (day){
             case 0:
                 if (this.currentTime > mondayBegin && this.currentTime < mondayEnd+1){
@@ -153,7 +153,7 @@ public class TransferWage extends HttpServlet {
         payingCompany.saveAll();
         accountGetter.saveAll();
         finanzministerium.saveAll();
-        resp.getWriter().println("\nTax: " + tax + "\nNet wage: " + netWage + "\nFinanzministerium: " + finanzministerium.getBalanceDouble() + "\nKonto: " + accountGetter.getBalanceDouble());
+        log("\nTax: " + tax + "\nNet wage: " + netWage + "\nFinanzministerium: " + finanzministerium.getBalanceDouble() + "\nKonto: " + accountGetter.getBalanceDouble());
     }
 
     private boolean companyHasNotEnoughMoney(double companyBalance, double wage) {
