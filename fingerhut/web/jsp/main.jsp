@@ -1,4 +1,4 @@
-
+<!-- Imports verschiedener Java-Resourcen-->
 <%@ page import="java.io.IOException" %>
 <%@ page import="java.net.URLDecoder" %>
 <%@ page import="java.net.URLEncoder" %>
