@@ -44,8 +44,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>
             <%=
-        companyTools.getOwner(companynumber)
-        %>
+            companyTools.getOwner(companynumber)
+            %>
         </title>
     </head>
 <body>
@@ -298,11 +298,6 @@
 
                         </tbody>
                     </table>
-                        <div class="mdl-card__menu">
-                            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-                                <i class="material-icons">add</i>
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
