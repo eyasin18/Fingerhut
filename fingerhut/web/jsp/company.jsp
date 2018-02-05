@@ -15,6 +15,8 @@
 <%@ page import="de.repictures.fingerhut.Datastore.Tax" %>
 <%@ page import="java.lang.reflect.Array" %>
 <%@ page errorPage="errorpage.jsp" %> <!-- gibt die Seite an, die im Fehlerfall angezeigt werden soll -->
+<%@ page import="java.net.URLDecoder" %>
+<%@ page import="java.net.URLEncoder" %>
 
 <%
     String code = request.getParameter("webstring");
@@ -37,6 +39,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}../css/css.css" type="text/css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}../css/getmdl-select.min.css">
         <link rel="manifest" href="../json/manifest.json">
+        <script defer src="../js/sjcl.js"></script>
         <script defer src="${pageContext.request.contextPath}../js/getmdl-select.min.js"></script>
         <script defer src="${pageContext.request.contextPath}../js/material.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,7 +79,9 @@
                     <!-- Hier beginnt der Teil der für die Karte Kaufaufträge zuständig ist -->
 
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="purchase_orders">
-                        <h2 class="mdl-card__title-text" id="purchase_heading">Kaufaufträge</h2>
+                        <div class="wrapper">
+                            <h2 class="mdl-card__title-text" id="purchase_heading">Kaufaufträge</h2>
+                        </div>
                             <table class="mdl-data-table mdl-js-data-table" id="purchase_table">
                             <thead>
                                 <tr>
@@ -97,7 +102,7 @@
                                          for (int o = 0; o < amountsList.size(); o++){
                                             priceSum += (amountsList.get(o) * pricesList.get(o));
                                          }
-                                    String priceSumStr = new DecimalFormat("#.00").format(priceSum) + " S";
+                                    String priceSumStr = new DecimalFormat("0.00").format(priceSum) + " S";
                                     //DateTime anpassen
                                     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", request.getLocale());
                                     Calendar calendar = Calendar.getInstance();
@@ -119,10 +124,8 @@
                             %>
                             </tbody>
                         </table>
-                        <div class="mdl-card__menu">
-                            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="addPurchase()">
-                               <i class="material-icons">add</i>
-                            </button>
+                        <div class="wrapper">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addPurchase()" id="add_purchase_button">Hinzufügen</button>
                         </div>
                     </div>
 
@@ -152,28 +155,27 @@
                     <!-- Kaufauftrag hinzufügen Karte -->
 
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="add_purchase">
-                        <div class="mdl-card__menu">
-                            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="addProductToPurchase()">
-                                <i class="material-icons">add</i>
-                            </button>
-                        </div>
                         <div class="wrapper">
                             <div class="mdl-card__title-text mdl-textfield mdl-js-textfield mdl-textfield--floating-label wrapper" id="accountnumber_textfield">
                                 <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="add_purchase_accountnumber_textfield">
                                 <label class="mdl-textfield__label" for="add_purchase_accountnumber_textfield">Kontonummer</label>
-                                <span class="mdl-textfield__error">Eingabe ist keine Zahl</span>
+                                <span class="mdl-textfield__error" id="accountnumber_error"></span>
                             </div>
                         </div>
                         <div class="wrapper">
                             <div class="mdl-card__title-text mdl-textfield mdl-js-textfield mdl-textfield--floating-label wrapper">
                                 <input class="mdl-textfield__input" type="password" pattern="-?[0-9]*(\.[0-9]+)?" id="add_purchase_pin_textfield">
                                 <label class="mdl-textfield__label" for="add_purchase_pin_textfield">Pin des Käufers</label>
-                                <span class="mdl-textfield__error">Eingabe ist keine Zahl</span>
+                                <span class="mdl-textfield__error" id="pin_error"></span>
                             </div>
+                        </div>
+                        <div class="wrapper">
+                            <h6 id="purchase_order_error" class="title"></h6>
                         </div>
                         <div id ="add_purchase_div">
 
                         </div>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addProductToPurchase()">Hinzufügen</button>
                         <h6 class="title wrapper" id="purchase_order_price_sum">Preis (brutto): </h6>
                         <h6 class="title wrapper" id="tax">Mehrwertsteuer: <%=Tax.getVAT() %> %</h6>
                         <h6 class="title wrapper" id="purchase_order_taxable">Preis (netto): </h6>
@@ -309,6 +311,12 @@
     var PurchaseOrders = document.getElementById("purchase_orders");
     var AddPurchase = document.getElementById("add_purchase");
     var AddProductToPurchase = document.getElementById("add_product_to_purchase");
+    var decodedServerTime;
+    var hashedSaltedPassword;
+    var encodedServerTime;
+    var accountnumber_textfield;
+    var pin_textfield;
+
 
     //Statistiken betreffend
     var Statistics = document.getElementById("statistics");
@@ -321,6 +329,7 @@
     var Employees = document.getElementById("employees");
 
     PurchaseOrder.style.display = "none";
+    PurchaseOrders.style.display = "block";
     AddPurchase.style.display = "none";
     AddProductToPurchase.style.display = "none";
     Product.style.display = "none";
@@ -548,6 +557,7 @@
     }
 
     function addPurchase() {
+        document.getElementById("purchase_order_error").innerText = "";
         AddPurchase.style.display = "inline-block";
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "none";
@@ -601,27 +611,13 @@
                     for (var r = 1, n = table.rows.length; r < n; r++) {
                             purchase_price_sum += parseFloat(table.rows[r].cells[2].innerHTML);
                     }
-                document.getElementById("purchase_order_price_sum").innerText =  "Preis (brutto): " + String(purchase_price_sum);
+                document.getElementById("purchase_order_price_sum").innerText =  "Preis (brutto): " + String(purchase_price_sum) + "S";
                 document.getElementById("tax").innerText = "Mehrwertsteuer: " + String(tax) + "%";
-                document.getElementById("purchase_order_taxable").innerText =  "Preis (netto): " + String(purchase_price_sum + (purchase_price_sum * (tax / 100)));
+                document.getElementById("purchase_order_taxable").innerText =  "Preis (netto): " + String(purchase_price_sum + (purchase_price_sum * (tax / 100))) + "S";
             }
         }
     }
 
-    function addPurchaseToTable() {
-        if(document.getElementById("add_purchase_table").rows.length > 1){
-            gerhardt();
-            AddPurchase.style.display = "none";
-            PurchaseOrders.style.display = "flex";
-            PurchaseOrder.style.display = "none";
-            AddProductToPurchase.style.display = "none";
-            Statistics.style.display = "flex";
-            Products.style.display = "flex";
-            Employees.style.display = "flex";
-            document.getElementById("purchase_order_price_sum").innerText =  "Preis (brutto):";
-            document.getElementById("purchase_order_taxable").innerText =  "Preis (netto):";
-        }
-    }
 
     function getPriceThroughName(name){//ermittelt den Preis eines Produktes indem der Name übergeben wird
         for(var j = 0; j < productarray.length; j++){
@@ -684,9 +680,11 @@
             "                            <tbody id=\"add_purchase_table_body\">\n" +
             "\n" +
             "                            </tbody>\n" +
-            "                        </table>"
+            "                        </table>";
         document.getElementById("purchase_order_price_sum").innerText =  "Preis (brutto):";
         document.getElementById("purchase_order_taxable").innerText =  "Preis (netto):";
+        document.getElementById("add_purchase_accountnumber_textfield").value =  null;
+        document.getElementById("add_purchase_pin_textfield").value =  null;
     }
 
     function cancelProductToPurchase() {
@@ -699,11 +697,25 @@
     }
 
     //Kaufaugträge hinzufügen
-    var decodedServerTime;
-    var hashedSaltedPassword;
-    var encodedServerTime;
-    var hash = sjcl.hash.sha256.hash(document.getElementById("add_purchase_accountnumber_textfield").value);
-    var hashHex = sjcl.codec.hex.fromBits(hash);
+
+    function addPurchaseToTable() {
+        accountnumber_textfield = document.getElementById("add_purchase_accountnumber_textfield").value;
+        pin_textfield = document.getElementById("add_purchase_pin_textfield").value;
+        if(document.getElementById("add_purchase_table").rows.length > 1){
+            if((accountnumber_textfield.length === 4)&&(pin_textfield.length === 4)) {
+                document.getElementById("purchase_order_error").innerText = "";
+                document.getElementById("finish_button").disabled = true;
+                document.getElementById("cancel_purchase_button").disabled = true;
+                addNewPurchase();
+            }
+            else{
+                document.getElementById("purchase_order_error").innerText = "Die Kontonummer oder die Pin haben nicht das richtige Format!";
+            }
+        }
+        else{
+            document.getElementById("purchase_order_error").innerText = "Es sind keine Produkte ausgewählt!";
+        }
+    }
 
     function getShoppingList(){
         var productCodesArray = [];
@@ -734,7 +746,9 @@
                 else if (method === "POST") processPostResponse(decodeURIComponent(xmlHttp.responseText), callerid);
             }
             else if (xmlHttp.readyState === 4 && xmlHttp.status === 206){
-                console.log("Webstring nicht aktuell");
+                document.getElementById("purchase_order_error").innerText = "Melde dich bitte erneut an!";
+                document.getElementById("finish_button").disabled = false;
+                document.getElementById("cancel_purchase_button").disabled = false;
             }
         };
         xmlHttp.open(method, theUrl, true); // true for asynchronous
@@ -742,65 +756,93 @@
     }
 
     function processGetResponse(responseText, callerid) {
-        var responseSplit = responseText.split("ò");
-        var response = parseInt(responseSplit[0]);
         switch (callerid) {
             case 1:
+                var responseSplit = responseText.split("ò");
+                var response = parseInt(responseSplit[0]);
                 switch (response) {
                     case 3:
-                        console.log("Account existiert nicht");
+                        document.getElementById("purchase_order_error").innerText = "Dieser Account existiert nicht!";
+                        document.getElementById("finish_button").disabled = false;
+                        document.getElementById("cancel_purchase_button").disabled = false;
                         break;
                     case 2:
-                        console.log("Käufer hat nicht genug Geld");
+                        document.getElementById("purchase_order_error").innerText = "Der Käufer hat nicht genug Geld für das Produkt!";
+                        document.getElementById("finish_button").disabled = false;
+                        document.getElementById("cancel_purchase_button").disabled = false;
                         break;
-                    case 1:
-                        console.log("Erfolgreich");
+                    case 1:document.getElementById("purchase_order_error").innerText = "Der Kaufauftrag wurde erfolgreich ausgeführt!";
+                        document.getElementById("finish_button").disabled = false;
+                        document.getElementById("cancel_purchase_button").disabled = false;
+                        AddPurchase.style.display = "none";
+                        PurchaseOrders.style.display = "flex";
+                        PurchaseOrder.style.display = "none";
+                        AddProductToPurchase.style.display = "none";
+                        Statistics.style.display = "flex";
+                        Products.style.display = "flex";
+                        Employees.style.display = "flex";
+                        document.getElementById("purchase_order_price_sum").innerText =  "Preis (brutto):";
+                        document.getElementById("purchase_order_taxable").innerText =  "Preis (netto):";
+                        document.getElementById("add_purchase_accountnumber_textfield").value =  "";
+                        document.getElementById("add_purchase_pin_textfield").value =  "";
                         break;
                     case -1:
-                        console.log("Webstring ist nicht aktuell");
+                        document.getElementById("purchase_order_error").innerText = "Melde dich bitte erneut an!";
+                        document.getElementById("finish_button").disabled = false;
+                        document.getElementById("cancel_purchase_button").disabled = false;
                         break;
                 }
                 break;
             case 2:
-                encodedServerTime = responseSplit[0];
-                decodedServerTime = decodeURIComponent(responseSplit[0]);
-                hashedSaltedPassword = hashHex + decodedServerTime;
-                var postUrlStr = "https://fingerhut388.appspot.com" + "confirmlogin?accountnumber="
-                    + document.getElementById("add_purchase_accountnumber_textfield").value
-                    + "&sessionaccountnumber=" + <%=accountnumber%> +"&webstring=" + <%=code%>
-                    + "&password=" + hashedSaltedPassword.toUpperCase() + "servertimestamp=" + encodedServerTime;
-                httpAsync(postUrlStr,"POST","1");
+                var hash = sjcl.hash.sha256.hash(pin_textfield);
+                var hashHex = sjcl.codec.hex.fromBits(hash).toUpperCase();
+                encodedServerTime = responseText.trim();
+                decodedServerTime = decodeURIComponent(responseText.replace("+", " ").trim());
+                var combinedString = hashHex + decodedServerTime;
+                var hashedSaltedPasswordBits = sjcl.hash.sha256.hash(combinedString);
+                hashedSaltedPassword = sjcl.codec.hex.fromBits(hashedSaltedPasswordBits).toUpperCase();
+                var postUrlStr = "https://fingerhut388.appspot.com/confirmlogin?accountnumber="
+                    + accountnumber_textfield
+                    + "&sessionaccountnumber=<%=accountnumber%>&webstring=<%=code%>"
+                    + "&password=" + hashedSaltedPassword + "&servertimestamp=" + encodedServerTime;
+                httpAsync(postUrlStr,"POST",1);
                 break;
         }
     }
 
     function processPostResponse(responseText, callerid) {
-        switch (responseText){
+        switch (parseInt(responseText)){
             case 1:
-                console.log("Alles Gut!");
-                var getUrl = "https://fingerhut388.appspot.com" + "/getshoppingrequest?code=" + <%=code%>
-                    +"&authaccountnumber=" + <%=accountnumber%>
-                    +"&accountnumber=" + document.getElementById("add_purchase_accountnumber_textfield").value
-                    + "&companynumber=" + <%=companynumber%>
-                    +"&shoppinglist=" + getShoppingList()
+                var getUrl = "https://fingerhut388.appspot.com" + "/getshoppingrequest?code=<%=code%>&authaccountnumber=<%=accountnumber%>"
+                    +"&accountnumber=" + accountnumber_textfield
+                    + "&companynumber=<%=companynumber%>&shoppinglist=" + getShoppingList()
                     + "&madebyuser=true"
                     + "&completed=true";
-                httpAsync(getUrl, "GET", "1")
+                httpAsync(getUrl, "GET", 1);
                 break;
             case 2:
-                console.log("Auth String nicht aktuell");
+                document.getElementById("purchase_order_error").innerText = "Melde dich bitte erneut an!";
+                document.getElementById("finish_button").disabled = false;
+                document.getElementById("cancel_purchase_button").disabled = false;
                 break;
             case 3:
-                console.log("Passwort falsch!");
+                document.getElementById("purchase_order_error").innerText = "Der Pin ist falsch!";
+                document.getElementById("finish_button").disabled = false;
+                document.getElementById("cancel_purchase_button").disabled = false;
+                break;
+            case 4:
+                document.getElementById("purchase_order_error").innerText = "Der Account existiert nicht!";
+                document.getElementById("finish_button").disabled = false;
+                document.getElementById("cancel_purchase_button").disabled = false;
                 break;
         }
     }
 
-    function gerhardt() {
-        var getUrlStr = "https://fingerhut388.appspot.com" + "confirmlogin?accountnumber="
-            + document.getElementById("add_purchase_accountnumber_textfield").value
-            + "&sessionaccountnumber=" + <%=accountnumber%> +"&webstring=";
-        httpAsync(getUrlStr, "GET", "2")
+    function addNewPurchase() {
+        var getUrlStr = "https://fingerhut388.appspot.com/confirmlogin?accountnumber="
+            + accountnumber_textfield
+            + "&sessionaccountnumber=<%=accountnumber%>&webstring=<%=code %>";
+        httpAsync(getUrlStr, "GET", 2)
     }
 </script>
 </html>

@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static com.sun.activation.registries.LogSupport.log;
+
 @SuppressWarnings({"unchecked", "Duplicates"})
 public class Account {
 
@@ -265,7 +267,9 @@ public class Account {
 
     public String getSaltedPassword(String salt){
         String password = (String) account.getProperty("password");
-        return cryptor.hashToString(password + salt);
+        String combinedString = password + salt;
+        log.info(combinedString);
+        return cryptor.hashToString(combinedString);
     }
 
     public String getSaltedPassword(Entity passedEntity, String salt){

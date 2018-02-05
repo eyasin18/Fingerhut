@@ -20,7 +20,8 @@
 #purchase_heading{
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 60px;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 #statistics_heading{
@@ -61,6 +62,10 @@
     margin-top: 20px;
 }
 #cancel_purchase_button{
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+#add_purchase_button{
     margin-bottom: 20px;
     margin-top: 20px;
 }
