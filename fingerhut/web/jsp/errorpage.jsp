@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Es ist ein Fehler aufgetreten...</title>
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.green-light_green.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}../css/material.green-light_green.min.css">
 </head>
 <body>
 <!-- Always shows a header, even in smaller screens. -->
@@ -17,7 +17,7 @@
     </header>
     <main class="mdl-layout__content">
         <div class="page-content">
-            <img src="https://cdn.discordapp.com/attachments/223832162598649867/400384599873814538/Bild1.png" alt="Hier müsste eigentlich ein Bild sein ..">
+            <img src="${pageContext.request.contextPath}../res/images/Tom.png" alt="Hier müsste eigentlich ein Bild sein ..">
             <h2>Entschuldige das hätte nicht passieren dürfen ....</h2>
             <p>Bitte lade die Seite erneut. Sollte dieser Fehler weiterhin erscheinen, melde dich bitt bei der FutureCentralBank</p>
         </div>

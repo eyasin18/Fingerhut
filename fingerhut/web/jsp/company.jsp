@@ -32,15 +32,13 @@
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}../css/company.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.green-light_green.min.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}../css/icon.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}../css/material.green-light_green.min.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}../css/css.css" type="text/css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}../css/getmdl-select.min.css">
         <link rel="manifest" href="../json/manifest.json">
         <script defer src="${pageContext.request.contextPath}../js/getmdl-select.min.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js"></script>
-        <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+        <script defer src="${pageContext.request.contextPath}../js/material.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>
             <%=
@@ -177,7 +175,7 @@
 
                         </div>
                         <h6 class="title wrapper" id="purchase_order_price_sum">Preis (brutto): </h6>
-                        <h6 class="title wrapper" id="tax">Mehrwertsteuer: <%=Tax.getVAT() %>%</h6>
+                        <h6 class="title wrapper" id="tax">Mehrwertsteuer: <%=Tax.getVAT() %> %</h6>
                         <h6 class="title wrapper" id="purchase_order_taxable">Preis (netto): </h6>
                         <div class="wrapper">
                                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addPurchaseToTable()" id="finish_button">
@@ -305,10 +303,7 @@
     </div>
 </body>
 <script src="${pageContext.request.contextPath}../js/pojo.js" ></script>
-
-<!-- Firebase Zeug -->
-
-<script>
+    <script>
     //Kaufaufträge betreffend
     var PurchaseOrder = document.getElementById("purchase_order");
     var PurchaseOrders = document.getElementById("purchase_orders");
