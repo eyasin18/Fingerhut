@@ -74,7 +74,11 @@ public class LoginConfirmation extends HttpServlet {
             return;
         }
 
-        if (companynumber == null && !Objects.equals(inputHashedSaltedPassword, accountGetter.getSaltedPassword(serverTimeStamp))){
+        String hashedSaltedPassword = accountGetter.getSaltedPassword(serverTimeStamp);
+        log(serverTimeStamp);
+        log(hashedSaltedPassword);
+        log(inputHashedSaltedPassword);
+        if (companynumber == null && !Objects.equals(inputHashedSaltedPassword, hashedSaltedPassword)){
             resp.getWriter().println("3");
             return;
         }

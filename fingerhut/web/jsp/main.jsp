@@ -1,15 +1,15 @@
+<!-- Imports verschiedener Java-Resourcen-->
 <%@ page import="java.io.IOException" %>
 <%@ page import="java.net.URLDecoder" %>
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.util.List" %>
-
 <%@ page import="javax.servlet.http.HttpServlet" %>
 <%@ page import="javax.servlet.http.HttpServletRequest" %>
 <%@ page import="javax.servlet.http.HttpServletResponse" %>
 <%@ page import="java.util.Objects" %>
 <%@ page import="java.util.logging.Logger" %>
 <%@ page import="de.repictures.fingerhut.Web.MainTools" %>
-
+<%@ page import="static de.repictures.fingerhut.Datastore.Tax.getVAT" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%@ page errorPage="errorpage.jsp" %> <!-- gibt die Seite an, die im Fehlerfall angezeigt werden soll -->
@@ -74,6 +74,8 @@
                                     %>
                                 </script>
                                 <h3>Kontostand: <%= balancestring %></h3>
+                                <br>
+                                <h3>Mehrwertsteuer : <%= getVAT() %> %</h3>
                             </div>
                         </div>
                         <div class="mdl-card mdl-cell mdl-cell--6-col">
@@ -353,7 +355,7 @@
                 companypassError.parentElement.className += ' is-invalid';
                 companypassError.textContent = "Sie müssen Chrome, Firefox oder Opera benutzen um sich auf der Unternehmensseite anmelden zu können.";
             } else {
-                if (confirm("Kaufaufträge können sie nur mit Chrome, Firefox und Opera einsehen und bearbeiten.") == true) {
+                if (confirm("Kaufaufträge können sie nur mit Chrome, Firefox und Opera einsehen und bearbeiten.") === true) {
                     httpAsync(companyLoginUrl, "GET", 2);
                 } else {
                     httpAsync(companyLoginUrl, "GET", 2);
