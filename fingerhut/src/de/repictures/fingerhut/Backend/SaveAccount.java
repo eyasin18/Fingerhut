@@ -17,7 +17,6 @@ public class SaveAccount extends HttpServlet{
 
         //URL-Parameter werden angenommen
         String accountnumber = req.getParameter("accountnumber");
-        String name = req.getParameter("name");
         String password = req.getParameter("password");
         if(password != null){
             password = URLDecoder.decode(password, "UTF-8");
@@ -28,7 +27,7 @@ public class SaveAccount extends HttpServlet{
 
         //Account wird erstellt
         Account account = new Account();
-        account.postAccount(accountnumber, password, name);
+        account.postAccount(accountnumber, password);
         Entity createdAccount = account.getAccount(accountnumber);
 
         //Ergebnis wird ausgegeben

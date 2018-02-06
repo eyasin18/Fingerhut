@@ -85,10 +85,10 @@ public class AccountSetter extends HttpServlet {
             account.deleteCompany();
             account.saveAll();
         }*/
-        String[] accountnumbers = new String[]{"0580", "0001", "0004", "0003"};
+        String[] accountnumbers = new String[]{"0024", "0593", "0620", "0022"};
         for (int i = 0; i < accountnumbers.length; i++){
             Account account = new Account(accountnumbers[i]);
-            account.setCompany("0002");
+            account.setCompany("0155");
             account.saveAll();
         }
     }

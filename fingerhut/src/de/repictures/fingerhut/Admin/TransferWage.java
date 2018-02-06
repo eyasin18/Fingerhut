@@ -1,26 +1,18 @@
-package de.repictures.fingerhut.Crons;
+package de.repictures.fingerhut.Admin;
 
 import com.google.appengine.api.datastore.*;
-import de.repictures.fingerhut.Cryptor;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Tax;
 import de.repictures.fingerhut.Datastore.Transfer;
-import org.apache.http.HttpResponse;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.PublicKey;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 public class TransferWage extends HttpServlet {
 
@@ -50,7 +42,7 @@ public class TransferWage extends HttpServlet {
         int hours = currentTime.get(Calendar.HOUR_OF_DAY) + 1;
         int minutes = ((int) currentTime.get(Calendar.MINUTE)/30)*30;
         this.currentTime = Account.getMinutesFromValues(day, hours, minutes);
-        resp.getWriter().println(this.currentTime + "\n" + day + " " + hours + " " + minutes + "\n" + wednesdayBegin + "\n" + wednesdayEnd);
+        log(this.currentTime + "\n" + day + " " + hours + " " + minutes);
         switch (day){
             case 0:
                 if (this.currentTime > mondayBegin && this.currentTime < mondayEnd+1){
@@ -104,7 +96,8 @@ public class TransferWage extends HttpServlet {
                 if ((isStartTimeWholeHour && isCurrentTimeWholeHour || !isStartTimeWholeHour && !isCurrentTimeWholeHour)
                         && Account.getDaysFromMinutes(currentTime) == Account.getDaysFromMinutes(startTimes.get(i).intValue())
                         && endTimes.get(i).intValue() > currentTime
-                        && startTimes.get(i).intValue() < currentTime){
+                        && startTimes.get(i).intValue() < currentTime
+                        || endTimes.get(i).intValue() == currentTime){
                     payWage(accountGetter);
                     break;
                 }

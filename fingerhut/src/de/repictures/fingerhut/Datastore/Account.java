@@ -44,7 +44,7 @@ public class Account {
         return new Entity("Account", key);
     }
 
-    public void postAccount(String accountnumber, String password, String name){
+    public void postAccount(String accountnumber, String password){
         if (password == null){
             Random rand = new Random();
             password = String.format("%04d", rand.nextInt(10000));
@@ -74,7 +74,6 @@ public class Account {
 
         setAccountnumber(account, accountnumber);
         setHashedPassword(account, encryptedPassword);
-        setOwner(account, name);
         setBalance(account, 1500.00f);
         account.setProperty("transferarray", new ArrayList<String>());
         setCompany(account, "0002");

@@ -101,6 +101,58 @@ public class Company extends Account {
         return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
     }
 
+    public void setBalance(String balanceStr){
+        float balance = Float.parseFloat(balanceStr);
+        account.setProperty("balance", balance);
+        List<Number> balanceRecordList = new ArrayList<>();
+        if (account.getProperty("balance_records") != null){
+            balanceRecordList = (List<Number>) account.getProperty("balance_records");
+        }
+        balanceRecordList.add(balance);
+        account.setProperty("balance_records", balanceRecordList);
+    }
+
+    public void setBalance(float balance){
+        account.setProperty("balance", balance);
+        List<Number> balanceRecordList = new ArrayList<>();
+        if (account.getProperty("balance_records") != null){
+            balanceRecordList = (List<Number>) account.getProperty("balance_records");
+        }
+        balanceRecordList.add(balance);
+        account.setProperty("balance_records", balanceRecordList);
+    }
+
+    public void setBalance(double balance){
+        account.setProperty("balance", balance);
+        List<Number> balanceRecordList = new ArrayList<>();
+        if (account.getProperty("balance_records") != null){
+            balanceRecordList = (List<Number>) account.getProperty("balance_records");
+        }
+        balanceRecordList.add(balance);
+        account.setProperty("balance_records", balanceRecordList);
+    }
+
+    public void setBalance(Entity passedEntity, String balanceStr){
+        float balance = Float.parseFloat(balanceStr);
+        passedEntity.setProperty("balance", balance);
+        List<Number> balanceRecordList = new ArrayList<>();
+        if (passedEntity.getProperty("balance_records") != null){
+            balanceRecordList = (List<Number>) passedEntity.getProperty("balance_records");
+        }
+        balanceRecordList.add(balance);
+        passedEntity.setProperty("balance_records", balanceRecordList);
+    }
+
+    public void setBalance(Entity passedEntity, float balance){
+        passedEntity.setProperty("balance", balance);
+        List<Number> balanceRecordList = new ArrayList<>();
+        if (passedEntity.getProperty("balance_records") != null){
+            balanceRecordList = (List<Number>) passedEntity.getProperty("balance_records");
+        }
+        balanceRecordList.add(balance);
+        passedEntity.setProperty("balance_records", balanceRecordList);
+    }
+
     public void addProduct(Entity passedEntity, Entity product){
         ArrayList<String> products = new ArrayList<>();
         if (passedEntity.getProperty("products") != null)

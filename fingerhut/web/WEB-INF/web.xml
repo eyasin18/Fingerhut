@@ -218,11 +218,35 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>TransferWage</servlet-name>
-        <servlet-class>de.repictures.fingerhut.Crons.TransferWage</servlet-class>
+        <servlet-class>de.repictures.fingerhut.Admin.TransferWage</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>TransferWage</servlet-name>
         <url-pattern>/cron/transferwage</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>blub</servlet-name>
+        <jsp-file>jsp/blub.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>blub</servlet-name>
+        <url-pattern>/admin/blub</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>EditBalance</servlet-name>
+        <jsp-file>jsp/edit_balance.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EditBalance</servlet-name>
+        <url-pattern>/admin/editbalance</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>EditBalanceServlet</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Admin.EditBalance</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EditBalanceServlet</servlet-name>
+        <url-pattern>/admin/editbalanceservlet</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>jsp/index.jsp</welcome-file>
@@ -242,7 +266,7 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>admin</web-resource-name>
-            <url-pattern>/cron/*</url-pattern>
+            <url-pattern>/admin/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>admin</role-name>
