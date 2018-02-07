@@ -104,36 +104,73 @@ public class Company extends Account {
     public void setBalance(String balanceStr){
         float balance = Float.parseFloat(balanceStr);
         account.setProperty("balance", balance);
+
         List<Number> balanceRecordList = new ArrayList<>();
         if (account.getProperty("balance_records") != null){
             balanceRecordList = (List<Number>) account.getProperty("balance_records");
         }
         balanceRecordList.add(balance);
         account.setProperty("balance_records", balanceRecordList);
+
+        Calendar currentTimeCal = Calendar.getInstance();
+        int day = currentTimeCal.get(Calendar.DAY_OF_WEEK) - 2;
+        int hours = currentTimeCal.get(Calendar.HOUR_OF_DAY) + 1;
+        int minutes = currentTimeCal.get(Calendar.MINUTE);
+        List<Number> datesList = new ArrayList<>();
+        if (account.getProperty("balance_record_dates") != null){
+            datesList = (List<Number>) account.getProperty("balance_record_dates");
+        }
+        datesList.add(Account.getMinutesFromValues(day, hours, minutes));
+        account.setProperty("balance_record_dates", datesList);
     }
 
     public void setBalance(float balance){
         account.setProperty("balance", balance);
+
         List<Number> balanceRecordList = new ArrayList<>();
         if (account.getProperty("balance_records") != null){
             balanceRecordList = (List<Number>) account.getProperty("balance_records");
         }
         balanceRecordList.add(balance);
         account.setProperty("balance_records", balanceRecordList);
+
+        Calendar currentTimeCal = Calendar.getInstance();
+        int day = currentTimeCal.get(Calendar.DAY_OF_WEEK) - 2;
+        int hours = currentTimeCal.get(Calendar.HOUR_OF_DAY) + 1;
+        int minutes = currentTimeCal.get(Calendar.MINUTE);
+        List<Number> datesList = new ArrayList<>();
+        if (account.getProperty("balance_record_dates") != null){
+            datesList = (List<Number>) account.getProperty("balance_record_dates");
+        }
+        datesList.add(Account.getMinutesFromValues(day, hours, minutes));
+        account.setProperty("balance_record_dates", datesList);
     }
 
     public void setBalance(double balance){
         account.setProperty("balance", balance);
+
         List<Number> balanceRecordList = new ArrayList<>();
         if (account.getProperty("balance_records") != null){
             balanceRecordList = (List<Number>) account.getProperty("balance_records");
         }
         balanceRecordList.add(balance);
         account.setProperty("balance_records", balanceRecordList);
+
+        Calendar currentTimeCal = Calendar.getInstance();
+        int day = currentTimeCal.get(Calendar.DAY_OF_WEEK) - 2;
+        int hours = currentTimeCal.get(Calendar.HOUR_OF_DAY) + 1;
+        int minutes = currentTimeCal.get(Calendar.MINUTE);
+        List<Number> datesList = new ArrayList<>();
+        if (account.getProperty("balance_record_dates") != null){
+            datesList = (List<Number>) account.getProperty("balance_record_dates");
+        }
+        datesList.add(Account.getMinutesFromValues(day, hours, minutes));
+        account.setProperty("balance_record_dates", datesList);
     }
 
     public void setBalance(Entity passedEntity, String balanceStr){
         float balance = Float.parseFloat(balanceStr);
+
         passedEntity.setProperty("balance", balance);
         List<Number> balanceRecordList = new ArrayList<>();
         if (passedEntity.getProperty("balance_records") != null){
@@ -141,16 +178,71 @@ public class Company extends Account {
         }
         balanceRecordList.add(balance);
         passedEntity.setProperty("balance_records", balanceRecordList);
+
+        Calendar currentTimeCal = Calendar.getInstance();
+        int day = currentTimeCal.get(Calendar.DAY_OF_WEEK) - 2;
+        int hours = currentTimeCal.get(Calendar.HOUR_OF_DAY) + 1;
+        int minutes = currentTimeCal.get(Calendar.MINUTE);
+        List<Number> datesList = new ArrayList<>();
+        if (passedEntity.getProperty("balance_record_dates") != null){
+            datesList = (List<Number>) passedEntity.getProperty("balance_record_dates");
+        }
+        datesList.add(Account.getMinutesFromValues(day, hours, minutes));
+        passedEntity.setProperty("balance_record_dates", datesList);
     }
 
     public void setBalance(Entity passedEntity, float balance){
         passedEntity.setProperty("balance", balance);
+
         List<Number> balanceRecordList = new ArrayList<>();
         if (passedEntity.getProperty("balance_records") != null){
             balanceRecordList = (List<Number>) passedEntity.getProperty("balance_records");
         }
         balanceRecordList.add(balance);
         passedEntity.setProperty("balance_records", balanceRecordList);
+
+        Calendar currentTimeCal = Calendar.getInstance();
+        int day = currentTimeCal.get(Calendar.DAY_OF_WEEK) - 2;
+        int hours = currentTimeCal.get(Calendar.HOUR_OF_DAY) + 1;
+        int minutes = currentTimeCal.get(Calendar.MINUTE);
+        List<Number> datesList = new ArrayList<>();
+        if (passedEntity.getProperty("balance_record_dates") != null){
+            datesList = (List<Number>) passedEntity.getProperty("balance_record_dates");
+        }
+        datesList.add(Account.getMinutesFromValues(day, hours, minutes));
+        passedEntity.setProperty("balance_record_dates", datesList);
+    }
+
+    public List<Number> getBalanceDevelopment(){
+        List<Number> balancesList = new ArrayList<>();
+        if (account.getProperty("balance_records") != null){
+            balancesList = (List<Number>) account.getProperty("balance_records");
+        }
+        return balancesList;
+    }
+
+    public List<Number> getBalanceDevelopment(Entity passedEntity){
+        List<Number> balancesList = new ArrayList<>();
+        if (passedEntity.getProperty("balance_records") != null){
+            balancesList = (List<Number>) passedEntity.getProperty("balance_records");
+        }
+        return balancesList;
+    }
+
+    public List<Number> getBalanceDevelopmentTimes(){
+        List<Number> balancesDTimesList = new ArrayList<>();
+        if (account.getProperty("balance_record_dates") != null){
+            balancesDTimesList = (List<Number>) account.getProperty("balance_record_dates");
+        }
+        return balancesDTimesList;
+    }
+
+    public List<Number> getBalanceDevelopmentTimes(Entity passedEntity){
+        List<Number> balancesDTimesList = new ArrayList<>();
+        if (passedEntity.getProperty("balance_record_dates") != null){
+            balancesDTimesList = (List<Number>) passedEntity.getProperty("balance_record_dates");
+        }
+        return balancesDTimesList;
     }
 
     public void addProduct(Entity passedEntity, Entity product){
