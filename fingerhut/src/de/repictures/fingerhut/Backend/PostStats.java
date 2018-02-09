@@ -1,7 +1,7 @@
 package de.repictures.fingerhut.Backend;
 
+import com.google.appengine.api.datastore.Entity;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,7 +41,12 @@ public class PostStats extends HttpServlet {
         }
 
         Company companyGetter = new Company(companyNumber);
-        if (companyGetter.account == null || !Objects.equals(companyNumber, new Company(accountGetter.getCompany()).getAccountnumber())){
+        boolean isInCompany = false;
+        for (Entity companyEntity : accountGetter.getCompanies()){
+            Company payingCompany = new Company(companyEntity);
+            if (Objects.equals(payingCompany.getAccountnumber(), companyNumber)) isInCompany = true;
+        }
+        if (companyGetter.account == null || !isInCompany){
             object.addProperty("response", 2);
             resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
             return;

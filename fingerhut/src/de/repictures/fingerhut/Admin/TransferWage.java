@@ -87,7 +87,7 @@ public class TransferWage extends HttpServlet {
         for(Entity account : accounts){
             Account accountGetter = new Account(account);
             if (accountGetter.account == null) continue;
-            if (accountGetter.getCompany() == null) continue;
+            if (accountGetter.getCompanies().size() < 1) continue;
             List<Number> startTimes = accountGetter.getWorkPeriod(false);
             List<Number> endTimes = accountGetter.getWorkPeriod(true);
             boolean isCurrentTimeWholeHour = Account.getMinutesOfHourFromMinutes(currentTime) == 0;
@@ -98,15 +98,17 @@ public class TransferWage extends HttpServlet {
                         && endTimes.get(i).intValue() > currentTime
                         && startTimes.get(i).intValue() < currentTime
                         || endTimes.get(i).intValue() == currentTime){
-                    payWage(accountGetter);
+                    List<Entity> payingCompanyEntities = accountGetter.getCompanies();
+                    for (Entity payingCompanyEntity : payingCompanyEntities){
+                        payWage(accountGetter, new Company(payingCompanyEntity));
+                    }
                     break;
                 }
             }
         }
     }
 
-    private void payWage(Account accountGetter) throws IOException {
-        Company payingCompany = new Company(accountGetter.getCompany());
+    private void payWage(Account accountGetter, Company payingCompany) throws IOException {
 
         double companyBalance = payingCompany.getBalanceDouble();
         double wage = accountGetter.getWage();

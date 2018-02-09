@@ -1,6 +1,10 @@
 package de.repictures.fingerhut.Backend;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
 
@@ -19,7 +23,7 @@ import java.util.logging.Logger;
 public class PrivateLogin extends HttpServlet {
 
     private Logger log = Logger.getLogger(Account.class.getName());
-    public static final int appVersion = 8;
+    public static final int appVersion = 9;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -34,6 +38,8 @@ public class PrivateLogin extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new Gson();
+        JsonObject object = new JsonObject();
 
         //Parameter die dem Server bei der Anfrage übergeben werden
         String accountnumber = req.getParameter("accountnumber");
@@ -50,13 +56,15 @@ public class PrivateLogin extends HttpServlet {
 
         //Überprüfe ob alle Parameter empfangen wurden
         if (accountnumber == null || inputPassword == null || serverTimeStamp == null || authPart == null || deviceToken == null || appVersion == 0){
-            resp.getWriter().println("-1");
+            object.addProperty("response_code", -1);
+            resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
             return;
         }
 
         //Überprüfe ob die App-Version aktuell ist
         if (appVersion < PrivateLogin.appVersion){
-            resp.getWriter().println("-3");
+            object.addProperty("response_code", -3);
+            resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
             return;
         }
 
@@ -71,7 +79,8 @@ public class PrivateLogin extends HttpServlet {
             int accountnumberlength = accountnumber.length();
             String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength+8), authCode.substring(accountnumberlength+8, accountnumberlength+16)};
             if (!authParts[0].equals(authPart)){
-                resp.getWriter().println("3");
+                object.addProperty("response_code", 3);
+                resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
                 return;
             }
 
@@ -79,13 +88,16 @@ public class PrivateLogin extends HttpServlet {
             if (cooldownTimeCalendar != null && cooldownTimeCalendar.after(Calendar.getInstance(Locale.getDefault()))){
                 SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", Locale.getDefault());
                 String cooldownTimeStr = f.format(cooldownTimeCalendar.getTime());
-                resp.getWriter().println(URLEncoder.encode("4ò" + cooldownTimeStr, "UTF-8"));
+                object.addProperty("response_code", 4);
+                object.addProperty("cooldown_time", cooldownTimeStr);
+                resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
                 return;
             }
 
             long failedAttempts = account.countUpLoginAttempts(queriedAccounts.get(0));
             if (failedAttempts > 9){
-                resp.getWriter().println("5");
+                object.addProperty("response_code", 5);
+                resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
                 return;
             }
 
@@ -103,28 +115,29 @@ public class PrivateLogin extends HttpServlet {
                 account.saveAll(queriedAccounts.get(0));
 
                 //Gebe alle Kontonummern und die verschlüsselten Namen hinter den Kontonummern zurück
-                StringBuilder output = new StringBuilder();
                 account.updateRandomWebString(queriedAccounts.get(0));
                 account.saveAll(queriedAccounts.get(0));
-                output.append(account.getRandomWebString(queriedAccounts.get(0)));
-                output.append("ò");
-                //Gebe zurück, welche Berechtigungen der Nutzer hat
+                object.addProperty("random_web_string", account.getRandomWebString(queriedAccounts.get(0)));
                 ArrayList<Long> featuresList = account.getFeatures(queriedAccounts.get(0));
-                for (Long feature : featuresList){
-                    output.append(feature);
-                    output.append("ň");
+                JsonArray featuresJsonArray = (JsonArray) gson.toJsonTree(featuresList, new TypeToken<List<Long>>() {}.getType());
+                object.add("features", featuresJsonArray);
+                JsonArray companyAccountnumbersJsonArray = new JsonArray();
+                JsonArray companySectorsJsonArray = new JsonArray();
+                JsonArray companyNamesJsonArray = new JsonArray();
+                for (Entity companyEntity : account.getCompanies(queriedAccounts.get(0))){
+                    Company companyGetter = new Company(companyEntity);
+                    companyAccountnumbersJsonArray.add(companyGetter.getAccountnumber());
+                    companySectorsJsonArray.add(companyGetter.getSector());
+                    companyNamesJsonArray.add(companyGetter.getOwner());
                 }
-                output.append("ò");
-                account.setCompany(queriedAccounts.get(0), "0002");
-                Company companyGetter = new Company(account.getCompany(queriedAccounts.get(0)));
-                output.append(companyGetter.getAccountnumber());
-                output.append("ò");
-                output.append(companyGetter.getSector());
-                output.append("ò");
-                output.append(companyGetter.getOwner());
-                String response = "2ò" + account.getKey(queriedAccounts.get(0)) + "ò" + output.toString();
+                object.add("company_accountnumbers", companyAccountnumbersJsonArray);
+                object.add("company_sectors", companySectorsJsonArray);
+                object.add("company_names", companyNamesJsonArray);
+                object.addProperty("account_key", account.getKey(queriedAccounts.get(0)));
+                object.addProperty("response_code", 2);
+                object.addProperty("accountnumber", account.getAccountnumber(queriedAccounts.get(0)));
                 resp.setStatus(200);
-                resp.getWriter().println(URLEncoder.encode(response, "UTF-8"));
+                resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
             } else {
                 if (failedAttempts > 3){
                     double cooldownSeconds = Math.pow(2, failedAttempts);
@@ -132,13 +145,18 @@ public class PrivateLogin extends HttpServlet {
                     cooldownTime.add(Calendar.SECOND, (int) cooldownSeconds);
                     account.setCooldownTime(queriedAccounts.get(0), cooldownTime.getTime());
                     account.saveAll(queriedAccounts.get(0));
-                    resp.getWriter().println(URLEncoder.encode("1ò" + failedAttempts, "UTF-8"));
+                    object.addProperty("response_code", 1);
+                    object.addProperty("failed_attempts", failedAttempts);
+                    resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
                 } else {
-                    resp.getWriter().println(URLEncoder.encode("1ò" + failedAttempts, "UTF-8"));
+                    object.addProperty("response_code", 1);
+                    object.addProperty("failed_attempts", failedAttempts);
+                    resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
                 }
             }
         } else {
-            resp.getWriter().println("0");
+            object.addProperty("response_code", 0);
+            resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
         }
     }
 }

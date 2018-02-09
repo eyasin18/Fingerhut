@@ -9,6 +9,7 @@ import java.security.KeyPair;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -77,13 +78,95 @@ public class Account {
         setAccountnumber(account, accountnumber);
         setHashedPassword(account, encryptedPassword);
         setBalance(account, 1500.00f);
+        setIsPrepaid(account, false);
         account.setProperty("transferarray", new ArrayList<String>());
-        setCompany(account, "0002");
+        addCompany(account, "0002");
         setFeature(account,0, true);
         setPrivateKeyStr(account, encryptedPrivateKeyStr);
         setPublicKeyStr(account, publicKeyStr);
         setAuthString(account, accountnumber);
         saveAll(account);
+    }
+
+    public void postPrepaidAccount(){
+        Random rand = new Random();
+        String password = String.format("%04d", rand.nextInt(10000));
+        String encryptedPassword = cryptor.hashToString(password);
+
+        KeyPair securityKeyPair = cryptor.generateKeyPair();
+        String privateKeyStr = cryptor.privateKeyToString(securityKeyPair.getPrivate());
+        byte[] privateKey = cryptor.hexToBytes(privateKeyStr);
+        String publicKeyStr = cryptor.publicKeyToString(securityKeyPair.getPublic());
+
+        String encryptedPrivateKeyStr = "";
+        try {
+            byte[] passwordBytes = password.getBytes("ISO-8859-1");
+            byte[] passwordKey = new byte[32];
+            for (int i = 0; i < passwordKey.length; i++){
+                passwordKey[i] = passwordBytes[i % passwordBytes.length];
+            }
+            byte[] encryptedPrivateKey = cryptor.encryptSymmetricFromByte(privateKey, passwordKey);
+            encryptedPrivateKeyStr = cryptor.bytesToHex(encryptedPrivateKey);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String accountnumber;
+        List<Entity> expiredPrepaidAccounts = getExpiredPrepaidAccounts();
+        Entity account;
+        if (expiredPrepaidAccounts.size() > 0){
+            account = expiredPrepaidAccounts.get(0);
+            accountnumber = getAccountnumber(account);
+        } else {
+            accountnumber = getUnusedAccountnumber();
+            Key loginKey = KeyFactory.createKey("accountnumber", accountnumber);
+            account = new Entity("Account", loginKey);
+        }
+
+        setAccountnumber(account, accountnumber);
+        setHashedPassword(account, encryptedPassword);
+        setBalance(account, 0f);
+        setIsPrepaid(account, false);
+        account.setProperty("transferarray", new ArrayList<String>());
+        addCompany(account, null);
+        setFeature(account,0, true);
+        setPrivateKeyStr(account, encryptedPrivateKeyStr);
+        setPublicKeyStr(account, publicKeyStr);
+        setAuthString(account, accountnumber);
+        saveAll(account);
+    }
+
+    public static String getUnusedAccountnumber(){
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        DecimalFormat decimalFormat = new DecimalFormat("0000");
+
+        Query loginQuery = new Query("Account");
+        Query companyQuery = new Query("Company");
+        List<Entity> accountsList = datastore.prepare(loginQuery).asList(FetchOptions.Builder.withDefaults());
+        accountsList.addAll(datastore.prepare(companyQuery).asList(FetchOptions.Builder.withDefaults()));
+
+        List<String> accountnumbers = new ArrayList<>();
+        for (Entity account : accountsList){
+            accountnumbers.add((String) account.getProperty("accountnumber"));
+        }
+
+        for (int i = 0; i < 9999; i++) {
+            String accountnumber = decimalFormat.format(i);
+            if (!accountnumbers.contains(accountnumber)){
+                return accountnumber;
+            }
+        }
+        return null;
+    }
+
+    public static List<Entity> getExpiredPrepaidAccounts(){
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query accountQuery = new Query("Account");
+        Query.Filter isPrepaidFilter = new Query.FilterPredicate("is_prepaid", Query.FilterOperator.EQUAL, true);
+        Query.Filter isExpiredFilter = new Query.FilterPredicate("expire_date", Query.FilterOperator.LESS_THAN_OR_EQUAL, getCurrentMinutes());
+        accountQuery.setFilter(isPrepaidFilter);
+        accountQuery.setFilter(isExpiredFilter);
+        return datastore.prepare(accountQuery).asList(FetchOptions.Builder.withDefaults());
     }
 
     public Entity getAccount(String accountnumber){
@@ -372,37 +455,55 @@ public class Account {
         return featureList;
     }
 
-    public void deleteCompany(){
-        account.setProperty("company", null);
-    }
-
-    public void setCompany(Entity passedEntity, String companyNumber){
+    public void addCompany(Entity passedEntity, String companyNumber){
         Company company = new Company(companyNumber);
-        passedEntity.setProperty("company", company.account.getKey());
-    }
-
-    public void setCompany(String companyNumber){
-        Company company = new Company(companyNumber);
-        account.setProperty("company", company.account.getKey());
-    }
-
-    public Entity getCompany(){
-        try {
-            if (account.getProperty("company") == null) return null;
-            else return datastore.get((Key) account.getProperty("company"));
-        } catch (EntityNotFoundException e) {
-            log.warning(e.toString());
-            return null;
+        List<Key> companyKeys = new ArrayList<>();
+        if (passedEntity.getProperty("companies") != null){
+            companyKeys = (List<Key>) passedEntity.getProperty("companies");
         }
+        companyKeys.add(company.account.getKey());
+        passedEntity.setProperty("companies", companyKeys);
     }
 
-    public Entity getCompany(Entity passedEntity){
-        try {
-            if (passedEntity.getProperty("company") == null) return null;
-            else return datastore.get((Key) passedEntity.getProperty("company"));
-        } catch (EntityNotFoundException e) {
-            log.warning(e.toString());
-            return null;
+    public void addCompany(String companyNumber){
+        Company company = new Company(companyNumber);
+        List<Key> companyKeys = new ArrayList<>();
+        if (account.getProperty("companies") != null){
+            companyKeys = (List<Key>) account.getProperty("companies");
+        }
+        companyKeys.add(company.account.getKey());
+        account.setProperty("companies", companyKeys);
+    }
+
+    public List<Entity> getCompanies(){
+            if (account.getProperty("companies") == null) return new ArrayList<>();
+            else {
+                List<Key> companyKeys = (List<Key>) account.getProperty("companies");
+                List<Entity> companies = new ArrayList<>();
+                for (Key companyKey : companyKeys){
+                    try{
+                        companies.add(datastore.get(companyKey));
+                    } catch (EntityNotFoundException e) {
+                        log.warning(e.getMessage());
+                    }
+                }
+                return companies;
+            }
+    }
+
+    public List<Entity> getCompanies(Entity passedEntity){
+        if (passedEntity.getProperty("companies") == null) return new ArrayList<>();
+        else {
+            List<Key> companyKeys = (List<Key>) passedEntity.getProperty("companies");
+            List<Entity> companies = new ArrayList<>();
+            for (Key companyKey : companyKeys){
+                try{
+                    companies.add(datastore.get(companyKey));
+                } catch (EntityNotFoundException e) {
+                    log.warning(e.getMessage());
+                }
+            }
+            return companies;
         }
     }
 
@@ -765,6 +866,46 @@ public class Account {
         return workingPeriodsStr;
     }
 
+    public void setIsPrepaid(boolean isPrepaid){
+        account.setProperty("is_prepaid", isPrepaid);
+    }
+
+    public void setIsPrepaid(Entity passedEntity, boolean isPrepaid){
+        passedEntity.setProperty("is_prepaid", isPrepaid);
+    }
+
+    public boolean getIsPrepaid() {
+        return account.getProperty("is_prepaid") != null && (boolean) account.getProperty("is_prepaid");
+    }
+
+    public boolean getIsPrepaid(Entity passedEntity){
+        return passedEntity.getProperty("is_prepaid") != null && (boolean) passedEntity.getProperty("is_prepaid");
+    }
+
+    public void setExpireDate(Number expireDate){
+        account.setProperty("expire_date", expireDate);
+    }
+
+    public void setExpireDate(Entity passedEntity, Number expireDate){
+        passedEntity.setProperty("expire_date", expireDate);
+    }
+
+    public Number getExpireDate(){
+        if (account.getProperty("expire_date") != null){
+            return (Number) account.getProperty("expire_date");
+        } else {
+            return getMinutesFromValues(6, 23, 59);
+        }
+    }
+
+    public Number getExpireDate(Entity passedEntity){
+        if (passedEntity.getProperty("expire_date") != null){
+            return (Number) passedEntity.getProperty("expire_date");
+        } else {
+            return getMinutesFromValues(6, 23, 59);
+        }
+    }
+
     public void saveAll(){
         datastore.put(account);
     }
@@ -806,6 +947,14 @@ public class Account {
     }
 
     public static long getMinutesFromValues(long days, long hours, long minutes){
+        return days*1440 + hours*60 + minutes;
+    }
+
+    public static long getCurrentMinutes(){
+        Calendar currentTime = Calendar.getInstance();
+        int days = currentTime.get(Calendar.DAY_OF_WEEK) - 2;
+        int hours = currentTime.get(Calendar.HOUR_OF_DAY) + 1;
+        int minutes = ((int) currentTime.get(Calendar.MINUTE)/30)*30;
         return days*1440 + hours*60 + minutes;
     }
 }

@@ -1,12 +1,7 @@
 package de.repictures.fingerhut.Debug;
 
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Query;
 import de.repictures.fingerhut.Cryptor;
 import de.repictures.fingerhut.Datastore.Account;
-import de.repictures.fingerhut.Datastore.Company;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,14 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 //TODO: Klasse entfernen!!
 public class AccountSetter extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        setCompanies();
+
     }
 
     private void changeOwnerName(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -88,7 +82,7 @@ public class AccountSetter extends HttpServlet {
         String[] accountnumbers = new String[]{"0024", "0593", "0620", "0022"};
         for (int i = 0; i < accountnumbers.length; i++){
             Account account = new Account(accountnumbers[i]);
-            account.setCompany("0155");
+            account.addCompany("0155");
             account.saveAll();
         }
     }
