@@ -79,9 +79,7 @@
                     <!-- Hier beginnt der Teil der für die Karte Kaufaufträge zuständig ist -->
 
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="purchase_orders">
-                        <div class="wrapper">
-                            <h2 class="mdl-card__title-text" id="purchase_heading">Kaufaufträge</h2>
-                        </div>
+                            <h4 class="mdl-typography--headline" id="purchase_heading">Kaufaufträge</h4>
                             <table class="mdl-data-table mdl-js-data-table" id="purchase_table">
                             <thead>
                                 <tr>
@@ -114,7 +112,7 @@
                                     sdf = new SimpleDateFormat("E HH:mm", request.getLocale());
                                     String dateTimeStr = sdf.format(calendar.getTime()) + " Uhr";
                             %>
-                                <tr onclick="editPurchaseorders(this.rowIndex)">
+                                <tr onclick="editPurchaseorders(this.rowIndex-1)">
                                     <th><%= dateTimeStr %></th>
                                     <th><%= purchaseOrder.getBuyerAccountnumber() %></th>
                                     <th><%= priceSumStr %></th>
@@ -132,21 +130,12 @@
                     <!-- Mehr Informationen zum Kaufauftrag Karte -->
 
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="purchase_order">
-                        <table class="mdl-data-table mdl-js-data-table" id="purchase_info_table">
-                            <thead>
-                                <tr>
-                                    <th>Produkt</th>
-                                    <th>Preis</th>
-                                    <th>Barcode</th>
-                                    <th>Menge</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <%
-
-                            %>
-                            </tbody>
-                        </table>
+                        <div id="table_div">
+                        </div>
+                        <h6 class="title wrapper">Der Kaufauftrag ist noch nicht bestätigt.</h6>
+                        <div class="wrapper">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="" id="confirm_button">Bestätigen</button>
+                        </div>
                         <div class ="wrapper">
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backOrder()" id="back_button_order">Fertig</button>
                         </div>
@@ -175,7 +164,9 @@
                         <div id ="add_purchase_div">
 
                         </div>
-                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addProductToPurchase()">Hinzufügen</button>
+                        <div class="wrapper">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addProductToPurchase()" id="add_product_to_purchase_button">Hinzufügen</button>
+                        </div>
                         <h6 class="title wrapper" id="purchase_order_price_sum">Preis (brutto): </h6>
                         <h6 class="title wrapper" id="tax">Mehrwertsteuer: <%=Tax.getVAT() %> %</h6>
                         <h6 class="title wrapper" id="purchase_order_taxable">Preis (netto): </h6>
@@ -358,13 +349,13 @@
     %>
 
     //füllt den purchase_order_array mit Purchase Order Objekten die über die unten stehenden Attribute verfügen (fast alle properties der PurchaseOrder Entitäten)
-    var purchase_order = pojo('amounts_list', 'buyer_accountnumber', 'completed', 'date_time', 'is_self_buy_list', 'number', 'product_codes_list');
+    var purchase_order = pojo('buyer_accountnumber', 'completed', 'date_time', 'is_self_buy_list', 'number', 'product_codes_list');
     var purchase_order_array = [];
     var iterate1 = 0;
     <%
         for(int i = 0; i < purchaseOrders.length; i++){
             %>
-        var getAmountsList = '<%= purchaseOrders[i].getAmountsList() %>';
+
         var getBuyerAccountnumber = "<%= purchaseOrders[i].getBuyerAccountnumber() %>";
         var getCompleted = <%= purchaseOrders[i].getCompleted() %>;
         var getDateTime = '<%= purchaseOrders[i].getDateTime() %>';
@@ -373,7 +364,7 @@
         var getPricesList = <%= purchaseOrders[i].getPricesList() %>;
         var getProductCodesList = <%= purchaseOrders[i].getProductCodesList() %>;
         purchase_order_array[iterate1] = purchase_order(
-            getAmountsList,
+
             getBuyerAccountnumber,
             getCompleted,
             getDateTime,
@@ -390,17 +381,12 @@
             %>
             var iterator = <%= iterator%>;
             purchase_order_array[iterator].prices_list = <%= purchaseOrders[iterator].getPricesList() %>;
+            purchase_order_array[iterator].amounts_list = <%= purchaseOrders[iterator].getAmountsList() %>;
         <%
         }
     %>
-
     fillDropdown();
-    //for(var i = 0; i<purchase_order_array.length ; i++)
-    //{
     purchase_order_array[0].prices_list = <%= purchaseOrders[0].getPricesList() %>;
-    console.log(purchase_order_array[0].prices_list);
-        console.log(purchase_order_array[0].product_codes_list);
-    //}
 
 
     /*if ('serviceWorker' in navigator) {
@@ -509,7 +495,31 @@
         PurchaseOrder.style.display = "block";
         AddPurchase.style.display = "none";
         AddProductToPurchase.style.display = "none";
+        document.getElementById("table_div").innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"purchase_info_table\">\n" +
+            "                                <thead>\n" +
+            "                                    <tr>\n" +
+            "                                        <th>Menge</th>\n" +
+            "                                        <th>Produkt</th>\n" +
+            "                                        <th>Barcode</th>\n" +
+            "                                        <th>Preis</th>\n" +
+            "                                    </tr>\n" +
+            "                                </thead>\n" +
+            "                                <tbody>\n" +
+            "                                </tbody>\n" +
+            "                            </table>";
         var purchaseOrderInfoTable = document.getElementById("purchase_info_table");
+        console.log(purchase_order_array[position].product_codes_list.length);
+        for(var i = 0;i < purchase_order_array[position].product_codes_list.length; i++) {
+            var row = purchaseOrderInfoTable.insertRow(document.getElementById("purchase_info_table").rows.length);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            cell1.innerHTML = purchase_order_array[position].amounts_list[i];
+            cell2.innerHTML = getNameThroughCode(purchase_order_array[position].product_codes_list[i]);
+            cell3.innerHTML = purchase_order_array[position].product_codes_list[i];
+            cell4.innerHTML = parseFloat(purchase_order_array[position].prices_list[i]) * parseFloat(purchase_order_array[position].amounts_list[i]) + " S";
+        }
     }
 
     function editProducts(position){
@@ -524,7 +534,7 @@
     }
 
     function backOrder() {
-        PurchaseOrders.style.display = "flex";
+        PurchaseOrders.style.display = "block";
         PurchaseOrder.style.display = "none";
     }
 
@@ -663,7 +673,7 @@
 
     function cancelPurchase() {
         AddPurchase.style.display = "none";
-        PurchaseOrders.style.display = "flex";
+        PurchaseOrders.style.display = "block";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
         Statistics.style.display = "flex";
@@ -775,7 +785,7 @@
                         document.getElementById("finish_button").disabled = false;
                         document.getElementById("cancel_purchase_button").disabled = false;
                         AddPurchase.style.display = "none";
-                        PurchaseOrders.style.display = "flex";
+                        PurchaseOrders.style.display = "block";
                         PurchaseOrder.style.display = "none";
                         AddProductToPurchase.style.display = "none";
                         Statistics.style.display = "flex";
