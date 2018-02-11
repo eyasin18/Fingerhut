@@ -9,6 +9,7 @@
 <%@ page import="java.util.Objects" %>
 <%@ page import="java.util.logging.Logger" %>
 <%@ page import="de.repictures.fingerhut.Web.MainTools" %>
+<%@ page import="de.repictures.fingerhut.Web.Signoff" %>
 <%@ page import="static de.repictures.fingerhut.Datastore.Tax.getVAT" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -48,9 +49,9 @@
             <!-- Title -->
             <span class="mdl-layout-title mdl-color-text--white">Fingerhut</span>
             <div class="mdl-layout-spacer"></div>
-            <form action= "https://fingerhut388.appspot.com" >
-                <input type="submit" value="Ausloggen" id="logout_button" class= "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white"/>
-            </form>
+            <button onclick="signoff()" id="logout_button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white">
+                Ausloggen
+            </button>
         </div>
         <!-- Tabs -->
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
@@ -318,6 +319,7 @@
                         break;
                 }
                 break;
+            case 3: window.location.replace(url);
         }
     }
 
@@ -375,6 +377,12 @@
             companyLogin();
         }
     }
+
+    function signoff(){
+        var theurl = url + "/signoff?accountnumber=<%= accountnumber %>&webstring=<%= code %>";
+        httpAsync(theurl, "GET",3);
+    }
+
 </script>
 </body>
 </html>

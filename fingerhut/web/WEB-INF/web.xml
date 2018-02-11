@@ -249,6 +249,14 @@
         <url-pattern>/admin/editbalanceservlet</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>Signoff</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Web.Signoff</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Signoff</servlet-name>
+        <url-pattern>/signoff</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>PostStats</servlet-name>
         <servlet-class>de.repictures.fingerhut.Backend.PostStats</servlet-class>
     </servlet>
