@@ -24,18 +24,19 @@
 }
 
 #statistics_heading{
-    margin-left: auto;
-    margin-right: auto;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 #products_heading{
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 60px;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 #employee_heading{
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 60px;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 #accountnumber_textfield{
     margin-top: 60px;
@@ -73,6 +74,27 @@
     margin-bottom: 20px;
 }
 #confirm_button{
+    margin-bottom: 20px;
+}
+#add_purchase_button_short{
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+#short_purchase_heading{
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+#add_product_to_purchase_heading{
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+#add_to_purchase_button{
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+#cancel_add_t_purchase_button{
     margin-bottom: 20px;
     margin-top: 20px;
 }

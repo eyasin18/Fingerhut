@@ -76,8 +76,26 @@
         <main class="mdl-layout__content">
             <div class="page-content">
                 <div class="mdl-grid">
-                    <!-- Hier beginnt der Teil der für die Karte Kaufaufträge zuständig ist -->
-
+                    <!-- Kaufauftragskarte(Ausschnitt) -->
+                    <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="short_purchase_orders">
+                        <h4 class="mdl-typography--headline" id="short_purchase_heading">Kaufaufträge</h4>
+                        <table class="mdl-data-table mdl-js-data-table" id="short_purchase_table">
+                            <thead>
+                            <tr>
+                                <th>Datum/Uhrzeit</th>
+                                <th>Käufer</th>
+                                <th>Betrag</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <div class="wrapper">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addPurchase()" id="add_purchase_button_short">Hinzufügen</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="showAllPurchaseOrders()">Alle anzeigen</button>
+                        </div>
+                    </div>
+                    <!-- Kaufauftragskarte(Alle) -->
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="purchase_orders">
                             <h4 class="mdl-typography--headline" id="purchase_heading">Kaufaufträge</h4>
                             <table class="mdl-data-table mdl-js-data-table" id="purchase_table">
@@ -124,6 +142,7 @@
                         </table>
                         <div class="wrapper">
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addPurchase()" id="add_purchase_button">Hinzufügen</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="hideAllPurchaseOrders()">Verstecken</button>
                         </div>
                     </div>
 
@@ -131,10 +150,6 @@
 
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="purchase_order">
                         <div id="table_div">
-                        </div>
-                        <h6 class="title wrapper">Der Kaufauftrag ist noch nicht bestätigt.</h6>
-                        <div class="wrapper">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="" id="confirm_button">Bestätigen</button>
                         </div>
                         <div class ="wrapper">
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backOrder()" id="back_button_order">Fertig</button>
@@ -183,9 +198,7 @@
                     <!-- Produkte zu Kaufauftrag hinzufügen Karte -->
 
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="add_product_to_purchase">
-                        <div class="mdl-card__title">
-                            <h2 class="mdl-card__title-text" id="add_product_to_purchase_heading">Neues Produkt zum Kaufauftrag hinzufügen</h2>
-                        </div>
+                        <h4 class="mdl-typography--headline" id="add_product_to_purchase_heading">Neues Produkt zum Kaufauftrag hinzufügen</h4>
                         <div class="wrapper">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="product_amount_field">
@@ -215,7 +228,7 @@
                     <!-- Hier beginnt der Teil der für die Karte Statistiken zuständig ist -->
 
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="statistics">
-                        <h2 class="mdl-card__title-text" id="statistics_heading">Statistiken</h2>
+                        <h4 class="mdl-typography--headline" id="statistics_heading">Statistiken</h4>
                         <div class="mdl-card__supporting-text">
                            Hier können sie die Statistiken ihres Unternehmens einsehen.
                         </div>
@@ -224,7 +237,7 @@
                     <!-- Hier beginnt der Teil der für die Karte Produkt zuständig ist ist -->
 
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="products">
-                        <h2 class="mdl-card__title-text" id="products_heading">Produkte</h2>
+                        <h4 class="mdl-typography--headline" id="products_heading">Produkte</h4>
                         <table class="mdl-data-table mdl-js-data-table" id="producttable">
                             <thead>
                             <tr>
@@ -275,7 +288,7 @@
                 <!-- Hier beginnt der Teil der für die Karte Mitarbeiter zuständig ist -->
 
                 <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="employees">
-                    <h2 class="mdl-card__title-text" id="employee_heading">Mitarbeiter</h2>
+                    <h4 class="mdl-typography--headline" id="employee_heading">Mitarbeiter</h4>
                     <table class="mdl-data-table mdl-js-data-table">
                         <thead>
                         <tr>
@@ -300,6 +313,7 @@
     //Kaufaufträge betreffend
     var PurchaseOrder = document.getElementById("purchase_order");
     var PurchaseOrders = document.getElementById("purchase_orders");
+    var ShortPurchaseOrders = document.getElementById("short_purchase_orders");
     var AddPurchase = document.getElementById("add_purchase");
     var AddProductToPurchase = document.getElementById("add_product_to_purchase");
     var decodedServerTime;
@@ -320,10 +334,13 @@
     var Employees = document.getElementById("employees");
 
     PurchaseOrder.style.display = "none";
-    PurchaseOrders.style.display = "block";
+    PurchaseOrders.style.display = "none";
+    ShortPurchaseOrders.style.display = "block";
     AddPurchase.style.display = "none";
     AddProductToPurchase.style.display = "none";
     Product.style.display = "none";
+    Employees.style.display = "block";
+    Statistics.style.display = "block";
 
 
     //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
@@ -355,7 +372,6 @@
     <%
         for(int i = 0; i < purchaseOrders.length; i++){
             %>
-
         var getBuyerAccountnumber = "<%= purchaseOrders[i].getBuyerAccountnumber() %>";
         var getCompleted = <%= purchaseOrders[i].getCompleted() %>;
         var getDateTime = '<%= purchaseOrders[i].getDateTime() %>';
@@ -364,7 +380,6 @@
         var getPricesList = <%= purchaseOrders[i].getPricesList() %>;
         var getProductCodesList = <%= purchaseOrders[i].getProductCodesList() %>;
         purchase_order_array[iterate1] = purchase_order(
-
             getBuyerAccountnumber,
             getCompleted,
             getDateTime,
@@ -386,7 +401,9 @@
         }
     %>
     fillDropdown();
+    fillShortPurchaseTable();
     purchase_order_array[0].prices_list = <%= purchaseOrders[0].getPricesList() %>;
+
 
 
     /*if ('serviceWorker' in navigator) {
@@ -491,22 +508,43 @@
     }
 
     function editPurchaseorders(position){
+        ShortPurchaseOrders.style.display = "none";
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "block";
         AddPurchase.style.display = "none";
         AddProductToPurchase.style.display = "none";
-        document.getElementById("table_div").innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"purchase_info_table\">\n" +
-            "                                <thead>\n" +
-            "                                    <tr>\n" +
-            "                                        <th>Menge</th>\n" +
-            "                                        <th>Produkt</th>\n" +
-            "                                        <th>Barcode</th>\n" +
-            "                                        <th>Preis</th>\n" +
-            "                                    </tr>\n" +
-            "                                </thead>\n" +
-            "                                <tbody>\n" +
-            "                                </tbody>\n" +
-            "                            </table>";
+        if(purchase_order_array[position].completed){
+            document.getElementById("table_div").innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"purchase_info_table\">\n" +
+                "                                <thead>\n" +
+                "                                    <tr>\n" +
+                "                                        <th>Menge</th>\n" +
+                "                                        <th>Produkt</th>\n" +
+                "                                        <th>Barcode</th>\n" +
+                "                                        <th>Preis</th>\n" +
+                "                                    </tr>\n" +
+                "                                </thead>\n" +
+                "                                <tbody>\n" +
+                "                                </tbody>\n" +
+                "                            </table>";
+        }
+        else{
+            document.getElementById("table_div").innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"purchase_info_table\">\n" +
+                "                                <thead>\n" +
+                "                                    <tr>\n" +
+                "                                        <th>Menge</th>\n" +
+                "                                        <th>Produkt</th>\n" +
+                "                                        <th>Barcode</th>\n" +
+                "                                        <th>Preis</th>\n" +
+                "                                    </tr>\n" +
+                "                                </thead>\n" +
+                "                                <tbody>\n" +
+                "                                </tbody>\n" +
+                "                            </table>" +
+                "<h6 class=\"title wrapper\">Der Kaufauftrag ist noch nicht bestätigt.</h6>\n" +
+                "                        <div class=\"wrapper\">\n" +
+                "                            <button class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored\" onclick=\"confirmPurchaseOrder()\" id=\"confirm_button\">Bestätigen</button>\n" +
+                "                        </div>";
+        }
         var purchaseOrderInfoTable = document.getElementById("purchase_info_table");
         console.log(purchase_order_array[position].product_codes_list.length);
         for(var i = 0;i < purchase_order_array[position].product_codes_list.length; i++) {
@@ -521,12 +559,17 @@
             cell4.innerHTML = parseFloat(purchase_order_array[position].prices_list[i]) * parseFloat(purchase_order_array[position].amounts_list[i]) + " S";
         }
     }
+    function confirmPurchaseOrder() {
 
+    }
     function editProducts(position){
         Products.style.display = "none";
         Product.style.display = "block";
         AddPurchase.style.display = "none";
         AddProductToPurchase.style.display = "none";
+        ShortPurchaseOrders.style.display = "none";
+        Employees.style.display = "none";
+        Statistics.style.display = "none";
         var productInfoTable = document.getElementById("product_info_table" );
         <%
 
@@ -534,13 +577,16 @@
     }
 
     function backOrder() {
-        PurchaseOrders.style.display = "block";
         PurchaseOrder.style.display = "none";
+        ShortPurchaseOrders.style.display = "block";
     }
 
     function backProduct(){
         Products.style.display = "flex";
         Product.style.display = "none";
+        ShortPurchaseOrders.style.display = "block";
+        Employees.style.display = "block";
+        Statistics.style.display = "block";
     }
 
     function addPurchaseOrderItem(position) {
@@ -560,7 +606,8 @@
         };
         xmlHttp.open("POST", url, true); // true for asynchronous
         xmlHttp.send(null);
-        PurchaseOrders.style.display = "block";
+        PurchaseOrders.style.display = "none";
+        ShortPurchaseOrders.style.display = "block";
         PurchaseOrder.style.display = "none";
         AddPurchase.style.display = "none";
         AddProductToPurchase.style.display = "none";
@@ -570,6 +617,7 @@
         document.getElementById("purchase_order_error").innerText = "";
         AddPurchase.style.display = "inline-block";
         PurchaseOrders.style.display = "none";
+        ShortPurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
         Statistics.style.display = "none";
@@ -592,6 +640,7 @@
     function addProductToPurchase() {
         AddPurchase.style.display = "none";
         PurchaseOrders.style.display = "none";
+        ShortPurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "block";
     }
@@ -604,6 +653,7 @@
             if(document.getElementById("dropdown_product_field").value !== "") {
                 AddPurchase.style.display = "flex";
                 PurchaseOrders.style.display = "none";
+                ShortPurchaseOrders.style.display = "none";
                 PurchaseOrder.style.display = "none";
                 AddProductToPurchase.style.display = "none";
                 var table = document.getElementById("add_purchase_table");
@@ -673,7 +723,8 @@
 
     function cancelPurchase() {
         AddPurchase.style.display = "none";
-        PurchaseOrders.style.display = "block";
+        PurchaseOrders.style.display = "none";
+        ShortPurchaseOrders.style.display = "block";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
         Statistics.style.display = "flex";
@@ -700,6 +751,7 @@
     function cancelProductToPurchase() {
         AddPurchase.style.display = "flex";
         PurchaseOrders.style.display = "none";
+        ShortPurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "none";
         AddProductToPurchase.style.display = "none";
         document.getElementById("product_amount_field").value = "";
@@ -785,7 +837,8 @@
                         document.getElementById("finish_button").disabled = false;
                         document.getElementById("cancel_purchase_button").disabled = false;
                         AddPurchase.style.display = "none";
-                        PurchaseOrders.style.display = "block";
+                        PurchaseOrders.style.display = "none";
+                        ShortPurchaseOrders.style.display = "block";
                         PurchaseOrder.style.display = "none";
                         AddProductToPurchase.style.display = "none";
                         Statistics.style.display = "flex";
@@ -825,9 +878,10 @@
             case 1:
                 var getUrl = "https://fingerhut388.appspot.com" + "/getshoppingrequest?code=<%=code%>&authaccountnumber=<%=accountnumber%>"
                     +"&accountnumber=" + accountnumber_textfield
-                    + "&companynumber=<%=companynumber%>&shoppinglist=" + getShoppingList()
                     + "&madebyuser=true"
-                    + "&completed=true";
+                    + "&completed=true"
+                    + "&companynumber=<%=companynumber%>&shoppinglist=" + encodeURIComponent(getShoppingList());
+                    console.log(getUrl);
                 httpAsync(getUrl, "GET", 1);
                 break;
             case 2:
@@ -853,6 +907,32 @@
             + accountnumber_textfield
             + "&sessionaccountnumber=<%=accountnumber%>&webstring=<%=code %>";
         httpAsync(getUrlStr, "GET", 2)
+    }
+
+    function showAllPurchaseOrders() {
+        PurchaseOrders.style.display = "block";
+        ShortPurchaseOrders.style.display = "none";
+    }
+    function hideAllPurchaseOrders() {
+        PurchaseOrders.style.display = "none";
+        ShortPurchaseOrders.style.display = "block";
+    }
+    function fillShortPurchaseTable() {
+        var table = document.getElementById("short_purchase_table");
+        for(var i = 0; i<10; i++) {
+            var row = table.insertRow(document.getElementById("short_purchase_table").rows.length);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var price_sum = 0;
+            for(var j = 0; j < purchase_order_array[i].prices_list.length; j++){
+                price_sum += (purchase_order_array[i].prices_list[j] * purchase_order_array[i].amounts_list[j]);
+            }
+            cell1.innerHTML = purchase_order_array[i].date_time;
+            cell2.innerHTML = purchase_order_array[i].buyer_accountnumber;
+            cell3.innerHTML = price_sum;
+            row.onclick = function(){editPurchaseorders(this.rowIndex-1)};
+        }
     }
 </script>
 </html>
