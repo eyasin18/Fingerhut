@@ -19,13 +19,14 @@
     <head>
         <meta charset="utf-8">
             <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}../css/index.css">
-            <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-            <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.green-light_blue.min.css">
+            <link rel="stylesheet" href="${pageContext.request.contextPath}../css/icon.css">
+            <link rel="stylesheet" href="${pageContext.request.contextPath}../css/material.green-light_green.min.css">
             <script defer src="../js/sjcl.js"></script>
-            <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+            <script defer src="${pageContext.request.contextPath}../js/material.min.js"></script>
             <script type="application/javascript" src="../res/values/strings.js"></script>
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Mobile-Device-Skalierung -->
+
     </head>
     <body onkeypress="return enterPressed(event);">
         <div class="mdl-layout mdl-js-layout mdl-color--green-light_blue-100">

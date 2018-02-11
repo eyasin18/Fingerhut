@@ -27,9 +27,9 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}../css/main.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.green-light_green.min.css">
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}../css/icon.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}../css/material.green-light_green.min.css">
+    <script defer src="${pageContext.request.contextPath}../js/material.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script language="JavaScript" type="text/javascript" src="../js/jsbn.js"></script>
     <script language="JavaScript" type="text/javascript" src="../js/prng4.js"></script>
@@ -38,7 +38,7 @@
     <script language="JavaScript" type="text/javascript" src="../js/base64.js"></script>
     <script language="JavaScript" type="text/javascript" src="../js/platform.js"></script>
     <script defer src="../js/sjcl.js"></script>
-    <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}../js/index.js"></script>
     <script type="application/javascript" src="../res/values/strings.js"></script>
 </head>
 <body>
