@@ -513,6 +513,9 @@
         PurchaseOrder.style.display = "block";
         AddPurchase.style.display = "none";
         AddProductToPurchase.style.display = "none";
+        Statistics.style.display = "none";
+        Employees.style.display = "none";
+        Products.style.display = "none";
         if(purchase_order_array[position].completed){
             document.getElementById("table_div").innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"purchase_info_table\">\n" +
                 "                                <thead>\n" +
@@ -579,6 +582,9 @@
     function backOrder() {
         PurchaseOrder.style.display = "none";
         ShortPurchaseOrders.style.display = "block";
+        Statistics.style.display = "block";
+        Employees.style.display = "block";
+        Products.style.display = "block";
     }
 
     function backProduct(){
