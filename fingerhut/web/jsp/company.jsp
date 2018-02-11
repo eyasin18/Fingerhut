@@ -27,6 +27,7 @@
         response.sendRedirect("https://fingerhut388.appspot.com/");
     }
     CompanyTools companyTools = new CompanyTools(accountnumber);
+    PurchaseOrder[] purchaseOrders = companyTools.queryPurchasOrders(companynumber, request);
 %>
 
 <!doctype html>
@@ -107,37 +108,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            <%
-                                PurchaseOrder[] purchaseOrders = companyTools.queryPurchasOrders(companynumber, request);
-                                for (PurchaseOrder purchaseOrder : purchaseOrders){
-                                    //Preis berechnen
-                                    double priceSum = 0.0;
-                                    List<Long> amountsList = purchaseOrder.getAmountsList();
-                                   List<Double> pricesList = purchaseOrder.getPricesList();
-                                   if(amountsList!=null && pricesList!=null)
-                                         for (int o = 0; o < amountsList.size(); o++){
-                                            priceSum += (amountsList.get(o) * pricesList.get(o));
-                                         }
-                                    String priceSumStr = new DecimalFormat("0.00").format(priceSum) + " S";
-                                    //DateTime anpassen
-                                    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", request.getLocale());
-                                    Calendar calendar = Calendar.getInstance();
-                                    try {
-                                        calendar.setTime(sdf.parse(purchaseOrder.getDateTime()));
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                    sdf = new SimpleDateFormat("E HH:mm", request.getLocale());
-                                    String dateTimeStr = sdf.format(calendar.getTime()) + " Uhr";
-                            %>
-                                <tr onclick="editPurchaseorders(this.rowIndex-1)">
-                                    <th><%= dateTimeStr %></th>
-                                    <th><%= purchaseOrder.getBuyerAccountnumber() %></th>
-                                    <th><%= priceSumStr %></th>
-                                </tr>
-                            <%
-                                }
-                            %>
                             </tbody>
                         </table>
                         <div class="wrapper">
@@ -402,6 +372,7 @@
     %>
     fillDropdown();
     fillShortPurchaseTable();
+    fillPurchaseTable()
     purchase_order_array[0].prices_list = <%= purchaseOrders[0].getPricesList() %>;
 
 
@@ -922,6 +893,7 @@
     function hideAllPurchaseOrders() {
         PurchaseOrders.style.display = "none";
         ShortPurchaseOrders.style.display = "block";
+        window.scrollTo(0, 0);
     }
     function fillShortPurchaseTable() {
         var table = document.getElementById("short_purchase_table");
@@ -938,6 +910,29 @@
             cell2.innerHTML = purchase_order_array[i].buyer_accountnumber;
             cell3.innerHTML = price_sum;
             row.onclick = function(){editPurchaseorders(this.rowIndex-1)};
+            if(!purchase_order_array[i].completed){
+                row.style.backgroundColor = "#8BC349";
+            }
+        }
+    }
+    function fillPurchaseTable() {
+        var table = document.getElementById("purchase_table");
+        for(var i = 0; i<purchase_order_array.length; i++) {
+            var row = table.insertRow(document.getElementById("purchase_table").rows.length);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var price_sum = 0;
+            for(var j = 0; j < purchase_order_array[i].prices_list.length; j++){
+                price_sum += (purchase_order_array[i].prices_list[j] * purchase_order_array[i].amounts_list[j]);
+            }
+            cell1.innerHTML = purchase_order_array[i].date_time;
+            cell2.innerHTML = purchase_order_array[i].buyer_accountnumber;
+            cell3.innerHTML = price_sum;
+            row.onclick = function(){editPurchaseorders(this.rowIndex-1)};
+            if(!purchase_order_array[i].completed){
+                row.style.backgroundColor = "#8BC349";
+            }
         }
     }
 </script>
