@@ -28,7 +28,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Mobile-Device-Skalierung -->
 
     </head>
-    <body onkeypress="return enterPressed(event);">
+    <body onkeypress="return enterPressed(event);" class="center-cropped" style="background-image: url('/res/images/stromberg.jpg');">
         <div class="mdl-layout mdl-js-layout mdl-color--green-light_blue-100">
             <main class="mdl-layout__content">
                 <div class="mdl-card mdl-shadow--6dp">
