@@ -61,13 +61,17 @@
                     companyTools.getOwner(companynumber)
                 %>
                 </span>
+                <div class="mdl-layout-spacer"></div>
+                <button onclick="signoff()" id="logout_button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white">
+                    Ausloggen
+                </button>
             </div>
         </header>
 
         <!--  Navigation -->
         <div class="mdl-layout__drawer">
             <nav class="mdl-navigation">
-                <a class="mdl-navigation__link" href="#purchase_orders">Kaufaufträge</a>
+                <a class="mdl-navigation__link" href="#short_purchase_orders">Kaufaufträge</a>
                 <a class="mdl-navigation__link" href="#statistics">Statistiken</a>
                 <a class="mdl-navigation__link" href="#products">Produkte</a>
                 <a class="mdl-navigation__link" href="#employees">Mitarbeiter</a>
@@ -291,7 +295,6 @@
     var encodedServerTime;
     var accountnumber_textfield;
     var pin_textfield;
-
 
     //Statistiken betreffend
     var Statistics = document.getElementById("statistics");
@@ -893,7 +896,7 @@
     function hideAllPurchaseOrders() {
         PurchaseOrders.style.display = "none";
         ShortPurchaseOrders.style.display = "block";
-        window.scrollTo(0, 0);
+        window.location.href = "#short_purchase_orders";
     }
     function fillShortPurchaseTable() {
         var table = document.getElementById("short_purchase_table");
@@ -934,6 +937,9 @@
                 row.style.backgroundColor = "#8BC349";
             }
         }
+    }
+    function signoff(){
+
     }
 </script>
 </html>

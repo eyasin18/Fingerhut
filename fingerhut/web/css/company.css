@@ -98,3 +98,14 @@
     margin-bottom: 20px;
     margin-top: 20px;
 }
+#short_purchase_orders td, th {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+}
+#logout_button {
+    float: right;
+    background: #1DE9B6 !important;
+}
