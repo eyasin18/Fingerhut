@@ -61,7 +61,7 @@ public class GetEmployee extends HttpServlet {
         for (int i = 0; i < featuresArray.size(); i++) {
             features.add(featuresArray.get(i).getAsLong());
         }
-        account.setFeatures(features);
+        account.setFeatures(features, companynumber);
         account.setWorkPeriods(startTimes, endTimes);
         account.saveAll();
 

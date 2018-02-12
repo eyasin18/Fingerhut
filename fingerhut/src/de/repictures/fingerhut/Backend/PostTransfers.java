@@ -1,11 +1,10 @@
 package de.repictures.fingerhut.Backend;
 
-import com.google.appengine.api.datastore.*;
-import de.repictures.fingerhut.Cryptor;
+import com.google.appengine.api.datastore.Entity;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import de.repictures.fingerhut.Datastore.Account;
-import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Transfer;
-import de.repictures.fingerhut.MultipartResponse;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,14 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.security.PublicKey;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
 public class PostTransfers extends HttpServlet {
 
-    Cryptor cryptor = new Cryptor();
     private Logger log = Logger.getLogger(PostTransfers.class.getName());
 
     @Override
@@ -32,27 +29,24 @@ public class PostTransfers extends HttpServlet {
         if (startStr != null) start = Integer.parseInt(startStr);
         boolean itemsLeft = true;
 
-        Company companyGetter = new Company();
+        JsonObject responseObject = new JsonObject();
         Account accountGetter = new Account();
         Entity account = accountGetter.getAccount(accountnumber);
 
         if (!Objects.equals(accountGetter.getRandomWebString(account), webstring)){
-            MultipartResponse multi = new MultipartResponse(resp);
-            multi.startResponse("text/plain");
-            resp.getOutputStream().println(0);
-            multi.endResponse();
-            multi.finish();
+            responseObject.addProperty("response_code", 0);
+            resp.getWriter().println(URLEncoder.encode(responseObject.toString(), "UTF-8"));
         }
 
         //Überprüfe ob wir eine Valide Kontonummer bekommen haben
         if (account != null){
-            StringBuilder output = new StringBuilder();
             //Lese die Verlinkungen zu den Überweisungen aus den Kontodaten
             List<String> transfersList = accountGetter.getTransfers(account);
 
             //Wenn es mindestens eine Verlinkung gibt, dann...
             if (transfersList != null && transfersList.size() > 0){
                 //Lege den Ablesebereich für den Output fest
+                JsonArray transfersArray = new JsonArray();
                 log.info("Anzahl Überweisungen: " + transfersList.size());
                 int end = start + 20;
                 int size = transfersList.size();
@@ -61,6 +55,7 @@ public class PostTransfers extends HttpServlet {
                 }
                 //Gehe durch jede Verlinkung einmal
                 for (int i = start; i < end; i++){
+                    JsonObject transferObject = new JsonObject();
                     String transferKeyStr = transfersList.get(i);
                     //Lese die Entität aus der Verlinkung
                     Entity transfer = accountGetter.getEntity(transferKeyStr);
@@ -74,7 +69,7 @@ public class PostTransfers extends HttpServlet {
                         size--;
                         continue;
                     }
-                    Transfer transferGetter = new Transfer(resp.getLocale());
+                    Transfer transferGetter = new Transfer(transfer, resp.getLocale());
                     //Lese den Auftraggeber aus der Überweisung
                     Entity sender = transferGetter.getSender(transfer);
                     //Lese den Empfänger aus der Überweisung
@@ -93,101 +88,62 @@ public class PostTransfers extends HttpServlet {
                     //Lese die Kontonummer des Auftraggebers
                     String senderAccountnumber = sender.getProperty("accountnumber").toString();
                     //Lese den Zeitpunkt der Überweisung
-                    output.append(transferGetter.getDateTime(transfer));
+                    transferObject.addProperty("date_time", transferGetter.getDateTime());
 
                     char plusminus = '+';
                     //Ist derjenige, der gerade die Daten abfragt der Auftraggeber oder der Empfänger dieser Überweisung?
                     if (Objects.equals(senderAccountnumber, accountnumber)){
                         plusminus = '-';
-                        output.append("ò");
 
                         //Lese den verschlüsselten Kontobesitzernamen aus dem Speicher
-                        output.append(transferGetter.getReceiverNameForSender(transfer));
-                        output.append("ò");
+                        transferObject.addProperty("name", transferGetter.getReceiverNameForSender());
 
                         //Lese die Kontonummer des Empfängers
-                        output.append(accountGetter.getAccountnumber(receiver));
+                        transferObject.addProperty("accountnumber", accountGetter.getAccountnumber(receiver));
                     } else {
-                        output.append("ò");
-
                         //Lese den verschlüsselten Kontobesitzernamen aus dem Speicher
-                        output.append(transferGetter.getSenderNameForReceiver(transfer));
-                        output.append("ò");
+                        transferObject.addProperty("name", transferGetter.getSenderNameForReceiver());
 
                         //Lese die Kontonummer des Auftraggebers
-                        output.append(accountGetter.getAccountnumber(sender));
+                        transferObject.addProperty("accountnumber", accountGetter.getAccountnumber(sender));
                     }
-                    output.append("ò");
                     //Lese den Typ der Überweisung
-                    output.append(transferGetter.getType(transfer));
-                    output.append("ò");
+                    transferObject.addProperty("type", transferGetter.getType());
                     //Ist derjenige, der gerade die Daten abfragt der Auftraggeber oder der Empfänger dieser Überweisung?
                     if (Objects.equals(accountnumber, senderAccountnumber)){
                         //Lese den Verwendungszweck der mit einem zufälligem Schlüssel verschlüsselt ist, der asymetrisch verschlüsselt auf dem Server liegt
-                        output.append(transferGetter.getSenderPurpose(transfer).getValue());
-                        output.append("ò");
+                        transferObject.addProperty("purpose", transferGetter.getSenderPurpose().getValue());
 
                         //Lese den Schlüssel mit dem der Verwendungszweck verschlüsselt wurde
-                        output.append(transferGetter.getSenderAesKey(transfer));
-                        output.append("ò");
+                        transferObject.addProperty("aes", transferGetter.getSenderAesKey());
 
                         //Gebe dem Backend zurück, dass der Nutzer der Auftraggeber war
-                        output.append("true");
-                        output.append("ò");
-                        //Kontonummer des Empfängers ausgeben
-                        output.append(accountGetter.getAccountnumber(receiver));
+                        transferObject.addProperty("is_sender", true);
                     } else if(Objects.equals(accountGetter.getAccountnumber(receiver), accountnumber)){
                         //Lese den Verwendungszweck der mit einem zufälligem Schlüssel verschlüsselt ist, der asymetrisch verschlüsselt auf dem Server liegt
-                        output.append(transferGetter.getReceiverPurpose(transfer).getValue());
-                        output.append("ò");
+                        transferObject.addProperty("purpose", transferGetter.getReceiverPurpose().getValue());
 
                         //Lese den Schlüssel mit dem der Verwendungszweck verschlüsselt wurde
-                        output.append(transferGetter.getReceiverAesKey(transfer));
-                        output.append("ò");
+                        transferObject.addProperty("aes", transferGetter.getReceiverAesKey());
 
                         //Gebe dem Backend zurück, dass der Nutzer der Empfänger war
-                        output.append("false");
-                        output.append("ò");
-                        //Kontonummer des Empfängers ausgeben
-                        output.append(accountGetter.getAccountnumber(sender));
-                    } else {
-                        output.append("You were not involved in this transfer!");
+                        transferObject.addProperty("is_sender", false);
                     }
-                    output.append("ò");
-                    //Vorzeichen für die Überweisung
-                    output.append(plusminus);
-                    //Betrag des Geldes das geflossen ist
-                    output.append(transferGetter.getAmount(transfer));
-                    output.append("ň");
+                    transferObject.addProperty("amount", Double.valueOf(plusminus + String.valueOf(transferGetter.getAmount())));
+                    transfersArray.add(transferObject);
                 }
+                responseObject.add("transfers", transfersArray);
                 if (end >= size) itemsLeft = false;
+                responseObject.addProperty("response_code", 1);
+                responseObject.addProperty("items_left", itemsLeft);
+                resp.getWriter().println(URLEncoder.encode(responseObject.toString(), "UTF-8"));
             } else {
-                output.append("ĵ");
+                responseObject.addProperty("response_code", 3);
+                resp.getWriter().println(URLEncoder.encode(responseObject.toString(), "UTF-8"));
             }
-            //Werte werden zurückgegeben
-            MultipartResponse multi = new MultipartResponse(resp);
-            multi.startResponse("text/plain");
-            resp.getOutputStream().println(1);
-            multi.endResponse();
-            multi.startResponse("text/plain");
-            resp.getOutputStream().println(URLEncoder.encode(output.toString(), "UTF-8"));
-            multi.endResponse();
-            multi.startResponse("text/plain");
-            resp.getOutputStream().println(String.valueOf(itemsLeft));
-            multi.endResponse();
-            multi.finish();
         } else {
-            MultipartResponse multi = new MultipartResponse(resp);
-            multi.startResponse("text/plain");
-            resp.getOutputStream().println(1);
-            multi.endResponse();
-            multi.startResponse("text/plain");
-            resp.getOutputStream().println(URLEncoder.encode("ĵ", "UTF-8"));
-            multi.endResponse();
-            multi.startResponse("text/plain");
-            resp.getOutputStream().println(String.valueOf(false));
-            multi.endResponse();
-            multi.finish();
+            responseObject.addProperty("response_code", 2);
+            resp.getWriter().println(URLEncoder.encode(responseObject.toString(), "UTF-8"));
         }
     }
 }

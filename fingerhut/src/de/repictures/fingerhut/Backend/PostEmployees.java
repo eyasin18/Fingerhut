@@ -46,9 +46,14 @@ public class PostEmployees extends HttpServlet {
 
         Company company = new Company(companyNumber);
         Query accountQuery = new Query("Account");
-        Query.Filter buyerAccountnumberFilter = new Query.FilterPredicate("company", Query.FilterOperator.EQUAL, company.account.getKey());
-        accountQuery.setFilter(buyerAccountnumberFilter);
-        List<Entity> accountList = DatastoreServiceFactory.getDatastoreService().prepare(accountQuery).asList(FetchOptions.Builder.withDefaults());
+        List<Entity> unfilteredAccountList = DatastoreServiceFactory.getDatastoreService().prepare(accountQuery).asList(FetchOptions.Builder.withDefaults());
+        List<Account> accountList = new ArrayList<>();
+        for (Entity accountEntity : unfilteredAccountList){
+            Account account = new Account(accountEntity);
+            if (account.containsCompany(company.account.getKey())){
+                accountList.add(account);
+            }
+        }
 
         JsonArray accountnumberArray = new JsonArray();
         JsonArray wageArray = new JsonArray();
@@ -56,8 +61,7 @@ public class PostEmployees extends HttpServlet {
         JsonArray endTimesArray = new JsonArray();
         JsonArray featuresArray = new JsonArray();
 
-        for (Entity anAccountList : accountList) {
-            Account account = new Account(anAccountList);
+        for (Account account : accountList) {
             accountnumberArray.add(account.getAccountnumber());
             wageArray.add(account.getWage());
             Gson gson = new Gson();

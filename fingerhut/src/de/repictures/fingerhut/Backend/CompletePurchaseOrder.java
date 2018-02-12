@@ -12,10 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class CompletePurchaseOrder extends HttpServlet {
@@ -146,6 +143,11 @@ public class CompletePurchaseOrder extends HttpServlet {
         purchaseOrderSetter.setProductCodesList(Arrays.asList(productCodesArray));
         purchaseOrderSetter.setCompleted(true);
         purchaseOrderSetter.saveAll();
+
+        Map<String, String> messageData = new HashMap<>();
+        messageData.put("notificationId", "2");
+        messageData.put("number", String.valueOf(purchaseOrderNumber));
+        new SendMessage().sendMessage(messageData, "/topics/" + companynumber + "-shoppingRequests");
 
         resp.getWriter().println(1);
     }

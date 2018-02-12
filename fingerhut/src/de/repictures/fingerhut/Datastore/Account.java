@@ -1,6 +1,10 @@
 package de.repictures.fingerhut.Datastore;
 
 import com.google.appengine.api.datastore.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.repictures.fingerhut.Cryptor;
 
 import java.io.UnsupportedEncodingException;
@@ -80,8 +84,6 @@ public class Account {
         setBalance(account, 1500.00f);
         setIsPrepaid(account, false);
         account.setProperty("transferarray", new ArrayList<String>());
-        addCompany(account, "0002");
-        setFeature(account,0, true);
         setPrivateKeyStr(account, encryptedPrivateKeyStr);
         setPublicKeyStr(account, publicKeyStr);
         setAuthString(account, accountnumber);
@@ -129,7 +131,6 @@ public class Account {
         setIsPrepaid(account, false);
         account.setProperty("transferarray", new ArrayList<String>());
         addCompany(account, null);
-        setFeature(account,0, true);
         setPrivateKeyStr(account, encryptedPrivateKeyStr);
         setPublicKeyStr(account, publicKeyStr);
         setAuthString(account, accountnumber);
@@ -261,58 +262,6 @@ public class Account {
         return (double) passedEntity.getProperty("balance");
     }
 
-    @Deprecated
-    public void setOwner(String owner){
-        String encryptedPasswordHex = (String) account.getProperty("password");
-        byte[] encryptedPassword = cryptor.hexToBytes(encryptedPasswordHex);
-        byte[] encryptedByteName = cryptor.encryptSymmetricFromString(owner, encryptedPassword);
-        String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
-        account.setProperty("owner", encryptedOwner);
-    }
-
-    @Deprecated
-    public void setOwner(Entity accountEntity, String owner){
-        String encryptedPasswordHex = (String) accountEntity.getProperty("password");
-        byte[] encryptedPassword = cryptor.hexToBytes(encryptedPasswordHex);
-        byte[] encryptedByteName = cryptor.encryptSymmetricFromString(owner, encryptedPassword);
-        String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
-        accountEntity.setProperty("owner", encryptedOwner);
-    }
-
-    @Deprecated
-    public void setOwner(String owner, String encryptedPasswordHex){
-        byte[] encryptedPassword = cryptor.hexToBytes(encryptedPasswordHex);
-        byte[] encryptedByteName = cryptor.encryptSymmetricFromString(owner, encryptedPassword);
-        String encryptedOwner = cryptor.bytesToHex(encryptedByteName);
-        account.setProperty("owner", encryptedOwner);
-    }
-
-    @Deprecated
-    public String getOwner(){
-        String encryptedNameStr = (String) account.getProperty("owner");
-        byte[] encryptedName = cryptor.hexToBytes(encryptedNameStr);
-        String encryptedHexPasswordStr = (String) account.getProperty("password");
-        byte[] encryptedPassword = cryptor.hexToBytes(encryptedHexPasswordStr);
-        return cryptor.decryptSymmetricToString(encryptedName, encryptedPassword);
-    }
-
-    @Deprecated
-    public String getOwner(Entity passedEntity){
-        String encryptedNameStr = (String) passedEntity.getProperty("owner");
-        byte[] encryptedName = cryptor.hexToBytes(encryptedNameStr);
-        String encryptedHexPasswordStr = (String) passedEntity.getProperty("password");
-        byte[] encryptedPassword = cryptor.hexToBytes(encryptedHexPasswordStr);
-        return cryptor.decryptSymmetricToString(encryptedName, encryptedPassword);
-    }
-
-    public String getEncryptedOwner(){
-        return (String) account.getProperty("owner");
-    }
-
-    public String getEncryptedOwner(Entity passedEntity){
-        return (String) passedEntity.getProperty("owner");
-    }
-
     public void setPassword(String password){
         if (password == null){
             Random rand = new Random();
@@ -408,51 +357,64 @@ public class Account {
 
     /**
      * Liste der Features:
-     * 0 = Produkt hinzufügen
+     * 0 = Produkte verwalten
      * 1 = Authentifizierungs QR-Codes lesen und schreiben
      * 2 = Kaufaufträge
      * 3 = Mitarbeiter verwalten
      * 4 = Statistiken
+     * 5 = Geld wechseln
+     * 6 = Mitarbeiter hinzufügen
+     * 7 = Prepaidkonto hinzufügen
      */
 
-    public void setFeature(Entity passedEntity, long featureNumber, boolean add){
-        ArrayList<Long> featureList = new ArrayList<>();
-        if (passedEntity.getProperty("feature_list") != null)
-            featureList = (ArrayList<Long>) passedEntity.getProperty("feature_list");
-        if (!featureList.contains(featureNumber)) {
-            if (add) featureList.add(featureNumber);
-            else featureList.remove(featureNumber);
-            passedEntity.setProperty("feature_list", featureList);
-        }
+    public void setFeatures(ArrayList<Long> features, String companynumber){
+        String jsonString = (String) account.getProperty("feature_json");
+        JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
+        JsonArray jsonArray = new Gson().toJsonTree(features).getAsJsonArray();
+        jsonObject.add(companynumber, jsonArray);
+        account.setProperty("feature_json", jsonObject.toString());
     }
 
-    public void setFeature(long featureNumber, boolean add){
-        ArrayList<Long> featureList = new ArrayList<>();
-        if (account.getProperty("feature_list") != null)
-            featureList = (ArrayList<Long>) account.getProperty("feature_list");
-        if (!featureList.contains(featureNumber)) {
-            if (add) featureList.add(featureNumber);
-            else featureList.remove(featureNumber);
-            account.setProperty("feature_list", featureList);
-        }
+    public void setFeatures(Entity passedEntity, ArrayList<Long> features, String companynumber){
+        String jsonString = (String) passedEntity.getProperty("feature_json");
+        JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
+        JsonArray jsonArray = new Gson().toJsonTree(features).getAsJsonArray();
+        jsonObject.add(companynumber, jsonArray);
+        passedEntity.setProperty("feature_json", jsonObject.toString());
     }
 
-    public void setFeatures(ArrayList<Long> features){
-        account.setProperty("feature_list", features);
+    public ArrayList<Long> getSpecificFeatures(String companynumber){
+        if (account.getProperty("feature_json") != null){
+            String jsonString = (String) account.getProperty("feature_json");
+            JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
+            ArrayList<Long> features = new ArrayList<>();
+            JsonArray jsonArray = jsonObject.getAsJsonArray(companynumber);
+            for (int i = 0; i < jsonArray.size(); i++) {
+                features.add(jsonArray.get(i).getAsLong());
+            }
+            return features;
+        } else return new ArrayList<>();
     }
 
-    public ArrayList<Long> getFeatures(){
-        ArrayList<Long> featureList = new ArrayList<>();
-        if (account.getProperty("feature_list") != null)
-            featureList = (ArrayList<Long>) account.getProperty("feature_list");
-        return featureList;
+    public ArrayList<Long> getSpecificFeatures(Entity passedEntity, String companynumber){
+        if (passedEntity.getProperty("feature_json") != null){
+            String jsonString = (String) passedEntity.getProperty("feature_json");
+            JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
+            ArrayList<Long> features = new ArrayList<>();
+            JsonArray jsonArray = jsonObject.getAsJsonArray(companynumber);
+            for (int i = 0; i < jsonArray.size(); i++) {
+                features.add(jsonArray.get(i).getAsLong());
+            }
+            return features;
+        } else return new ArrayList<>();
     }
 
-    public ArrayList<Long> getFeatures(Entity passedEntity){
-        ArrayList<Long> featureList = new ArrayList<>();
-        if (passedEntity.getProperty("feature_list") != null)
-            featureList = (ArrayList<Long>) passedEntity.getProperty("feature_list");
-        return featureList;
+    public String getFeaturesString(){
+        return (String) account.getProperty("feature_json");
+    }
+
+    public String getFeaturesString(Entity passedEntity){
+        return (String) passedEntity.getProperty("feature_json");
     }
 
     public void addCompany(Entity passedEntity, String companyNumber){
@@ -461,6 +423,7 @@ public class Account {
         if (passedEntity.getProperty("companies") != null){
             companyKeys = (List<Key>) passedEntity.getProperty("companies");
         }
+        if (companyKeys.contains(company.account.getKey())) return;
         companyKeys.add(company.account.getKey());
         passedEntity.setProperty("companies", companyKeys);
     }
@@ -471,7 +434,30 @@ public class Account {
         if (account.getProperty("companies") != null){
             companyKeys = (List<Key>) account.getProperty("companies");
         }
+        if (companyKeys.contains(company.account.getKey())) return;
         companyKeys.add(company.account.getKey());
+        account.setProperty("companies", companyKeys);
+    }
+
+    public void removeCompany(Entity passedEntity, String companyNumber){
+        Company company = new Company(companyNumber);
+        List<Key> companyKeys = new ArrayList<>();
+        if (passedEntity.getProperty("companies") != null){
+            companyKeys = (List<Key>) passedEntity.getProperty("companies");
+        }
+        if (!companyKeys.contains(company.account.getKey())) return;
+        companyKeys.remove(company.account.getKey());
+        passedEntity.setProperty("companies", companyKeys);
+    }
+
+    public void removeCompany(String companyNumber){
+        Company company = new Company(companyNumber);
+        List<Key> companyKeys = new ArrayList<>();
+        if (account.getProperty("companies") != null){
+            companyKeys = (List<Key>) account.getProperty("companies");
+        }
+        if (!companyKeys.contains(company.account.getKey())) return;
+        companyKeys.remove(company.account.getKey());
         account.setProperty("companies", companyKeys);
     }
 
@@ -504,6 +490,14 @@ public class Account {
                 }
             }
             return companies;
+        }
+    }
+
+    public boolean containsCompany(Key key) {
+        if (account.getProperty("companies") == null) return false;
+        else {
+            List<Key> companyKeys = (List<Key>) account.getProperty("companies");
+            return companyKeys.contains(key);
         }
     }
 

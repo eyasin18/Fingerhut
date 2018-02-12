@@ -32,7 +32,7 @@ public class PrivateLogin extends HttpServlet {
         Calendar cal = Calendar.getInstance();
         String serverTimeStamp = dateFormat.format(cal.getTime());
         serverTimeStamp = URLEncoder.encode(serverTimeStamp, "UTF-8");
-        authenticate.serverTimeStamp = "ò" + serverTimeStamp;
+        authenticate.serverTimeStamp = serverTimeStamp;
         authenticate.doGet(req, resp);
     }
 
@@ -55,7 +55,7 @@ public class PrivateLogin extends HttpServlet {
         if (appVersionStr != null) appVersion = Integer.valueOf(appVersionStr);
 
         //Überprüfe ob alle Parameter empfangen wurden
-        if (accountnumber == null || inputPassword == null || serverTimeStamp == null || authPart == null || deviceToken == null || appVersion == 0){
+        if (accountnumber == null || inputPassword == null || serverTimeStamp == null || deviceToken == null || appVersion == 0){
             object.addProperty("response_code", -1);
             resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
             return;
@@ -74,31 +74,33 @@ public class PrivateLogin extends HttpServlet {
         //Wenn du einen gefunden hast, dann...
         if (queriedAccounts.size() > 0){
 
-            //Vergleiche den empfangenen Authentifizierungspart mit dem auf der Datenbank
-            String authCode = account.getAuthString(queriedAccounts.get(0));
-            int accountnumberlength = accountnumber.length();
-            String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength+8), authCode.substring(accountnumberlength+8, accountnumberlength+16)};
-            if (!authParts[0].equals(authPart)){
-                object.addProperty("response_code", 3);
-                resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
-                return;
-            }
-
-            Calendar cooldownTimeCalendar = account.getCooldownTime(queriedAccounts.get(0));
-            if (cooldownTimeCalendar != null && cooldownTimeCalendar.after(Calendar.getInstance(Locale.getDefault()))){
-                SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", Locale.getDefault());
-                String cooldownTimeStr = f.format(cooldownTimeCalendar.getTime());
-                object.addProperty("response_code", 4);
-                object.addProperty("cooldown_time", cooldownTimeStr);
-                resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
-                return;
-            }
-
             long failedAttempts = account.countUpLoginAttempts(queriedAccounts.get(0));
-            if (failedAttempts > 9){
-                object.addProperty("response_code", 5);
-                resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
-                return;
+            if (!account.getIsPrepaid(queriedAccounts.get(0))) {
+                //Vergleiche den empfangenen Authentifizierungspart mit dem auf der Datenbank
+                String authCode = account.getAuthString(queriedAccounts.get(0));
+                int accountnumberlength = accountnumber.length();
+                String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength + 8), authCode.substring(accountnumberlength + 8, accountnumberlength + 16)};
+                if (!authParts[0].equals(authPart)) {
+                    object.addProperty("response_code", 3);
+                    resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
+                    return;
+                }
+
+                Calendar cooldownTimeCalendar = account.getCooldownTime(queriedAccounts.get(0));
+                if (cooldownTimeCalendar != null && cooldownTimeCalendar.after(Calendar.getInstance(Locale.getDefault()))){
+                    SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", Locale.getDefault());
+                    String cooldownTimeStr = f.format(cooldownTimeCalendar.getTime());
+                    object.addProperty("response_code", 4);
+                    object.addProperty("cooldown_time", cooldownTimeStr);
+                    resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
+                    return;
+                }
+
+                if (failedAttempts > 9){
+                    object.addProperty("response_code", 5);
+                    resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
+                    return;
+                }
             }
 
             //Vergleiche salte das gespeicherte Passwort und vergleiche es mit dem empfangenem Passwort
@@ -136,6 +138,7 @@ public class PrivateLogin extends HttpServlet {
                 object.addProperty("account_key", account.getKey(queriedAccounts.get(0)));
                 object.addProperty("response_code", 2);
                 object.addProperty("accountnumber", account.getAccountnumber(queriedAccounts.get(0)));
+                object.addProperty("is_prepaid", account.getIsPrepaid(queriedAccounts.get(0)));
                 resp.setStatus(200);
                 resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
             } else {

@@ -21,11 +21,17 @@ public class Authenticate extends HttpServlet{
         String accountnumber = req.getParameter("accountnumber");
 
         Account accountBuilder = new Account(accountnumber);
-        String authCode = accountBuilder.getAuthString();
-        int accountnumberlength = accountnumber.length();
-        String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength+8),
-                authCode.substring(accountnumberlength+8, accountnumberlength+16)};
-        String output = URLEncoder.encode(authParts[1] + serverTimeStamp, "UTF-8");
+        String output;
+        if (!accountBuilder.getIsPrepaid()) {
+            String authCode = accountBuilder.getAuthString();
+            int accountnumberlength = accountnumber.length();
+            String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength + 8),
+                    authCode.substring(accountnumberlength + 8, accountnumberlength + 16)};
+            output = serverTimeStamp + "ò" + authParts[1];
+        } else {
+            output = serverTimeStamp;
+        }
+        output = URLEncoder.encode(output, "UTF-8");
         resp.getWriter().println(output);
     }
 
