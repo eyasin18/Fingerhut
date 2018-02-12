@@ -9,6 +9,7 @@
 <%@ page import="java.util.Objects" %>
 <%@ page import="java.util.logging.Logger" %>
 <%@ page import="de.repictures.fingerhut.Web.MainTools" %>
+<%@ page import="de.repictures.fingerhut.Web.Signoff" %>
 <%@ page import="static de.repictures.fingerhut.Datastore.Tax.getVAT" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -27,9 +28,9 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}../css/main.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.green-light_green.min.css">
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}../css/icon.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}../css/material.green-light_green.min.css">
+    <script defer src="${pageContext.request.contextPath}../js/material.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script language="JavaScript" type="text/javascript" src="../js/jsbn.js"></script>
     <script language="JavaScript" type="text/javascript" src="../js/prng4.js"></script>
@@ -38,7 +39,7 @@
     <script language="JavaScript" type="text/javascript" src="../js/base64.js"></script>
     <script language="JavaScript" type="text/javascript" src="../js/platform.js"></script>
     <script defer src="../js/sjcl.js"></script>
-    <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}../js/index.js"></script>
     <script type="application/javascript" src="../res/values/strings.js"></script>
 </head>
 <body>
@@ -48,9 +49,9 @@
             <!-- Title -->
             <span class="mdl-layout-title mdl-color-text--white">Fingerhut</span>
             <div class="mdl-layout-spacer"></div>
-            <form action= "https://fingerhut388.appspot.com" >
-                <input type="submit" value="Ausloggen" id="logout_button" class= "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white"/>
-            </form>
+            <button onclick="signoff()" id="logout_button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white">
+                Ausloggen
+            </button>
         </div>
         <!-- Tabs -->
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
@@ -318,6 +319,7 @@
                         break;
                 }
                 break;
+            case 3: window.location.replace(url);
         }
     }
 
@@ -375,6 +377,12 @@
             companyLogin();
         }
     }
+
+    function signoff(){
+        var theurl = url + "/signoff?accountnumber=<%= accountnumber %>&webstring=<%= code %>";
+        httpAsync(theurl, "GET",3);
+    }
+
 </script>
 </body>
 </html>

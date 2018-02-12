@@ -53,7 +53,9 @@ public class GetShoppingRequest extends HttpServlet{
         if (shoppingListRaw.length() > 0) {
             purchaseOrder = new PurchaseOrder(companyGetter.account, req.getLocale());
             purchaseOrder.updatePurchaseOrder(companyGetter.account, shoppingListRaw, accountnumber);
+            purchaseOrder.setCompleted(completed);
             purchaseOrder.setMadeByUser(madeByUser);
+            purchaseOrder.saveAll();
         } else {
             purchaseOrder = new PurchaseOrder(companyGetter.account, req.getLocale());
             purchaseOrder.purchaseOrder = new Entity("PurchaseOrder", companyGetter.account.getKey());
