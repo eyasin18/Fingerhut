@@ -32,7 +32,7 @@ public class PostEmployees extends HttpServlet {
         Account authAccount = new Account(authAccountnumber);
         JsonObject object = new JsonObject();
 
-        if (!authAccount.getFeatures().contains(3L)){
+        if (!authAccount.getSpecificFeatures(companyNumber).contains(3L)){
             object.addProperty("responseCode", 2);
             resp.getWriter().println(object.toString());
             return;
@@ -63,24 +63,15 @@ public class PostEmployees extends HttpServlet {
 
         for (Account account : accountList) {
             accountnumberArray.add(account.getAccountnumber());
-            wageArray.add(account.getWage());
-            Gson gson = new Gson();
-            List<Number> startTimesInt = account.getWorkPeriod(false);
-            JsonArray oStartTimesArray = new JsonArray();
-            if (startTimesInt.size() > 0) {
-                oStartTimesArray = gson.toJsonTree(startTimesInt).getAsJsonArray();
-            }
+            wageArray.add(account.getSpecificWage(companyNumber));
+            JsonArray oStartTimesArray = account.getSpecificWorkPeriod(false, companyNumber);
             startTimesArray.add(oStartTimesArray);
-            List<Number> endTimesInt = account.getWorkPeriod(true);
-            JsonArray oEndTimesArray = new JsonArray();
-            if (endTimesInt.size() > 0) {
-                oEndTimesArray = gson.toJsonTree(endTimesInt).getAsJsonArray();
-            }
+            JsonArray oEndTimesArray = account.getSpecificWorkPeriod(true, companyNumber);
             endTimesArray.add(oEndTimesArray);
-            ArrayList<Long> featuresList = account.getFeatures();
+            ArrayList<Long> featuresList = account.getSpecificFeatures(companyNumber);
             JsonArray oFeaturesArray = new JsonArray();
             if (featuresList.size() > 0){
-                oFeaturesArray = gson.toJsonTree(featuresList).getAsJsonArray();
+                oFeaturesArray = new Gson().toJsonTree(featuresList).getAsJsonArray();
             }
             featuresArray.add(oFeaturesArray);
         }

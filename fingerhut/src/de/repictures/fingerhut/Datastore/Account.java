@@ -721,143 +721,136 @@ public class Account {
         return calendar;
     }
 
-    public void setWage(double wage){
-        account.setProperty("wage", wage);
-    }
-
-    public void setWage(Entity passedEntity, double wage){
-        passedEntity.setProperty("wage", wage);
-    }
-
-    public double getWage(){
-        Number wageNr = (Number) account.getProperty("wage");
-        if (wageNr != null) return wageNr.doubleValue();
-        else return 1.0;
-    }
-
-    public double getWage(Entity passedEntity){
-        Number wageNr = (Number) passedEntity.getProperty("wage");
-        if (wageNr != null) return wageNr.doubleValue();
-        else return 1.0;
-    }
-
-    public void setWorkPeriods(List<Integer> startTimes, List<Integer> endTimes){
-        account.setProperty("work_start_times", startTimes);
-        account.setProperty("work_end_times", endTimes);
-    }
-
-    public void setWorkPeriods(Entity passedEntity, List<Integer> startTimes, List<Integer> endTimes){
-        passedEntity.setProperty("work_start_times", startTimes);
-        passedEntity.setProperty("work_end_times", endTimes);
-    }
-
-    public List<Number> getWorkPeriod(boolean isEndTime){
-        List<Number> times = new ArrayList<>();
-        if (isEndTime && account.getProperty("work_end_times") != null){
-            times = (List<Number>) account.getProperty("work_end_times");
-        } else if (account.getProperty("work_start_times") != null){
-            times = (List<Number>) account.getProperty("work_start_times");
+    public void setSpecificWage(double wage, String companynumber){
+        JsonObject companyObject;
+        if (account.getProperty("wages_json") != null){
+            JsonParser parser = new JsonParser();
+            companyObject = parser.parse((String) account.getProperty("wages_json")).getAsJsonObject();
+        } else {
+            companyObject = new JsonObject();
         }
-        return times;
+        companyObject.addProperty(companynumber, wage);
+        account.setProperty("wages_json", companyObject.toString());
     }
 
-    public List<Number> getWorkPeriod(Entity passedEntity, boolean isEndTime){
-        List<Number> times = new ArrayList<>();
-        if (isEndTime && passedEntity.getProperty("work_end_times") != null){
-            times = (List<Number>) passedEntity.getProperty("work_end_times");
-        } else if (passedEntity.getProperty("work_start_times") != null){
-            times = (List<Number>) passedEntity.getProperty("work_start_times");
+    public void setSpecificWage(Entity passedEntity, double wage, String companynumber){
+        JsonObject companyObject;
+        if (passedEntity.getProperty("wages_json") != null){
+            JsonParser parser = new JsonParser();
+            companyObject = parser.parse((String) passedEntity.getProperty("wages_json")).getAsJsonObject();
+        } else {
+            companyObject = new JsonObject();
         }
-        return times;
+        companyObject.addProperty(companynumber, wage);
+        passedEntity.setProperty("wages_json", companyObject.toString());
     }
 
-    @Deprecated
-    public void setWorkingPeriods(List<Calendar> startTimes, List<Calendar> endTimes){
-        List<String> startTimesStr = new ArrayList<>();
-        List<String> endTimesStr = new ArrayList<>();
-        DateFormat format = new SimpleDateFormat("EEE HH:mm Z", Locale.US);
-        format.setTimeZone(TimeZone.getTimeZone("GMT+1"));
-        for (int i = 0; i < startTimes.size(); i++){
-            startTimesStr.add(format.format(startTimes.get(i).getTime()));
-            endTimesStr.add(format.format(endTimes.get(i).getTime()));
-        }
-        account.setProperty("working_start_times", startTimesStr);
-        account.setProperty("working_end_times", endTimesStr);
-    }
-
-    @Deprecated
-    public void setWorkingPeriods(Entity passedEntity, List<Calendar> startTimes, List<Calendar> endTimes){
-        List<String> startTimesStr = new ArrayList<>();
-        List<String> endTimesStr = new ArrayList<>();
-        DateFormat format = new SimpleDateFormat("EEE HH:mm Z", Locale.US);
-        format.setTimeZone(TimeZone.getTimeZone("GMT+1"));
-        for (int i = 0; i < startTimes.size(); i++){
-            startTimesStr.add(format.format(startTimes.get(i).getTime()));
-            endTimesStr.add(format.format(endTimes.get(i).getTime()));
-        }
-        passedEntity.setProperty("working_start_times", startTimesStr);
-        passedEntity.setProperty("working_end_times", endTimesStr);
-    }
-
-    @Deprecated
-    public List<Calendar> getWorkingPeriods(boolean isEndPeriod){
-        try {
-            DateFormat format = new SimpleDateFormat("EEE HH:mm Z", Locale.US);
-            List<String> workingPeriodsStr = new ArrayList<>();
-            List<Calendar> workingPeriods = new ArrayList<>();
-            if (isEndPeriod && account.getProperty("working_end_times") != null)
-                workingPeriodsStr = (List<String>) account.getProperty("working_end_times");
-            else if (!isEndPeriod && account.getProperty("working_start_times") != null)
-                workingPeriodsStr = (List<String>) account.getProperty("working_start_times");
-
-            for (int i = 0; i < workingPeriodsStr.size(); i++) {
-                Calendar calendar = new GregorianCalendar(Locale.GERMANY);
-                calendar.setTime(format.parse(workingPeriodsStr.get(i)));
-                calendar.setTimeZone(TimeZone.getTimeZone("GMT+1"));
-                log.info("Time: " + calendar.getTime().toString());
-                workingPeriods.set(i, calendar);
-            }
-            return workingPeriods;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
+    public double getSpecificWage(String companynumber){
+        if (account.getProperty("wages_json") != null){
+            JsonParser parser = new JsonParser();
+            JsonObject companyObject = parser.parse((String) account.getProperty("wages_json")).getAsJsonObject();
+            return companyObject.get(companynumber).getAsDouble();
+        } else {
+            return 1.0;
         }
     }
 
-    @Deprecated
-    public List<Calendar> getWorkingPeriods(Entity passedEntity, boolean isEndPeriod){
-        try {
-            DateFormat format = new SimpleDateFormat("EEE HH:mm Z", Locale.US);
-            List<String> workingPeriodsStr = new ArrayList<>();
-            List<Calendar> workingPeriods = new ArrayList<>();
-            if (isEndPeriod && passedEntity.getProperty("working_end_times") != null)
-                workingPeriodsStr = (List<String>) passedEntity.getProperty("working_end_times");
-            else if (!isEndPeriod && passedEntity.getProperty("working_start_times") != null)
-                workingPeriodsStr = (List<String>) passedEntity.getProperty("working_start_times");
-
-            for (int i = 0; i < workingPeriodsStr.size(); i++) {
-                Calendar calendar = new GregorianCalendar();
-                calendar.setTime(format.parse(workingPeriodsStr.get(i)));
-                calendar.setTimeZone(TimeZone.getTimeZone("GMT+1"));
-                log.info("Time: " + calendar.getTime().toString());
-                workingPeriods.set(i, calendar);
-            }
-            return workingPeriods;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
+    public double getSpecificWage(Entity passedEntity, String companynumber){
+        if (passedEntity.getProperty("wages_json") != null){
+            JsonParser parser = new JsonParser();
+            JsonObject companyObject = parser.parse((String) passedEntity.getProperty("wages_json")).getAsJsonObject();
+            return companyObject.get(companynumber).getAsDouble();
+        } else {
+            return 1.0;
         }
     }
 
-    @Deprecated
-    public List<String> getWorkingPeriodsStr(boolean isEndPeriod){
-        List<String> workingPeriodsStr = new ArrayList<>();
-        if (isEndPeriod && account.getProperty("working_end_times") != null)
-            workingPeriodsStr = (List<String>) account.getProperty("working_end_times");
-        else if (!isEndPeriod && account.getProperty("working_start_times") != null)
-            workingPeriodsStr = (List<String>) account.getProperty("working_start_times");
+    public JsonObject getWages(){
+        if (account.getProperty("wages_json") != null)
+            return new JsonParser().parse((String) account.getProperty("wages_json")).getAsJsonObject();
+        else return new JsonObject();
+    }
 
-        return workingPeriodsStr;
+    public JsonObject getWages(Entity passedEntity){
+        if (passedEntity.getProperty("wages_json") != null)
+            return new JsonParser().parse((String) passedEntity.getProperty("wages_json")).getAsJsonObject();
+        else return new JsonObject();
+    }
+
+    public void setSpecificWorkPeriods(JsonArray startTimes, JsonArray endTimes, String companynumber){
+        JsonObject companyJson;
+        if (account.getProperty("work_period_json") != null) {
+            JsonParser parser = new JsonParser();
+            companyJson = parser.parse((String) account.getProperty("work_period_json")).getAsJsonObject();
+        } else {
+            companyJson = new JsonObject();
+        }
+        JsonObject workPeriodJson = new JsonObject();
+        workPeriodJson.add("start", startTimes);
+        workPeriodJson.add("end", endTimes);
+        companyJson.add(companynumber, workPeriodJson);
+        account.setProperty("work_period_json", companyJson.toString());
+    }
+
+    public void setSpecificWorkPeriods(Entity passedEntity, JsonArray startTimes, JsonArray endTimes, String companynumber){
+        JsonObject companyJson;
+        if (passedEntity.getProperty("work_period_json") != null) {
+            JsonParser parser = new JsonParser();
+            companyJson = parser.parse((String) passedEntity.getProperty("work_period_json")).getAsJsonObject();
+        } else {
+            companyJson = new JsonObject();
+        }
+        JsonObject workPeriodJson = new JsonObject();
+        workPeriodJson.add("start", startTimes);
+        workPeriodJson.add("end", endTimes);
+        companyJson.add(companynumber, workPeriodJson);
+        passedEntity.setProperty("work_period_json", companyJson.toString());
+    }
+
+    public JsonArray getSpecificWorkPeriod(boolean isEndTime, String companynumber){
+        JsonObject companyJson;
+        if (account.getProperty("work_period_json") != null) {
+            JsonParser parser = new JsonParser();
+            companyJson = parser.parse((String) account.getProperty("work_period_json")).getAsJsonObject();
+        } else {
+            companyJson = new JsonObject();
+        }
+        JsonObject workPeriodJson = companyJson.getAsJsonObject(companynumber);
+        if (workPeriodJson == null) return new JsonArray();
+        if (isEndTime) return workPeriodJson.getAsJsonArray("end");
+        else return workPeriodJson.getAsJsonArray("start");
+    }
+
+    public JsonArray getSpecificWorkPeriod(Entity passedEntity, boolean isEndTime, String companynumber){
+        JsonObject companyJson;
+        if (passedEntity.getProperty("work_period_json") != null) {
+            JsonParser parser = new JsonParser();
+            companyJson = parser.parse((String) passedEntity.getProperty("work_period_json")).getAsJsonObject();
+        } else {
+            companyJson = new JsonObject();
+        }
+        JsonObject workPeriodJson = companyJson.getAsJsonObject(companynumber);
+        if (workPeriodJson == null) return new JsonArray();
+        if (isEndTime) return workPeriodJson.getAsJsonArray("end");
+        else return workPeriodJson.getAsJsonArray("start");
+    }
+
+    public JsonObject getWorkPeriods(){
+        if (account.getProperty("work_period_json") != null) {
+            JsonParser parser = new JsonParser();
+            return parser.parse((String) account.getProperty("work_period_json")).getAsJsonObject();
+        } else {
+            return new JsonObject();
+        }
+    }
+
+    public JsonObject getWorkPeriods(Entity passedEntity){
+        if (passedEntity.getProperty("work_period_json") != null) {
+            JsonParser parser = new JsonParser();
+            return parser.parse((String) passedEntity.getProperty("work_period_json")).getAsJsonObject();
+        } else {
+            return new JsonObject();
+        }
     }
 
     public void setIsPrepaid(boolean isPrepaid){

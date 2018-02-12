@@ -1,6 +1,7 @@
 package de.repictures.fingerhut.Admin;
 
 import com.google.appengine.api.datastore.*;
+import com.google.gson.JsonArray;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Tax;
@@ -88,21 +89,22 @@ public class TransferWage extends HttpServlet {
             Account accountGetter = new Account(account);
             if (accountGetter.account == null) continue;
             if (accountGetter.getCompanies().size() < 1) continue;
-            List<Number> startTimes = accountGetter.getWorkPeriod(false);
-            List<Number> endTimes = accountGetter.getWorkPeriod(true);
-            boolean isCurrentTimeWholeHour = Account.getMinutesOfHourFromMinutes(currentTime) == 0;
-            for (int i = 0; i < startTimes.size(); i++){
-                boolean isStartTimeWholeHour = Account.getMinutesOfHourFromMinutes(startTimes.get(i).intValue()) == 0;
-                if ((isStartTimeWholeHour && isCurrentTimeWholeHour || !isStartTimeWholeHour && !isCurrentTimeWholeHour)
-                        && Account.getDaysFromMinutes(currentTime) == Account.getDaysFromMinutes(startTimes.get(i).intValue())
-                        && endTimes.get(i).intValue() > currentTime
-                        && startTimes.get(i).intValue() < currentTime
-                        || endTimes.get(i).intValue() == currentTime){
-                    List<Entity> payingCompanyEntities = accountGetter.getCompanies();
-                    for (Entity payingCompanyEntity : payingCompanyEntities){
-                        payWage(accountGetter, new Company(payingCompanyEntity));
+            List<Entity> companyEntities = accountGetter.getCompanies();
+            for (Entity companyEntity : companyEntities) {
+                Company company = new Company(companyEntity);
+                JsonArray startTimes = accountGetter.getSpecificWorkPeriod(false, company.getAccountnumber());
+                JsonArray endTimes = accountGetter.getSpecificWorkPeriod(true, company.getAccountnumber());
+                boolean isCurrentTimeWholeHour = Account.getMinutesOfHourFromMinutes(currentTime) == 0;
+                for (int i = 0; i < startTimes.size(); i++) {
+                    boolean isStartTimeWholeHour = Account.getMinutesOfHourFromMinutes(startTimes.get(i).getAsInt()) == 0;
+                    if ((isStartTimeWholeHour && isCurrentTimeWholeHour || !isStartTimeWholeHour && !isCurrentTimeWholeHour)
+                            && Account.getDaysFromMinutes(currentTime) == Account.getDaysFromMinutes(startTimes.get(i).getAsInt())
+                            && endTimes.get(i).getAsInt() > currentTime
+                            && startTimes.get(i).getAsInt() < currentTime
+                            || endTimes.get(i).getAsInt() == currentTime) {
+                        payWage(accountGetter, company);
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -111,7 +113,7 @@ public class TransferWage extends HttpServlet {
     private void payWage(Account accountGetter, Company payingCompany) throws IOException {
 
         double companyBalance = payingCompany.getBalanceDouble();
-        double wage = accountGetter.getWage();
+        double wage = accountGetter.getSpecificWage(payingCompany.getAccountnumber());
 
         if (companyHasNotEnoughMoney(companyBalance, wage)){
             //TODO: Unternehmen insolvent

@@ -27,8 +27,8 @@ public class MainTools {
         return isAuthenticated;
     }
 
-    public boolean isCompanyAdmin(){
-        List<Long> featuresList = accountGetter.getFeatures();
+    public boolean isCompanyAdmin(String companynumber){
+        List<Long> featuresList = accountGetter.getSpecificFeatures(companynumber);
         log.info("Contains 0: " + featuresList.contains(0L) + "\nContains 5: " + featuresList.contains(5L) + "\nContains 7: " + featuresList.contains(7L));
         return featuresList.contains(0L) && featuresList.contains(5L) && featuresList.contains(7L);
     }

@@ -164,7 +164,7 @@
     var isOpera = (platform.name === 'Opera') && (platform.version >= 50);
     var isFirefox = ((platform.name === 'Firefox') && (platform.version >= 44)) || ((platform.name === 'Firefox for iOS') && (platform.version >= 37));
     var isChrome = (platform.name === 'Chrome') || (platform.name === 'Chrome Mobile');
-    var isAdmin = <%= mainTools.isCompanyAdmin() %>;
+    var isAdmin = <%= mainTools.isCompanyAdmin("0002") %>;
 
     var companypass = document.getElementById('companypass');
     var companypassError = document.getElementById('companypass_error');
