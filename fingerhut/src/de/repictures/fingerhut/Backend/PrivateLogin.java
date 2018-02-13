@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class PrivateLogin extends HttpServlet {
 
     private Logger log = Logger.getLogger(Account.class.getName());
-    public static final int appVersion = 9;
+    public static final int appVersion = 10;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
