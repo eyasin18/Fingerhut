@@ -235,10 +235,8 @@
                                 %>
                             </tbody>
                         </table>
-                        <div class="mdl-card__menu">
-                            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-                                <i class="material-icons">add</i>
-                            </button>
+                        <div class="wrapper">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addProduct()">Hinzufügen</button>
                         </div>
                     </div>
 
@@ -539,6 +537,7 @@
     function confirmPurchaseOrder() {
 
     }
+
     function editProducts(position){
         Products.style.display = "none";
         Product.style.display = "block";
@@ -615,6 +614,16 @@
             "\n" +
             "                            </tbody>\n" +
             "                        </table>"
+    }
+
+    function addProduct(){
+        Products.style.display = "none";
+        Product.style.display = "block";
+        AddPurchase.style.display = "none";
+        AddProductToPurchase.style.display = "none";
+        ShortPurchaseOrders.style.display = "none";
+        Employees.style.display = "none";
+        Statistics.style.display = "none";
     }
 
     function addProductToPurchase() {
@@ -938,8 +947,9 @@
             }
         }
     }
-    function signoff(){
 
+    function signoff(){
+        //TODO: machen dass hier was funzt :)
     }
-</script>
+    </script>
 </html>
