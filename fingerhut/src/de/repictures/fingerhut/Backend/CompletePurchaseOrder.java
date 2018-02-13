@@ -1,5 +1,8 @@
 package de.repictures.fingerhut.Backend;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.repictures.fingerhut.Datastore.*;
 
 import javax.mail.BodyPart;
@@ -21,86 +24,33 @@ public class CompletePurchaseOrder extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String jsonStr = req.getParameter("json");
+        JsonObject jsonObject = new JsonParser().parse(jsonStr).getAsJsonObject();
 
-        String companynumber = null;
-        String sellerAccountnumber = null;
-        String buyerAccountnumber = null;
-        String webstring = null;
-        int purchaseOrderNumber = 0;
-        String[] productCodesArray = null;
-        Long[] amountsArray = null;
-        Double[] pricesArray = null;
-        Boolean[] isSelfBuyArray = null;
-
-        try {
-            ByteArrayDataSource dataSource = new ByteArrayDataSource(req.getInputStream(), "multipart/form-data");
-            MimeMultipart multipart = new MimeMultipart(dataSource);
-            int count = multipart.getCount();
-            log.info("Multipart content count: " + count);
-            for (int i = 0; i < count; i++){
-                log("Loop point: " + i);
-                BodyPart bodyPart = multipart.getBodyPart(i);
-                if (bodyPart.isMimeType("text/plain")){
-                    log.info("bodypart no. " + i + "\n" + getStringBodyName(bodyPart) + "\n" + String.valueOf(bodyPart.getContent()));
-                    switch (getStringBodyName(bodyPart)){
-                        case "webstring":
-                            webstring = String.valueOf(bodyPart.getContent());
-                            break;
-                        case "selleraccountnumber":
-                            sellerAccountnumber = String.valueOf(bodyPart.getContent());
-                            break;
-                        case "buyeraccountnumber":
-                            buyerAccountnumber = String.valueOf(bodyPart.getContent());
-                            break;
-                        case "companynumber":
-                            companynumber = String.valueOf(bodyPart.getContent());
-                            break;
-                        case "purchaseOrderNumber":
-                            purchaseOrderNumber = Integer.parseInt(String.valueOf(bodyPart.getContent()));
-                            break;
-                        case "productcodes":
-                            String productCodesStr = String.valueOf(bodyPart.getContent());
-                            productCodesArray = productCodesStr.split("ò");
-                            break;
-                        case "amounts":
-                            String amountsStr = String.valueOf(bodyPart.getContent());
-                            amountsArray = Arrays.stream(amountsStr.split("ò")).map(Long::parseLong).toArray(Long[]::new);
-                            break;
-                        case "prices":
-                            String pricesStr = String.valueOf(bodyPart.getContent());
-                            pricesArray = Arrays.stream(pricesStr.split("ò")).map(Double::parseDouble).toArray(Double[]::new);
-                            break;
-                        case "isselfbuy":
-                            String isSelfBuyStr = String.valueOf(bodyPart.getContent());
-                            isSelfBuyArray = Arrays.stream(isSelfBuyStr.split("ò")).map(Boolean::parseBoolean).toArray(Boolean[]::new);
-                            break;
-                    }
-                } else {
-                    log.info("Bodypart " + i + " is not type text");
-                }
-            }
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-
-        if (companynumber == null || sellerAccountnumber == null || buyerAccountnumber == null || webstring == null
-                || productCodesArray == null || amountsArray == null || pricesArray == null || isSelfBuyArray == null){
+        if (jsonObject.get("companynumber") == null || jsonObject.get("selleraccountnumber") == null || jsonObject.get("buyeraccountnumber") == null || jsonObject.get("webstring") == null
+                || jsonObject.get("productcodes") == null || jsonObject.get("amounts") == null || jsonObject.get("prices") == null || jsonObject.get("isselfbuy") == null){
             resp.getWriter().println(0);
             return;
         }
 
-        Account sellerAccountGetter = new Account(sellerAccountnumber);
+        Account sellerAccountGetter = new Account(jsonObject.get("selleraccountnumber").getAsString());
 
-        if (!Objects.equals(sellerAccountGetter.getRandomWebString(), webstring)){
+        if (!Objects.equals(sellerAccountGetter.getRandomWebString(), jsonObject.get("webstring").getAsString())){
             resp.getWriter().println(2);
             return;
         }
 
-        Account buyerAccountGetter = new Account(buyerAccountnumber);
-        Company companyGetter = new Company(companynumber);
-        PurchaseOrder purchaseOrderSetter = new PurchaseOrder(companyGetter.account, purchaseOrderNumber, req.getLocale());
+        Account buyerAccountGetter = new Account(jsonObject.get("buyeraccountnumber").getAsString());
+        Company companyGetter = new Company(jsonObject.get("companynumber").getAsString());
+        PurchaseOrder purchaseOrderSetter = new PurchaseOrder(companyGetter.account, jsonObject.get("purchaseOrderNumber").getAsInt(), req.getLocale());
 
-        if(Arrays.asList(isSelfBuyArray).contains(false)) {
+        JsonArray isSelfBuyArray = jsonObject.getAsJsonArray("isselfbuy");
+        JsonArray pricesArray = jsonObject.getAsJsonArray("prices");
+        JsonArray amountsArray = jsonObject.getAsJsonArray("amounts");
+        JsonArray productCodeArray = jsonObject.getAsJsonArray("productcodes");
+
+        jsonObject.addProperty("false", false);
+        if(isSelfBuyArray.contains(jsonObject.get("false"))) {
             //Verwendungszweck wird generiert und Gesamtpreis kalkuliert
             StringBuilder purposeBuilder = new StringBuilder();
             purposeBuilder.append("Ihr Einkauf bei ")
@@ -111,19 +61,18 @@ public class CompletePurchaseOrder extends HttpServlet {
             double vat = Tax.getVAT();
             vat = vat/100;
 
-            for (int i = 0; i < amountsArray.length; i++) {
-                if (isSelfBuyArray[i]) continue;
-                Product product = new Product(productCodesArray[i]);
-                long amount = amountsArray[i];
+            for (int i = 0; i < amountsArray.size(); i++) {
+                if (isSelfBuyArray.get(i).getAsBoolean()) continue;
+                Product product = new Product(productCodeArray.get(i).getAsString());
+                long amount = amountsArray.get(i).getAsLong();
                 if (amount > 1) purposeBuilder.append(amount).append(" x ").append(product.getName()).append("\n");
                 else purposeBuilder.append(product.getName()).append("\n");
 
-                double itemPrice = pricesArray[i];
+                double itemPrice = pricesArray.get(i).getAsDouble();
                 taxes += (amount*(itemPrice*vat));
                 itemPrice = (itemPrice + itemPrice*vat);
                 priceSum += (amount * itemPrice);
             }
-
 
             if (priceSum > Float.parseFloat(buyerAccountGetter.getBalance())) {
                 resp.getWriter().println(3);
@@ -137,24 +86,29 @@ public class CompletePurchaseOrder extends HttpServlet {
             finanzministerium.saveAll();
         }
 
-        purchaseOrderSetter.setPricesList(Arrays.asList(pricesArray));
-        purchaseOrderSetter.setAmountsList(Arrays.asList(amountsArray));
-        purchaseOrderSetter.setIsSelfBuyList(Arrays.asList(isSelfBuyArray));
-        purchaseOrderSetter.setProductCodesList(Arrays.asList(productCodesArray));
+        List<Double> pricesList = new ArrayList<>();
+        List<Long> amountsList = new ArrayList<>();
+        List<Boolean> isSelfBuyList = new ArrayList<>();
+        List<String> productCodesList = new ArrayList<>();
+        for (int i = 0; i < amountsArray.size(); i++){
+            pricesList.add(pricesArray.get(i).getAsDouble());
+            amountsList.add(amountsArray.get(i).getAsLong());
+            isSelfBuyList.add(isSelfBuyArray.get(i).getAsBoolean());
+            productCodesList.add(productCodeArray.get(i).getAsString());
+        }
+
+        purchaseOrderSetter.setPricesList(pricesList);
+        purchaseOrderSetter.setAmountsList(amountsList);
+        purchaseOrderSetter.setIsSelfBuyList(isSelfBuyList);
+        purchaseOrderSetter.setProductCodesList(productCodesList);
         purchaseOrderSetter.setCompleted(true);
         purchaseOrderSetter.saveAll();
 
         Map<String, String> messageData = new HashMap<>();
         messageData.put("notificationId", "2");
-        messageData.put("number", String.valueOf(purchaseOrderNumber));
-        new SendMessage().sendMessage(messageData, "/topics/" + companynumber + "-shoppingRequests");
+        messageData.put("number", jsonObject.get("purchaseOrderNumber").getAsString());
+        new SendMessage().sendMessage(messageData, "/topics/" + jsonObject.get("companynumber").getAsString() + "-shoppingRequests");
 
         resp.getWriter().println(1);
-    }
-
-    private String getStringBodyName(BodyPart bodyPart) throws MessagingException {
-        String[] header = bodyPart.getHeader("Content-Disposition");
-        String[] contents = header[0].split("=");
-        return contents[1].substring(1, contents[1].length()-1);
     }
 }

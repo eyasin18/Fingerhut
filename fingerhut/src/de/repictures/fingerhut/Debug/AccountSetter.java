@@ -1,6 +1,7 @@
 package de.repictures.fingerhut.Debug;
 
 import com.google.appengine.api.datastore.*;
+import com.google.gson.Gson;
 import de.repictures.fingerhut.Cryptor;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
@@ -20,40 +21,35 @@ public class AccountSetter extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        setCompanies();
     }
 
-    private void updatePrivateKey(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String accountnumber = req.getParameter("accountnumber");
-        String password = req.getParameter("password");
+    private void updateEntities(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Query accountQuery = new Query("Account");
+        List<Entity> accountList = DatastoreServiceFactory.getDatastoreService().prepare(accountQuery).asList(FetchOptions.Builder.withDefaults());
+        for (Entity accountEntity : accountList){
+            Account account = new Account(accountEntity);
+            if (account.getCompanies().size() > 0){
+                double wage = 1.0f;
+                if (accountEntity.getProperty("wage") != null) wage = ((Number) accountEntity.getProperty("wage")).doubleValue();
+                ArrayList<Long> featuresList = new ArrayList<>();
+                if (accountEntity.getProperty("feature_list") != null) featuresList = (ArrayList<Long>) accountEntity.getProperty("feature_list");
+                List<Integer> startList = new ArrayList<>();
+                if (accountEntity.getProperty("work_start_times") != null) startList = (List<Integer>) accountEntity.getProperty("work_start_times");
+                List<Integer> endList = new ArrayList<>();
+                if (accountEntity.getProperty("work_end_times") != null) endList = (List<Integer>) accountEntity.getProperty("work_end_times");
 
-        if (accountnumber == null){
-            resp.getWriter().println("You have to pass a account number!");
-            return;
-        }
-        if (password == null){
-            resp.getWriter().println("You have to pass a password!");
-            return;
-        }
-        Account accountSetter = new Account(accountnumber);
-        Cryptor cryptor = new Cryptor();
-        String newPrivateKeyStr = null;
-        try {
-            String privateKeyStr = accountSetter.getPrivateKeyStr();
-            byte[] privateKey = cryptor.hexToBytes(privateKeyStr);
-            byte[] passwordBytes = password.getBytes("ISO-8859-1");
-            byte[] passwordKey = new byte[32];
-            for (int i = 0; i < passwordKey.length; i++){
-                passwordKey[i] = passwordBytes[i % passwordBytes.length];
+                Company mainCompany = new Company(account.getCompanies().get(0));
+                account.setSpecificWage(wage, mainCompany.getAccountnumber());
+                account.setFeatures(featuresList, mainCompany.getAccountnumber());
+                account.setSpecificWorkPeriods(new Gson().toJsonTree(startList).getAsJsonArray(), new Gson().toJsonTree(endList).getAsJsonArray(), mainCompany.getAccountnumber());
             }
-            byte[] newPrivateKey = cryptor.encryptSymmetricFromByte(privateKey, passwordKey);
-            newPrivateKeyStr = cryptor.bytesToHex(newPrivateKey);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            account.account.removeProperty("wage");
+            account.account.removeProperty("feature_list");
+            account.account.removeProperty("work_start_times");
+            account.account.removeProperty("work_end_times");
+            account.saveAll();
         }
-        accountSetter.setPrivateKeyStr(newPrivateKeyStr);
-        accountSetter.saveAll();
-        resp.getWriter().println(newPrivateKeyStr);
+        resp.getWriter().println("success");
     }
 
     private void setCompanies(){

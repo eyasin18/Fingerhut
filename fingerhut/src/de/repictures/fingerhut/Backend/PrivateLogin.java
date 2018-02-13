@@ -33,7 +33,7 @@ public class PrivateLogin extends HttpServlet {
         Calendar cal = Calendar.getInstance();
         String serverTimeStamp = dateFormat.format(cal.getTime());
         serverTimeStamp = URLEncoder.encode(serverTimeStamp, "UTF-8");
-        authenticate.serverTimeStamp = serverTimeStamp;
+        authenticate.serverTimeStamp = serverTimeStamp + "ò";
         authenticate.doGet(req, resp);
     }
 

@@ -27,7 +27,7 @@ public class Authenticate extends HttpServlet{
             int accountnumberlength = accountnumber.length();
             String[] authParts = {authCode.substring(accountnumberlength, accountnumberlength + 8),
                     authCode.substring(accountnumberlength + 8, accountnumberlength + 16)};
-            output = serverTimeStamp + "ò" + authParts[1];
+            output = serverTimeStamp + authParts[1];
         } else {
             output = serverTimeStamp;
         }

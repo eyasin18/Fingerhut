@@ -368,16 +368,26 @@ public class Account {
      */
 
     public void setFeatures(ArrayList<Long> features, String companynumber){
-        String jsonString = (String) account.getProperty("feature_json");
-        JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
+        JsonObject jsonObject;
+        if (account.getProperty("feature_json") != null) {
+            String jsonString = (String) account.getProperty("feature_json");
+            jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
+        } else {
+            jsonObject = new JsonObject();
+        }
         JsonArray jsonArray = new Gson().toJsonTree(features).getAsJsonArray();
         jsonObject.add(companynumber, jsonArray);
         account.setProperty("feature_json", jsonObject.toString());
     }
 
     public void setFeatures(Entity passedEntity, ArrayList<Long> features, String companynumber){
-        String jsonString = (String) passedEntity.getProperty("feature_json");
-        JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
+        JsonObject jsonObject;
+        if (passedEntity.getProperty("feature_json") != null) {
+            String jsonString = (String) passedEntity.getProperty("feature_json");
+            jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
+        } else {
+            jsonObject = new JsonObject();
+        }
         JsonArray jsonArray = new Gson().toJsonTree(features).getAsJsonArray();
         jsonObject.add(companynumber, jsonArray);
         passedEntity.setProperty("feature_json", jsonObject.toString());
@@ -749,7 +759,10 @@ public class Account {
         if (account.getProperty("wages_json") != null){
             JsonParser parser = new JsonParser();
             JsonObject companyObject = parser.parse((String) account.getProperty("wages_json")).getAsJsonObject();
-            return companyObject.get(companynumber).getAsDouble();
+            if (companyObject.get(companynumber) != null)
+                return companyObject.get(companynumber).getAsDouble();
+            else
+                return 1.0;
         } else {
             return 1.0;
         }

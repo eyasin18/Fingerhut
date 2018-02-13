@@ -54,7 +54,7 @@ public class PurchaseOrder{
         purchaseOrder = getPurchaseOrder(parentCompany.getKey(), buyerAccountnumber);
     }
 
-    public void updatePurchaseOrder(Entity parentCompany, String shoppingListJson, String buyerAccountnumber){
+    public void updatePurchaseOrder(Entity parentCompany, String shoppingListJson, String buyerAccountnumber, boolean completed){
         List<String> produtCodesList = new ArrayList<>();
         List<Double> pricesList = new ArrayList<>();
         List<Boolean> isSelfBuyList = new ArrayList<>();
@@ -83,13 +83,17 @@ public class PurchaseOrder{
             amountsList.add(amountsArray.get(i).getAsLong());
         }
 
+        if (!isSelfBuyList.contains(false)){
+            completed = true;
+        }
+
         setDateTime(f.format(calendar.getTime()));
         setBuyerAccountnumber(buyerAccountnumber);
         setProductCodesList(produtCodesList);
         setPricesList(pricesList);
         setIsSelfBuyList(isSelfBuyList);
         setAmountsList(amountsList);
-        setCompleted(false);
+        setCompleted(completed);
         saveAll();
         purchaseOrder = getPurchaseOrder(parentCompany.getKey(), number);
     }
