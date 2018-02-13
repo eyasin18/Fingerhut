@@ -109,3 +109,11 @@
     float: right;
     background: #1DE9B6 !important;
 }
+#employee_accountnumber{
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+.checkbox_wrapper{
+    align-items: center;
+}

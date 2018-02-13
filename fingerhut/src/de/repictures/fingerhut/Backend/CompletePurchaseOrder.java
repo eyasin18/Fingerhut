@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -25,6 +26,7 @@ public class CompletePurchaseOrder extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String jsonStr = req.getParameter("json");
+        jsonStr = URLDecoder.decode(jsonStr, "UTF-8");
         JsonObject jsonObject = new JsonParser().parse(jsonStr).getAsJsonObject();
 
         if (jsonObject.get("companynumber") == null || jsonObject.get("selleraccountnumber") == null || jsonObject.get("buyeraccountnumber") == null || jsonObject.get("webstring") == null

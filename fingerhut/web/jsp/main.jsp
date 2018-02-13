@@ -30,6 +30,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}../css/main.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}../css/icon.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}../css/material.green-light_green.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}../css/getmdl-select.min.css">
     <script defer src="${pageContext.request.contextPath}../js/material.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script language="JavaScript" type="text/javascript" src="../js/jsbn.js"></script>
@@ -136,7 +137,15 @@
                                 <h2 class="mdl-card__title-text">Unternehmen</h2>
                             </div>
                             <div class="mdl-card__supporting-text">
-                                <div class="mdl-typography--headline">0002</div>
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="dropdown_wrapper">
+                                    <input type="text" value="" class="mdl-textfield__input" id="dropdown_company_field"
+                                           readonly>
+                                    <input type="hidden" value="" name="dropdown_field">
+                                    <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                                    <label for="dropdown_company_field" class="mdl-textfield__label">Unternehmen</label>
+                                    <ul for="dropdown_field" class="mdl-menu mdl-menu--bottom-left mdl-js-menu" id="dropdown_list">
+                                    </ul>
+                                </div>
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="companypass_view" onkeypress="return companyLoginEnterPressed(event);">
                                     <input class="mdl-textfield__input" type="password" id="companypass" pattern="-?[0-9]*(\.[0-9]+)?"/>
                                     <label class="mdl-textfield__label" for="companypass" id="companypass_label">Passwort</label>
@@ -382,6 +391,15 @@
         var theurl = url + "/signoff?accountnumber=<%= accountnumber %>&webstring=<%= code %>";
         httpAsync(theurl, "GET",3);
     }
+
+    /*function fillDropdown() {
+        var dropdown_list = document.getElementById("dropdown_list");
+        for(var i = 0;i < ; i++){
+            var line = document.createElement("li");
+            line.classList.add("mdl-menu__item");
+            line.innerHTML = ;
+            dropdown_list.appendChild(line);
+    }*/
 
 </script>
 </body>

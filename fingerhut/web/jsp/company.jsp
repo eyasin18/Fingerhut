@@ -125,6 +125,9 @@
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="purchase_order">
                         <div id="table_div">
                         </div>
+                        <div class="wrapper">
+                            <h6 id="confirm_error" class="title"></h6>
+                        </div>
                         <div class ="wrapper">
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backOrder()" id="back_button_order">Fertig</button>
                         </div>
@@ -253,27 +256,78 @@
                             </tbody>
                         </table>
                         <div class ="wrapper">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backProduct()" id="back_button_product">Fertig</button>
-                        </div>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backProduct()" id="back_button_product">Fertig</button>
+                    </div>
                     </div>
 
-                <!-- Hier beginnt der Teil der für die Karte Mitarbeiter zuständig ist -->
+                <!-- Mitarbeiter Karte -->
 
-                <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="employees">
-                    <h4 class="mdl-typography--headline" id="employee_heading">Mitarbeiter</h4>
-                    <table class="mdl-data-table mdl-js-data-table">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Kontonummer</th>
-                            <th>Gehalt</th>
-                            <th>Mehr Information</th>
-                        </tr>
-                        </thead>
-                        <tbody id="employees_table">
+                    <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="employees">
+                        <h4 class="mdl-typography--headline" id="employee_heading">Mitarbeiter</h4>
+                        <table class="mdl-data-table mdl-js-data-table" id="employees_table">
+                            <thead>
+                            <tr>
+                                <th>Kontonummer</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
 
-                        </tbody>
-                    </table>
+                <!-- Mitarbeiter bearbeiten und mehr Informationen Karte -->
+
+                    <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="employee">
+                        <h6 class="mdl-typography--title" id="employee_accountnumber">0004</h6>
+                        <div class="wrapper">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="bruttolohn">
+                                <label class="mdl-textfield__label" for="bruttolohn">Bruttolohn</label>
+                                <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
+                            </div>
+                            <h6 id="nettolohn">Nettolohn: </h6>
+                        </div>
+                        <div class="wrapper">
+                            <h6 class="mdl-typography--title">Arbeitszeiten: </h6>
+                        </div>
+                        <table class="mdl-data-table mdl-js-data-table" id="work_times_table">
+                            <thead>
+                            <tr>
+                                <th>Von</th>
+                                <th>Bis</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <div class ="wrapper">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="" id="new_work_time_button">Arbeitszeit hinzufügen</button>
+                        </div>
+                        <div class="wrapper">
+                            <h6 class="mdl-typography--title">Berechtigungen</h6>
+                        </div>
+                        <div class="checkbox_wrapper">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="manage_products">
+                                <input type="checkbox" id="manage_products" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Produkte verwalten</span>
+                            </label>
+                        </div>
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="manage_qr_codes">
+                                <input type="checkbox" id="manage_qr_codes" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">QR-Codes verwalten</span>
+                            </label>
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="cash_register">
+                                <input type="checkbox" id="cash_register" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Kasse</span>
+                            </label>
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="manage_employees">
+                                <input type="checkbox" id="manage_employees" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Mitarbeiter verwalten</span>
+                            </label>
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="view_statistics">
+                                <input type="checkbox" id="view_statistics" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Statistiken</span>
+                            </label>
                     </div>
                 </div>
             </div>
@@ -293,6 +347,7 @@
     var encodedServerTime;
     var accountnumber_textfield;
     var pin_textfield;
+    var purchaseOrderPosition;
 
     //Statistiken betreffend
     var Statistics = document.getElementById("statistics");
@@ -303,6 +358,7 @@
 
     //Mitarbeiter betreffend
     var Employees = document.getElementById("employees");
+    var Employee = document.getElementById("employee");
 
     PurchaseOrder.style.display = "none";
     PurchaseOrders.style.display = "none";
@@ -312,6 +368,7 @@
     Product.style.display = "none";
     Employees.style.display = "block";
     Statistics.style.display = "block";
+    //Employee.style.display = "none";
 
 
     //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
@@ -335,7 +392,6 @@
             <%
         }
     %>
-
     //füllt den purchase_order_array mit Purchase Order Objekten die über die unten stehenden Attribute verfügen (fast alle properties der PurchaseOrder Entitäten)
     var purchase_order = pojo('buyer_accountnumber', 'completed', 'date_time', 'is_self_buy_list', 'number', 'product_codes_list');
     var purchase_order_array = [];
@@ -480,6 +536,7 @@
     }
 
     function editPurchaseorders(position){
+        purchaseOrderPosition = position;
         ShortPurchaseOrders.style.display = "none";
         PurchaseOrders.style.display = "none";
         PurchaseOrder.style.display = "block";
@@ -514,11 +571,13 @@
                 "                                </thead>\n" +
                 "                                <tbody>\n" +
                 "                                </tbody>\n" +
-                "                            </table>" +
+                "                            </table>\n" +
+                "<div id=\"confirm_div\" >\n" +
                 "<h6 class=\"title wrapper\">Der Kaufauftrag ist noch nicht bestätigt.</h6>\n" +
                 "                        <div class=\"wrapper\">\n" +
-                "                            <button class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored\" onclick=\"confirmPurchaseOrder()\" id=\"confirm_button\">Bestätigen</button>\n" +
-                "                        </div>";
+                "                            <button class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored\" onclick=\"confirmPurchaseOrder(purchaseOrderPosition)\" id=\"confirm_button\">Bestätigen</button>\n" +
+                "                        </div>" +
+                "                    </div>";
         }
         var purchaseOrderInfoTable = document.getElementById("purchase_info_table");
         console.log(purchase_order_array[position].product_codes_list.length);
@@ -534,8 +593,22 @@
             cell4.innerHTML = parseFloat(purchase_order_array[position].prices_list[i]) * parseFloat(purchase_order_array[position].amounts_list[i]) + " S";
         }
     }
-    function confirmPurchaseOrder() {
-
+    function confirmPurchaseOrder(position) {
+        document.getElementById("confirm_button").disabled = "true";
+        var JsonObject = JSON.stringify({
+            "webstring": "<%=code%>",
+            "buyeraccountnumber": String(purchase_order_array[position].buyer_accountnumber),
+            "companynumber": "<%=companynumber%>",
+            "purchaseOrderNumber": purchase_order_array[position].number,
+            "selleraccountnumber": "<%=accountnumber%>",
+            "isselfbuy": purchase_order_array[position].is_self_buy_list,
+            "prices": purchase_order_array[position].prices_list,
+            "amounts": purchase_order_array[position].amounts_list,
+            "productcodes": purchase_order_array[position].product_codes_list
+        });
+        var url = "https://fingerhut388.appspot.com/completepurchaseorder?json=" + encodeURIComponent(JsonObject);
+        console.log(url);
+        httpAsync(url,"POST",2);
     }
 
     function editProducts(position){
@@ -863,32 +936,55 @@
     }
 
     function processPostResponse(responseText, callerid) {
-        switch (parseInt(responseText)){
-            case 1:
-                var getUrl = "https://fingerhut388.appspot.com" + "/getshoppingrequest?code=<%=code%>&authaccountnumber=<%=accountnumber%>"
-                    +"&accountnumber=" + accountnumber_textfield
-                    + "&madebyuser=true"
-                    + "&completed=true"
-                    + "&companynumber=<%=companynumber%>&shoppinglist=" + encodeURIComponent(getShoppingList());
+        switch (callerid){
+            case 1: switch (parseInt(responseText)){
+                case 1:
+                    var getUrl = "https://fingerhut388.appspot.com" + "/getshoppingrequest?code=<%=code%>&authaccountnumber=<%=accountnumber%>"
+                        +"&accountnumber=" + accountnumber_textfield
+                        + "&madebyuser=true"
+                        + "&completed=true"
+                        + "&companynumber=<%=companynumber%>&shoppinglist=" + encodeURIComponent(getShoppingList());
                     console.log(getUrl);
-                httpAsync(getUrl, "GET", 1);
-                break;
-            case 2:
-                document.getElementById("purchase_order_error").innerText = "Melde dich bitte erneut an!";
-                document.getElementById("finish_button").disabled = false;
-                document.getElementById("cancel_purchase_button").disabled = false;
-                break;
-            case 3:
-                document.getElementById("purchase_order_error").innerText = "Der Pin ist falsch!";
-                document.getElementById("finish_button").disabled = false;
-                document.getElementById("cancel_purchase_button").disabled = false;
-                break;
-            case 4:
-                document.getElementById("purchase_order_error").innerText = "Der Account existiert nicht!";
-                document.getElementById("finish_button").disabled = false;
-                document.getElementById("cancel_purchase_button").disabled = false;
+                    httpAsync(getUrl, "GET", 1);
+                    break;
+                case 2:
+                    document.getElementById("purchase_order_error").innerText = "Melde dich bitte erneut an!";
+                    document.getElementById("finish_button").disabled = false;
+                    document.getElementById("cancel_purchase_button").disabled = false;
+                    break;
+                case 3:
+                    document.getElementById("purchase_order_error").innerText = "Der Pin ist falsch!";
+                    document.getElementById("finish_button").disabled = false;
+                    document.getElementById("cancel_purchase_button").disabled = false;
+                    break;
+                case 4:
+                    document.getElementById("purchase_order_error").innerText = "Der Account existiert nicht!";
+                    document.getElementById("finish_button").disabled = false;
+                    document.getElementById("cancel_purchase_button").disabled = false;
+                    break;
+            }
+            break;
+            case 2: switch (parseInt(responseText)){
+                case 0:
+                    document.getElementById("confirm_error").innerText = "Die Daten wurden nicht richtig übertragen!";
+                    document.getElementById("confirm_button").disabled = "false";
+                    break;
+                case 1:
+                    document.getElementById("confirm_error").innerText = "Der Kaufauftrag wurde bestätigt.";
+                    document.getElementById("confirm_div").innerHTML = "";
+                    break;
+                case 2:
+                    document.getElementById("confirm_error").innerText = "Bitte logge dich neu ein!";
+                    document.getElementById("confirm_button").disabled = "false";
+                    break;
+                case 3:
+                    document.getElementById("confirm_error").innerText = "Der Kunde hat nicht genug Geld um den Kaufauftrag abzuschließen!";
+                    document.getElementById("confirm_button").disabled = "false";
+                    break;
+            }
                 break;
         }
+
     }
 
     function addNewPurchase() {
