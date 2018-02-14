@@ -242,22 +242,12 @@
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addProduct()">Hinzufügen</button>
                         </div>
                     </div>
-
+                    <!-- Karte zum editieren eines Produkts-->
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="product">
-                        <table class="mdl-data-table mdl-js-data-table" id="product_info_table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Preis</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>
+                        <div id="table_div2"></div>
                         <div class ="wrapper">
-                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backProduct()" id="back_button_product">Fertig</button>
-                    </div>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backProduct()" id="back_button_product">Fertig</button>
+                        </div>
                     </div>
 
                 <!-- Mitarbeiter Karte -->
@@ -392,6 +382,7 @@
             <%
         }
     %>
+
     //füllt den purchase_order_array mit Purchase Order Objekten die über die unten stehenden Attribute verfügen (fast alle properties der PurchaseOrder Entitäten)
     var purchase_order = pojo('buyer_accountnumber', 'completed', 'date_time', 'is_self_buy_list', 'number', 'product_codes_list');
     var purchase_order_array = [];
@@ -580,7 +571,6 @@
                 "                    </div>";
         }
         var purchaseOrderInfoTable = document.getElementById("purchase_info_table");
-        console.log(purchase_order_array[position].product_codes_list.length);
         for(var i = 0;i < purchase_order_array[position].product_codes_list.length; i++) {
             var row = purchaseOrderInfoTable.insertRow(document.getElementById("purchase_info_table").rows.length);
             var cell1 = row.insertCell(0);
@@ -593,6 +583,7 @@
             cell4.innerHTML = parseFloat(purchase_order_array[position].prices_list[i]) * parseFloat(purchase_order_array[position].amounts_list[i]) + " S";
         }
     }
+
     function confirmPurchaseOrder(position) {
         document.getElementById("confirm_button").disabled = "true";
         var JsonObject = JSON.stringify({
@@ -619,11 +610,26 @@
         ShortPurchaseOrders.style.display = "none";
         Employees.style.display = "none";
         Statistics.style.display = "none";
-        var productInfoTable = document.getElementById("product_info_table" );
-        <%
+        document.getElementById("table_div2").innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"product_info_table\">\n" +
+            "                                <thead>\n" +
+            "                                    <tr>\n" +
+            "                                        <th>Name</th>\n" +
+            "                                        <th>Preis</th>\n" +
+            "                                    </tr>\n" +
+            "                                </thead>\n" +
+            "                                <tbody>\n" +
+            "                                </tbody>\n" +
+            "                            </table>";
+        var productInfoTable = document.getElementById("product_info_table");
+        var row = productInfoTable.insertRow(document.getElementById("product_info_table").rows.length);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        cell1.innerHTML = "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\"><input class=\"mdl-textfield__input\" type=\"text\" pattern=\"-?[0-9]*(\.[0-9]+)?\"><label id=\"label1\" class=\"mdl-textfield__label\" ></label><span class=\"mdl-textfield__error\">Eingabe muss eine Zahl sein!</span></div>";
+        document.getElementById("label1").innerText = productarray[position].name;
+        cell2.innerHTML = "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\"><input class=\"mdl-textfield__input\" type=\"number\"><label id=\"label2\" class=\"mdl-textfield__label\" ></label><span class=\"mdl-textfield__error\">Eingabe muss eine Zahl sein!</span></div>";
+        document.getElementById("label2").innerText = productarray[position].price;
 
-        %>
-    }
+        }
 
     function backOrder() {
         PurchaseOrder.style.display = "none";
