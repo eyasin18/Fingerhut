@@ -1,7 +1,10 @@
 package de.repictures.fingerhut.Web;
 
+import com.google.appengine.api.datastore.Entity;
 import de.repictures.fingerhut.Datastore.Account;
+import de.repictures.fingerhut.Datastore.Company;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -36,5 +39,17 @@ public class MainTools {
     public String getBalance(String accountnumber){
         Account accountGetter = new Account(accountnumber);
         return accountGetter.getBalance();
+    }
+
+    public List<String> getCompanyNumbers(String accountnumber){
+        Account account = new Account(accountnumber);
+        List<Entity> companies = account.getCompanies();
+        List<String> companyNumbers = new ArrayList<>();
+        for (Entity companyEntity :
+                companies) {
+            Company company = new Company(companyEntity);
+            companyNumbers.add(company.getAccountnumber());
+        }
+        return companyNumbers;
     }
 }

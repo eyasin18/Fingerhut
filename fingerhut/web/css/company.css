@@ -114,6 +114,39 @@
     margin-bottom: 20px;
     margin-top: 20px;
 }
-.checkbox_wrapper{
-    align-items: center;
+#new_work_time_button{
+    margin-top: 20px;
+}
+#save_employee_changes{
+    margin-bottom: 20px;
+}
+#cancel_employee_changes{
+    margin-bottom: 20px;
+}
+#work_times{
+    overflow: visible;
+}
+#work_time_heading{
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+#days_wrapper{
+    width: 150px;
+}
+#begin_hours_wrapper{
+    width: 150px;
+}
+#begin_minutes_wrapper{
+    width: 150px;
+}
+#end_hours_wrapper{
+    width: 150px;
+}
+#end_minutes_wrapper {
+    width: 150px;
+}
+#add_work_times_table{
+    margin-left: auto;
+    margin-right: auto;
 }

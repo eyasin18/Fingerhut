@@ -11,6 +11,7 @@
 <%@ page import="de.repictures.fingerhut.Web.MainTools" %>
 <%@ page import="de.repictures.fingerhut.Web.Signoff" %>
 <%@ page import="static de.repictures.fingerhut.Datastore.Tax.getVAT" %>
+<%@ page import="de.repictures.fingerhut.Datastore.Account" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%@ page errorPage="errorpage.jsp" %> <!-- gibt die Seite an, die im Fehlerfall angezeigt werden soll -->
@@ -193,6 +194,7 @@
     submitSpinner.style.left = spinnerLeftInt + "px";
     submitSpinner.style.visibility = 'hidden';
 
+    fillDropdown();
 
     function onButtonClick(){
 
@@ -392,14 +394,24 @@
         httpAsync(theurl, "GET",3);
     }
 
-    /*function fillDropdown() {
+    function fillDropdown() {
+        var companyNumbers = [];
+        <%
+            List<String> companyNumbers = mainTools.getCompanyNumbers(accountnumber);
+            for (String companyNumber : companyNumbers) {
+                %>
+                companyNumbers.push(<%= companyNumber%>);
+                <%
+            }
+        %>
         var dropdown_list = document.getElementById("dropdown_list");
-        for(var i = 0;i < ; i++){
+        for (var i = 0; i < companyNumbers.length; i++) {
             var line = document.createElement("li");
             line.classList.add("mdl-menu__item");
-            line.innerHTML = ;
+            line.innerHTML = companyNumbers[i];
             dropdown_list.appendChild(line);
-    }*/
+        }
+    }
 
 </script>
 </body>

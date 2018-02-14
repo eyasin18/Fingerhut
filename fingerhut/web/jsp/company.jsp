@@ -291,33 +291,137 @@
                             </tbody>
                         </table>
                         <div class ="wrapper">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="" id="new_work_time_button">Arbeitszeit hinzufügen</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="addNewWorkTime()" id="new_work_time_button">Arbeitszeit hinzufügen</button>
                         </div>
                         <div class="wrapper">
                             <h6 class="mdl-typography--title">Berechtigungen</h6>
                         </div>
-                        <div class="checkbox_wrapper">
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="manage_products">
-                                <input type="checkbox" id="manage_products" class="mdl-checkbox__input">
-                                <span class="mdl-checkbox__label">Produkte verwalten</span>
-                            </label>
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="manage_products">
+                            <input type="checkbox" id="manage_products" class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">Produkte verwalten</span>
+                        </label>
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="manage_qr_codes">
+                            <input type="checkbox" id="manage_qr_codes" class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">QR-Codes verwalten</span>
+                        </label>
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="cash_register">
+                            <input type="checkbox" id="cash_register" class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">Kasse</span>
+                        </label>
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="manage_employees">
+                            <input type="checkbox" id="manage_employees" class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">Mitarbeiter verwalten</span>
+                        </label>
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="view_statistics">
+                            <input type="checkbox" id="view_statistics" class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label">Statistiken</span>
+                        </label>
+                        <div class ="wrapper">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="" id="save_employee_changes">Speichern</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelEmployeeChanges()" id="cancel_employee_changes">Abbrechen</button>
                         </div>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="manage_qr_codes">
-                                <input type="checkbox" id="manage_qr_codes" class="mdl-checkbox__input">
-                                <span class="mdl-checkbox__label">QR-Codes verwalten</span>
-                            </label>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="cash_register">
-                                <input type="checkbox" id="cash_register" class="mdl-checkbox__input">
-                                <span class="mdl-checkbox__label">Kasse</span>
-                            </label>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="manage_employees">
-                                <input type="checkbox" id="manage_employees" class="mdl-checkbox__input">
-                                <span class="mdl-checkbox__label">Mitarbeiter verwalten</span>
-                            </label>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="view_statistics">
-                                <input type="checkbox" id="view_statistics" class="mdl-checkbox__input">
-                                <span class="mdl-checkbox__label">Statistiken</span>
-                            </label>
+                    </div>
+                    <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="work_times">
+                        <h4 class="mdl-typography--headline" id="work_time_heading">Arbeitszeiten hinzufügen</h4>
+                        <div class="wrapper">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="days_wrapper">
+                                <input type="text" value="" class="mdl-textfield__input" id="days_input"
+                                       readonly>
+                                <input type="hidden" value="" name="days_dropdown">
+                                <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                                <label for="days_input" class="mdl-textfield__label">Tag</label>
+                                <ul for="days_dropdown" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                                    <li class="mdl-menu__item">Montag</li>
+                                    <li class="mdl-menu__item">Dienstag</li>
+                                    <li class="mdl-menu__item">Mittwoch</li>
+                                    <li class="mdl-menu__item">Donnerstag</li>
+                                    <li class="mdl-menu__item">Freitag</li>
+                                    <li class="mdl-menu__item">Samstag</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="wrapper">
+                            <table id="add_work_times_table">
+                                <tr>
+                                    <td>
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="begin_hours_wrapper">
+                                            <input type="text" value="" class="mdl-textfield__input" id="begin_hours_input"
+                                                   readonly>
+                                            <input type="hidden" value="" name="begin_hours_dropdown">
+                                            <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                                            <label for="begin_hours_input" class="mdl-textfield__label">Stunde</label>
+                                            <ul for="begin_hours_dropdown" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                                                <li class="mdl-menu__item">8</li>
+                                                <li class="mdl-menu__item">9</li>
+                                                <li class="mdl-menu__item">10</li>
+                                                <li class="mdl-menu__item">11</li>
+                                                <li class="mdl-menu__item">12</li>
+                                                <li class="mdl-menu__item">13</li>
+                                                <li class="mdl-menu__item">14</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <h6>:</h6>
+                                    </td>
+                                    <td>
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="begin_minutes_wrapper">
+                                            <input type="text" value="" class="mdl-textfield__input" id="begin_minutes_input"
+                                                   readonly>
+                                            <input type="hidden" value="" name="begin_minutes_dropdown">
+                                            <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                                            <label for="begin_minutes_input" class="mdl-textfield__label">Minuten</label>
+                                            <ul for="begin_minutes_dropdown" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                                                <li class="mdl-menu__item">00</li>
+                                                <li class="mdl-menu__item">30</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <h6>Uhr</h6>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="end_hours_wrapper">
+                                            <input type="text" value="" class="mdl-textfield__input" id="end_hours_input"
+                                                   readonly>
+                                            <input type="hidden" value="" name="end_hours_dropdown">
+                                            <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                                            <label for="end_hours_input" class="mdl-textfield__label">Stunde</label>
+                                            <ul for="end_hours_dropdown" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                                                <li class="mdl-menu__item">9</li>
+                                                <li class="mdl-menu__item">10</li>
+                                                <li class="mdl-menu__item">11</li>
+                                                <li class="mdl-menu__item">12</li>
+                                                <li class="mdl-menu__item">13</li>
+                                                <li class="mdl-menu__item">14</li>
+                                                <li class="mdl-menu__item">15</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <h6>:</h6>
+                                    </td>
+                                    <td>
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="end_minutes_wrapper">
+                                            <input type="text" value="" class="mdl-textfield__input" id="end_minutes_input"
+                                                   readonly>
+                                            <input type="hidden" value="" name="end_minutes_dropdown">
+                                            <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                                            <label for="end_minutes_input" class="mdl-textfield__label">Minuten</label>
+                                            <ul for="end_minutes_dropdown" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                                                <li class="mdl-menu__item">00</li>
+                                                <li class="mdl-menu__item">30</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <h6>Uhr</h6>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -349,6 +453,7 @@
     //Mitarbeiter betreffend
     var Employees = document.getElementById("employees");
     var Employee = document.getElementById("employee");
+    var WorkTimes = document.getElementById("work_times");
 
     PurchaseOrder.style.display = "none";
     PurchaseOrders.style.display = "none";
@@ -358,7 +463,8 @@
     Product.style.display = "none";
     Employees.style.display = "block";
     Statistics.style.display = "block";
-    //Employee.style.display = "none";
+    Employee.style.display = "none";
+    WorkTimes.style.display = "none";
 
 
     //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
@@ -392,7 +498,18 @@
             %>
         var getBuyerAccountnumber = "<%= purchaseOrders[i].getBuyerAccountnumber() %>";
         var getCompleted = <%= purchaseOrders[i].getCompleted() %>;
-        var getDateTime = '<%= purchaseOrders[i].getDateTime() %>';
+        <%
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", request.getLocale());
+            Calendar calendar = Calendar.getInstance();
+            try {
+                calendar.setTime(sdf.parse(purchaseOrders[i].getDateTime()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            sdf = new SimpleDateFormat("E HH:mm", request.getLocale());
+            String dateTimeStr = sdf.format(calendar.getTime()) + " Uhr";
+        %>
+        var getDateTime = '<%= dateTimeStr %>';
         var getIsSelfBuyList = <%= purchaseOrders[i].getIsSelfBuyList() %>;
         var getNumber = <%= purchaseOrders[i].getNumber() %>;
         var getPricesList = <%= purchaseOrders[i].getPricesList() %>;
@@ -420,7 +537,8 @@
     %>
     fillDropdown();
     fillShortPurchaseTable();
-    fillPurchaseTable()
+    fillPurchaseTable();
+    fillEmployees();
     purchase_order_array[0].prices_list = <%= purchaseOrders[0].getPricesList() %>;
 
 
@@ -1016,13 +1134,14 @@
             var cell1 = row.insertCell(0);
             var cell2 = row.insertCell(1);
             var cell3 = row.insertCell(2);
-            var price_sum = 0;
+            var priceSum = 0;
             for(var j = 0; j < purchase_order_array[i].prices_list.length; j++){
-                price_sum += (purchase_order_array[i].prices_list[j] * purchase_order_array[i].amounts_list[j]);
+                priceSum += (purchase_order_array[i].prices_list[j] * purchase_order_array[i].amounts_list[j]);
             }
+            var priceSumStr = priceSum.toFixed(2) + " S";
             cell1.innerHTML = purchase_order_array[i].date_time;
             cell2.innerHTML = purchase_order_array[i].buyer_accountnumber;
-            cell3.innerHTML = price_sum;
+            cell3.innerHTML = priceSumStr;
             row.onclick = function(){editPurchaseorders(this.rowIndex-1)};
             if(!purchase_order_array[i].completed){
                 row.style.backgroundColor = "#8BC349";
@@ -1049,9 +1168,36 @@
             }
         }
     }
-
     function signoff(){
         //TODO: machen dass hier was funzt :)
+    }
+    function fillEmployees() {
+        var table = document.getElementById("employees_table");
+        for(var i = 0; i<1; i++) {
+            var row = table.insertRow(document.getElementById("employees_table").rows.length);
+            var cell1 = row.insertCell(0);
+            cell1.innerHTML = "blub";
+            row.onclick = function(){editEmployee(this.rowIndex-1)};
+        }
+    }
+    function editEmployee(position) {
+        Employees.style.display = "none";
+        Employee.style.display = "block";
+        ShortPurchaseOrders.style.display = "none";
+        PurchaseOrders.style.display = "none";
+        Statistics.style.display = "none";
+        Products.style.display = "none";
+    }
+    function cancelEmployeeChanges() {
+        Employees.style.display = "block";
+        Employee.style.display = "none";
+        ShortPurchaseOrders.style.display = "block";
+        Statistics.style.display = "block";
+        Products.style.display = "block";
+    }
+    function addNewWorkTime() {
+        WorkTimes.style.display = "block";
+        Employee.style.display = "none";
     }
     </script>
 </html>
