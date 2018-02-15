@@ -249,7 +249,15 @@
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backProduct()" id="back_button_product">Fertig</button>
                         </div>
                     </div>
-
+                    <!-- Karte zum hinzufügen eines Produktes-->
+                    <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="addProduct">
+                        <div id="table_div3"></div>
+                        <div class="wrapper">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="back_button_addProduct" onclick="backAddProduct()">
+                                Fertig
+                            </button>
+                        </div>
+                    </div>
                 <!-- Mitarbeiter Karte -->
 
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="employees">
@@ -577,11 +585,13 @@
     var purchaseOrderPosition;
 
     //Statistiken betreffend
-    var Statistics = document.getElementById("statistics");
+    var Statistics = document.getElementById("statistics");//Karte der Statistiken
 
     //Produkte betreffend
-    var Products = document.getElementById("products");
+    var Products = document.getElementById("products");//Produkte Karte
     var Product = document.getElementById("product");
+    var addProductCard = document.getElementById("addProductCard");//Karte zum Hinzufügen von Produkten
+    var currentProductPosition;//globale Variable zum Speichern von dem Produkt, welches gerade bearbeitet wird
 
     //Mitarbeiter betreffend
     var Employees = document.getElementById("employees");
@@ -589,6 +599,7 @@
     var WorkTimes = document.getElementById("work_times");
     var EditWorkTimes = document.getElementById("edit_work_times");
 
+    addProductCard.style.display = "none";//lässt die Karte zum Hinzufügen von Produkten beim Laden der Seite verschwinden
     PurchaseOrder.style.display = "none";
     PurchaseOrders.style.display = "none";
     ShortPurchaseOrders.style.display = "block";
@@ -855,7 +866,8 @@
         httpAsync(url,"POST",2);
     }
 
-    function editProducts(position){
+    function editProducts(position){//Öffnet die Editieren-Karte mit den Werten der Ursprungskarte in Textfeldern
+        currentProductPosition = position;
         Products.style.display = "none";
         Product.style.display = "block";
         AddPurchase.style.display = "none";
@@ -881,7 +893,6 @@
         document.getElementById("label1").innerText = productarray[position].name;
         cell2.innerHTML = "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\"><input class=\"mdl-textfield__input\" type=\"number\"><label id=\"label2\" class=\"mdl-textfield__label\" ></label><span class=\"mdl-textfield__error\">Eingabe muss eine Zahl sein!</span></div>";
         document.getElementById("label2").innerText = productarray[position].price;
-
         }
 
     function backOrder() {
@@ -898,6 +909,12 @@
         ShortPurchaseOrders.style.display = "block";
         Employees.style.display = "block";
         Statistics.style.display = "block";
+        var theURL = "https://fingerhut388.appspot.com/updateproduct?" + "code=" + productarray[currentProductPosition].code + "&companynumber=" + <%=companyTools.getOwner(companynumber)%> + "&productName=" + document.getElementById("label1").innerText + "&price=" + document.getElementById("label2").innerText;
+        httpAsync(theURL,"POST",3);
+    }
+
+    function backAddProduct(){
+        //TODO: Funktion schreiben um von der Produkt hinzufügen Karte zurückzukommen
     }
 
     function addPurchaseOrderItem(position) {
@@ -949,8 +966,8 @@
     }
 
     function addProduct(){
+        addProductCard.style.display = "block";
         Products.style.display = "none";
-        Product.style.display = "block";
         AddPurchase.style.display = "none";
         AddProductToPurchase.style.display = "none";
         ShortPurchaseOrders.style.display = "none";
@@ -1191,6 +1208,16 @@
                     + "&password=" + hashedSaltedPassword + "&servertimestamp=" + encodedServerTime;
                 httpAsync(postUrlStr,"POST",1);
                 break;
+            case 3:
+                switch(responseText) {
+                    case 0:
+                        //TODO: vernünftige Fehlermeldung
+                        break;
+                    case 1:
+                        //TODO: vernünftige Erfolgsmeldung
+                        break;
+                }
+            break;
         }
     }
 
@@ -1310,7 +1337,7 @@
         }
     }
     function signoff(){
-        //TODO: machen dass hier was funzt :)
+        /* TODO: machen dass hier was funzt :)*/
     }
     function fillEmployees() {
         var table = document.getElementById("employees_table");
