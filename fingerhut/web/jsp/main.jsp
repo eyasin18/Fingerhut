@@ -408,8 +408,9 @@
         for (var i = 0; i < companyNumbers.length; i++) {
             var line = document.createElement("li");
             line.classList.add("mdl-menu__item");
-            line.innerHTML = companyNumbers[i];
+            line.innerText = companyNumbers[i];
             dropdown_list.appendChild(line);
+            console.log(line);
         }
     }
 

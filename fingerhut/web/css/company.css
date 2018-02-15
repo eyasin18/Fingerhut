@@ -150,3 +150,48 @@
     margin-left: auto;
     margin-right: auto;
 }
+#save_new_work_time{
+    margin-bottom: 20px;
+}
+#cancel_new_work_time{
+    margin-bottom: 20px;
+}
+.checkbox_wrapper{
+    margin-bottom: 20px;
+}
+#edit_work_times{
+    overflow: visible;
+}
+#edit_work_time_heading{
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+#edit_days_wrapper{
+    width: 150px;
+}
+#edit_begin_hours_wrapper{
+    width: 150px;
+}
+#edit_begin_minutes_wrapper{
+    width: 150px;
+}
+#edit_end_hours_wrapper{
+    width: 150px;
+}
+#edit_end_minutes_wrapper {
+    width: 150px;
+}
+#edit_work_times_table{
+    margin-left: auto;
+    margin-right: auto;
+}
+#save_work_time{
+    margin-bottom: 20px;
+}
+#cancel_work_time{
+    margin-bottom: 20px;
+}
+#delete_work_time{
+    margin-bottom: 20px;
+}
