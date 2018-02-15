@@ -239,7 +239,7 @@
                             </tbody>
                         </table>
                         <div class="wrapper">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addProduct()">Hinzufügen</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored button" onclick="addProduct()" id="add_product_button">Hinzufügen</button>
                         </div>
                     </div>
                     <!-- Karte zum editieren eines Produkts-->
@@ -1119,7 +1119,9 @@
         document.getElementById("purchase_order_price_sum").innerText =  "Preis (brutto):";
         document.getElementById("purchase_order_taxable").innerText =  "Preis (netto):";
         document.getElementById("add_purchase_accountnumber_textfield").value =  null;
+        document.getElementById("add_purchase_accountnumber_textfield").parentElement.classList.remove("is-dirty");
         document.getElementById("add_purchase_pin_textfield").value =  null;
+        document.getElementById("add_purchase_pin_textfield").parentElement.classList.remove("is-dirty");
     }
 
     function cancelProductToPurchase() {
@@ -1327,42 +1329,50 @@
     }
     function fillShortPurchaseTable() {
         var table = document.getElementById("short_purchase_table");
-        if(purchase_order_array.prices_list != null){
         for(var i = 0; i<10; i++) {
-            var row = table.insertRow(document.getElementById("short_purchase_table").rows.length);
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-            var cell3 = row.insertCell(2);
-            var priceSum = 0;
-                for(var j = 0; j < purchase_order_array[i].prices_list.length; j++){
+            if (purchase_order_array[i] != null) {
+                var row = table.insertRow(document.getElementById("short_purchase_table").rows.length);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                var priceSum = 0;
+                for (var j = 0; j < purchase_order_array[i].prices_list.length; j++) {
                     priceSum += (purchase_order_array[i].prices_list[j] * purchase_order_array[i].amounts_list[j]);
                 }
                 var priceSumStr = priceSum.toFixed(2) + " S";
                 cell1.innerHTML = purchase_order_array[i].date_time;
                 cell2.innerHTML = purchase_order_array[i].buyer_accountnumber;
                 cell3.innerHTML = priceSumStr;
-                row.onclick = function(){editPurchaseorders(this.rowIndex-1)};
-                if(!purchase_order_array[i].completed){
+                row.onclick = function () {
+                    editPurchaseorders(this.rowIndex - 1)
+                };
+                if (!purchase_order_array[i].completed) {
                     row.style.backgroundColor = "#8BC349";
                 }
             }
+            else{
+                break;
+            }
         }
+
     }
     function fillPurchaseTable() {
         var table = document.getElementById("purchase_table");
-        if(purchase_order_array.prices_list != null){
+        console.log(purchase_order_array);
+        if(purchase_order_array[0].prices_list != null){
             for(var i = 0; i<purchase_order_array.length; i++) {
                 var row = table.insertRow(document.getElementById("purchase_table").rows.length);
                 var cell1 = row.insertCell(0);
                 var cell2 = row.insertCell(1);
                 var cell3 = row.insertCell(2);
-                var price_sum = 0;
+                var priceSum = 0;
                 for (var j = 0; j < purchase_order_array[i].prices_list.length; j++) {
-                    price_sum += (purchase_order_array[i].prices_list[j] * purchase_order_array[i].amounts_list[j]);
+                    priceSum += (purchase_order_array[i].prices_list[j] * purchase_order_array[i].amounts_list[j]);
                 }
+                var priceSumStr = priceSum.toFixed(2) + " S";
                 cell1.innerHTML = purchase_order_array[i].date_time;
                 cell2.innerHTML = purchase_order_array[i].buyer_accountnumber;
-                cell3.innerHTML = price_sum;
+                cell3.innerHTML = priceSumStr;
                 row.onclick = function () {
                     editPurchaseorders(this.rowIndex - 1)
                 };
@@ -1395,6 +1405,7 @@
         div.innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"work_times_table\">\n" +
             "                                <thead>\n" +
             "                                <tr>\n" +
+            "                                    <th>Tag</th>\n" +
             "                                    <th>Von</th>\n" +
             "                                    <th>Bis</th>\n" +
             "                                </tr>\n" +
@@ -1412,6 +1423,7 @@
         var manageEmployees = document.getElementById("manage_employees");
         var viewStatistics = document.getElementById("view_statistics");
         employeeAccountnumber.innerText = "0004";
+        bruttolohn.parentElement.classList.add("is-focused");
         bruttolohn.value = "3";
         nettolohn.innerText = "Nettolohn: " + " S";
         manageProducts.parentElement.MaterialCheckbox.check();
@@ -1419,9 +1431,11 @@
             var row = table.insertRow(document.getElementById("work_times_table").rows.length);
             var cell1 = row.insertCell(0);
             var cell2 = row.insertCell(1);
-            cell1.innerHTML = "10:30";
-            cell2.innerHTML = "11:30";
-            row.onclick = function(){editWorkTime(this.rowIndex-1)};
+            var cell3 = row.insertCell(2);
+            cell1.innerHTML = "Montag";
+            cell2.innerHTML = "10:30";
+            cell3.innerHTML = "11:30";
+            row.onclick = function(){editWorkTime(this.rowIndex)};
         }
     }
     function cancelEmployeeChanges() {
@@ -1458,6 +1472,23 @@
     function editWorkTime(position) {
         Employee.style.display = "none";
         EditWorkTimes.style.display = "block";
+        var table = document.getElementById("work_times_table");
+        var days = document.getElementById("edit_days_input");
+        var beginTimeArray = table.rows[position].cells[1].innerHTML.split(":");
+        var endTimeArray = table.rows[position].cells[2].innerHTML.split(":");
+        var day = table.rows[position].cells[0].innerHTML;
+        var beginHours = document.getElementById("edit_begin_hours_input");
+        var beginMinutes = document.getElementById("edit_begin_minutes_input");
+        var endHours = document.getElementById("edit_end_hours_input");
+        var endMinutes = document.getElementById("edit_end_minutes_input");
+        console.log(day);
+        console.log(beginTimeArray);
+        console.log(endTimeArray);
+        days.value = table.rows[position].cells[0].innerHTML;
+        beginHours.value = beginTimeArray[0];
+        beginMinutes.value = beginTimeArray[1];
+        endHours.value = endTimeArray[0];
+        endMinutes.value = endTimeArray[1];
     }
     </script>
 </html>
