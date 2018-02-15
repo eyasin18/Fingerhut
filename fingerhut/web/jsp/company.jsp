@@ -224,7 +224,7 @@
                             </thead>
                             <tbody id="products_table">
                                 <%
-                                    Product[] products = companyTools.querySellingProducts(companynumber);
+                                    List<Product> products = companyTools.querySellingProducts(companynumber);
                                     for(Product product : products){
                                         String nameStr = product.getName();
                                         double priceStr = product.getPrice();
@@ -472,12 +472,12 @@
     var productarray = [];
     var iterate = 0;
     <%
-        for(int i = 0; i < products.length; i++){
+        for(int i = 0; i < products.size(); i++){
             %>
-            var getName = '<%= products[i].getName() %>';
-            var getPrice = <%= products[i].getPrice() %>;
-            var getCode = <%= products[i].getCode() %>;
-            var getSelfBuy = <%= products[i].getSelfBuy() %>;
+            var getName = '<%= products.get(i).getName() %>';
+            var getPrice = <%= products.get(i).getPrice() %>;
+            var getCode = <%= products.get(i).getCode() %>;
+            var getSelfBuy = <%= products.get(i).getSelfBuy() %>;
             productarray[iterate] = product(
                 getName,
                 getPrice,

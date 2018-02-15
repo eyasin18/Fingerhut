@@ -38,9 +38,14 @@ public class CompanyTools {
         return companyGetter.getOwner();
     }
 
-    public Product[] querySellingProducts(String companynumber){
-        Company companyGetter = new Company(companynumber);
-        return companyGetter.getSellingProducts();
+    public List<Product> querySellingProducts(String companynumber){
+        List<Entity> productEntities = Product.getProductsByCompany(companynumber, false);
+        List<Product> products = new ArrayList<>();
+        for (Entity productEntity : productEntities){
+            Product product = new Product(productEntity);
+            products.add(product);
+        }
+        return products;
     }
 
     public PurchaseOrder[] queryPurchasOrders(String companynumber, HttpServletRequest req){
