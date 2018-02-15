@@ -70,3 +70,6 @@
     border-color: #FFFF00 !important;
     z-index: 1000;
 }
+#dropdown_list{
+    z-index: 1001;
+}
