@@ -52,18 +52,4 @@ public class CompanyTools {
         }
         return purchaseOrders;
     }
-
-    @Deprecated
-    public List<Product> getPurchaseOrdersProducts(PurchaseOrder[] purchaseOrders){
-        List<Product> purchaseOrdersProducts = new ArrayList<>();
-        for (PurchaseOrder purchaseOrder : purchaseOrders){
-            List<String> productCodes = purchaseOrder.getProductCodesList();
-            for (String productCode : productCodes){
-                if(purchaseOrdersProducts.stream().anyMatch(product -> product.getCode().equals(productCode))){
-                    purchaseOrdersProducts.add(new Product(productCode));
-                }
-            }
-        }
-        return purchaseOrdersProducts;
-    }
 }

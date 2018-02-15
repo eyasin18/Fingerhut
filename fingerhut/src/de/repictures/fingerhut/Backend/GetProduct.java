@@ -20,26 +20,28 @@ public class GetProduct extends HttpServlet{
         String priceStr = req.getParameter("price");
         String companyAccountnumber = req.getParameter("accountnumber");
         String selfBuyStr = req.getParameter("selfbuy");
-        boolean selfBuy;
-        selfBuy = selfBuyStr != null && Boolean.parseBoolean(selfBuyStr);
+        boolean selfBuy = selfBuyStr != null && Boolean.parseBoolean(selfBuyStr);
+        String buyableStr = req.getParameter("buyable");
+        boolean buyable = true;
+        if(buyableStr != null) buyable = Boolean.parseBoolean(buyableStr);
 
-        if (new Product(barcode).product != null){
+        Product product = new Product(barcode, companyAccountnumber);
+        if (product.product != null){
             resp.getWriter().println(2);
             return;
         }
 
-        Company companyBuilder = new Company();
-        Entity company = companyBuilder.getAccount(companyAccountnumber);
+        Company companyBuilder = new Company(companyAccountnumber);
 
         Product productBuilder = new Product();
-        productBuilder.product = productBuilder.addProduct(barcode, productName, company, priceStr);
-        productBuilder.setImageUrl("https://c1.staticflickr.com/5/4123/4793188726_5d34ab7120_z.jpg");
+        productBuilder.product = productBuilder.addProduct(barcode, productName, companyBuilder.account, priceStr);
         productBuilder.setSelfBuy(selfBuy);
+        productBuilder.setBuyable(buyable);
         productBuilder.saveAll();
 
-        Entity savedProduct = productBuilder.getProduct(barcode);
-        companyBuilder.addProduct(company, savedProduct);
-        companyBuilder.saveAll(company);
+        Entity savedProduct = Product.getSpecificProduct(barcode, companyAccountnumber);
+        companyBuilder.addProduct(savedProduct);
+        companyBuilder.saveAll();
 
         resp.getWriter().println(1);
     }

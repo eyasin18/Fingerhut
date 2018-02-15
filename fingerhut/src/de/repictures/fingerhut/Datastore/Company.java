@@ -245,12 +245,53 @@ public class Company extends Account {
         return balancesDTimesList;
     }
 
+    public void setEuroValue(double amount){
+        double currentAmount = 0;
+        if (account.hasProperty("euro_balance")){
+            currentAmount = (double) account.getProperty("euro_balance");
+        }
+        currentAmount += amount;
+        account.setProperty("euro_balance", currentAmount);
+    }
+
+    public double getEuroValue(){
+        double euros = 0;
+        if (account.hasProperty("euro_balance")){
+            euros = (double) account.getProperty("euro_balance");
+        }
+        return euros;
+    }
+
+    public double getStromerValue(){
+        double stromerValue = 0;
+        Query accountQuery = new Query("Account");
+        List<Entity> entityList = datastore.prepare(accountQuery).asList(FetchOptions.Builder.withDefaults());
+        Query companyQuery = new Query("Company");
+        entityList.addAll(datastore.prepare(companyQuery).asList(FetchOptions.Builder.withDefaults()));
+        for (Entity anEntityList : entityList) {
+            Account account = new Account(anEntityList);
+            if (account.account == null) {
+                account = new Company(anEntityList);
+            }
+            stromerValue += account.getBalanceDouble();
+        }
+        return stromerValue;
+    }
+
     public void addProduct(Entity passedEntity, Entity product){
         ArrayList<String> products = new ArrayList<>();
         if (passedEntity.getProperty("products") != null)
             products = (ArrayList<String>) passedEntity.getProperty("products");
         products.add(KeyFactory.keyToString(product.getKey()));
         passedEntity.setProperty("products", products);
+    }
+
+    public void addProduct(Entity product){
+        ArrayList<String> products = new ArrayList<>();
+        if (account.getProperty("products") != null)
+            products = (ArrayList<String>) account.getProperty("products");
+        products.add(KeyFactory.keyToString(product.getKey()));
+        account.setProperty("products", products);
     }
 
     public void setOwner(String owner){

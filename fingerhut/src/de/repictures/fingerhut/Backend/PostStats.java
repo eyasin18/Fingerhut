@@ -69,6 +69,11 @@ public class PostStats extends HttpServlet {
         object.add("balance_development", balanceDevelopmentArray);
         object.add("balance_development_dates", balanceDevelopmentTimesArray);
 
+        if (Objects.equals(companyNumber, "0002")){
+            object.addProperty("stromer_value", companyGetter.getStromerValue());
+            object.addProperty("euro_value", companyGetter.getEuroValue());
+        }
+
         resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
     }
 }

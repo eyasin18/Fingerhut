@@ -96,7 +96,7 @@ public class GetShoppingRequest extends HttpServlet{
                 if (!isSelfBuyArray.get(i).getAsBoolean()) {
                     continue;
                 }
-                Product product = new Product(productCodesArray.get(i).getAsString());
+                Product product = new Product(productCodesArray.get(i).getAsString(), companyNumber);
                 int count = amountsArray.get(i).getAsInt();
                 if (count > 1) purposeBuilder.append(count).append(" x ").append(product.getName()).append("\n");
                 else purposeBuilder.append(product.getName()).append("\n");
@@ -141,7 +141,7 @@ public class GetShoppingRequest extends HttpServlet{
 
         StringBuilder productNamesBuilder = new StringBuilder();
         for (String productCode : purchaseOrder.getProductCodesList()){
-            Product product = new Product(productCode);
+            Product product = new Product(productCode, companyNumber);
             productNamesBuilder.append(URLEncoder.encode(product.getName(), "UTF-8")).append("ò");
         }
 

@@ -65,7 +65,7 @@ public class CompletePurchaseOrder extends HttpServlet {
 
             for (int i = 0; i < amountsArray.size(); i++) {
                 if (isSelfBuyArray.get(i).getAsBoolean()) continue;
-                Product product = new Product(productCodeArray.get(i).getAsString());
+                Product product = new Product(productCodeArray.get(i).getAsString(), jsonObject.get("companynumber").getAsString());
                 long amount = amountsArray.get(i).getAsLong();
                 if (amount > 1) purposeBuilder.append(amount).append(" x ").append(product.getName()).append("\n");
                 else purposeBuilder.append(product.getName()).append("\n");

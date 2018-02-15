@@ -329,7 +329,7 @@ public class Transfer {
         Calendar currentTime = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("EEEE HH:mm", Locale.GERMANY);
         format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
-        DecimalFormat df = new DecimalFormat("#.00");
+        DecimalFormat df = new DecimalFormat("0.00");
         String purpose = "Ihr Lohn für " + format.format(currentTime.getTime()) + " Uhr"
                 + "\nBruttobetrag: " + df.format(netWage + tax) + "S"
                 + "\nIhnen wurden " + df.format(tax) + "S als Lohnsteuer abgezogen"
@@ -377,5 +377,59 @@ public class Transfer {
         payingCompany.addTransfer(savedTransfer);
         receivingAccount.saveAll();
         payingCompany.saveAll();
+    }
+
+    public static void payInOff(double amount, boolean payIn, Account receivingAccount){
+        Calendar currentTime = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("EEEE HH:mm", Locale.GERMANY);
+        format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+        DecimalFormat df = new DecimalFormat("0.00");
+        String purpose;
+        if (payIn) purpose = "Einzahlung in Höhe von " + df.format(amount) + " Euro";
+        else purpose = "Auszahlung in Höhe von " + df.format(amount) + " Stromer";
+
+        Cryptor cryptor = new Cryptor();
+
+        Company fcb = new Company("0002");
+
+        PublicKey senderPublicKey = cryptor.stringToPublicKey(fcb.getPublicKeyStr());
+        PublicKey receiverPublicKey = cryptor.stringToPublicKey(receivingAccount.getPublicKeyStr());
+        byte[] senderAesKey = cryptor.generateRandomAesKey();
+        byte[] receiverAesKey = cryptor.generateRandomAesKey();
+
+        byte[] encryptedSenderPurpose = cryptor.encryptSymmetricFromString(purpose, senderAesKey);
+        String encryptedSenderPurposeHex = cryptor.bytesToHex(encryptedSenderPurpose);
+        byte[] encryptedReceiverPurpose = cryptor.encryptSymmetricFromString(purpose, receiverAesKey);
+        String encryptedReceiverPurposeHex = cryptor.bytesToHex(encryptedReceiverPurpose);
+
+        byte[] encryptedSenderNameForReceiver = cryptor.encryptSymmetricFromString(fcb.getOwner(), receiverAesKey);
+        byte[] encryptedReceiverNameForSender = cryptor.encryptSymmetricFromString(receivingAccount.getAccountnumber(), senderAesKey);
+
+        byte[] encryptedSenderAesKey = cryptor.encryptAsymmetric(senderAesKey, senderPublicKey);
+        String encryptedSenderAesKeyHex = cryptor.bytesToHex(encryptedSenderAesKey);
+        byte[] encryptedReceiverAesKey = cryptor.encryptAsymmetric(receiverAesKey, receiverPublicKey);
+        String encryptedReceiverAesKeyHex = cryptor.bytesToHex(encryptedReceiverAesKey);
+
+        SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", Locale.GERMANY);
+        String datetime = f.format(currentTime.getTime());
+
+        Transfer transferBuilder = new Transfer(new Transfer(Locale.GERMANY).createTransaction(datetime), Locale.GERMANY);
+        transferBuilder.setSender(fcb.account);
+        transferBuilder.setReceiver(receivingAccount.account);
+        transferBuilder.setAmount((float) amount);
+        transferBuilder.setDateTime();
+        transferBuilder.setSenderPurpose(new Text(encryptedSenderPurposeHex));
+        transferBuilder.setSenderNameForReceiver(cryptor.bytesToHex(encryptedSenderNameForReceiver));
+        transferBuilder.setSenderAesKey(encryptedSenderAesKeyHex);
+        transferBuilder.setReceiverPurpose(new Text(encryptedReceiverPurposeHex));
+        transferBuilder.setReceiverNameForSender(cryptor.bytesToHex(encryptedReceiverNameForSender));
+        transferBuilder.setReceiverAesKey(encryptedReceiverAesKeyHex);
+        if (payIn) transferBuilder.setType("Einzahlung");
+        else transferBuilder.setType("Auszahlung");
+        transferBuilder.saveAll();
+
+        Entity savedTransfer = transferBuilder.getTransfer(datetime);
+        receivingAccount.addTransfer(savedTransfer);
+        receivingAccount.saveAll();
     }
 }

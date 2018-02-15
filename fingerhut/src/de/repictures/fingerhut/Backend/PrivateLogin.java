@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class PrivateLogin extends HttpServlet {
 
     private Logger log = Logger.getLogger(Account.class.getName());
-    public static final int appVersion = 10;
+    public static final int appVersion = 11;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -121,7 +121,12 @@ public class PrivateLogin extends HttpServlet {
                 account.updateRandomWebString(queriedAccounts.get(0));
                 account.saveAll(queriedAccounts.get(0));
                 object.addProperty("random_web_string", account.getRandomWebString(queriedAccounts.get(0)));
-                JsonObject featuresObject = new JsonParser().parse(account.getFeaturesString(queriedAccounts.get(0))).getAsJsonObject();
+                JsonObject featuresObject;
+                if (account.getFeaturesString(queriedAccounts.get(0)) != null) {
+                    featuresObject = new JsonParser().parse(account.getFeaturesString(queriedAccounts.get(0))).getAsJsonObject();
+                } else {
+                    featuresObject = new JsonObject();
+                }
                 object.add("features", featuresObject);
                 JsonArray companyAccountnumbersJsonArray = new JsonArray();
                 JsonArray companySectorsJsonArray = new JsonArray();

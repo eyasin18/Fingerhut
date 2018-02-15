@@ -90,7 +90,7 @@ public class Account {
         saveAll(account);
     }
 
-    public void postPrepaidAccount(){
+    public JsonObject postPrepaidAccount(){
         Random rand = new Random();
         String password = String.format("%04d", rand.nextInt(10000));
         String encryptedPassword = cryptor.hashToString(password);
@@ -121,6 +121,9 @@ public class Account {
             accountnumber = getAccountnumber(account);
         } else {
             accountnumber = getUnusedAccountnumber();
+            if (accountnumber == null){
+                return null;
+            }
             Key loginKey = KeyFactory.createKey("accountnumber", accountnumber);
             account = new Entity("Account", loginKey);
         }
@@ -128,13 +131,17 @@ public class Account {
         setAccountnumber(account, accountnumber);
         setHashedPassword(account, encryptedPassword);
         setBalance(account, 0f);
-        setIsPrepaid(account, false);
+        setIsPrepaid(account, true);
         account.setProperty("transferarray", new ArrayList<String>());
-        addCompany(account, null);
         setPrivateKeyStr(account, encryptedPrivateKeyStr);
         setPublicKeyStr(account, publicKeyStr);
         setAuthString(account, accountnumber);
         saveAll(account);
+
+        JsonObject accountInformation = new JsonObject();
+        accountInformation.addProperty("accountnumber", accountnumber);
+        accountInformation.addProperty("pin", password);
+        return accountInformation;
     }
 
     public static String getUnusedAccountnumber(){
@@ -165,8 +172,8 @@ public class Account {
         Query accountQuery = new Query("Account");
         Query.Filter isPrepaidFilter = new Query.FilterPredicate("is_prepaid", Query.FilterOperator.EQUAL, true);
         Query.Filter isExpiredFilter = new Query.FilterPredicate("expire_date", Query.FilterOperator.LESS_THAN_OR_EQUAL, getCurrentMinutes());
-        accountQuery.setFilter(isPrepaidFilter);
-        accountQuery.setFilter(isExpiredFilter);
+        Query.CompositeFilter compositeFilter = Query.CompositeFilterOperator.and(isPrepaidFilter, isExpiredFilter);
+        accountQuery.setFilter(compositeFilter);
         return datastore.prepare(accountQuery).asList(FetchOptions.Builder.withDefaults());
     }
 

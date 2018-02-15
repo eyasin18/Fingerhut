@@ -264,6 +264,30 @@
         <servlet-name>PostStats</servlet-name>
         <url-pattern>/poststats</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>AddPrepaidAccount</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.AddPrepaidAccount</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddPrepaidAccount</servlet-name>
+        <url-pattern>/addprepaid</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ChangeMoney</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.ChangeMoney</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ChangeMoney</servlet-name>
+        <url-pattern>/changemoney</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>UpdateProduct</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.UpdateProduct</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UpdateProduct</servlet-name>
+        <url-pattern>/updateproduct</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>jsp/index.jsp</welcome-file>
     </welcome-file-list>

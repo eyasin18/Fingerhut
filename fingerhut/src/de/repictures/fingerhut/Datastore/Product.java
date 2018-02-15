@@ -22,47 +22,82 @@ public class Product {
         this.product = productEntity;
     }
 
-    public Product(String code){
+    public Product(String code, String companynumber){
         datastore = DatastoreServiceFactory.getDatastoreService();
-        this.product = getProduct(code);
+        this.product = getSpecificProduct(code, companynumber);
     }
 
-    public Entity addProduct(String code, String name, Entity company, String priceStr){
-        Key key = KeyFactory.createKey("code", code);
+    public Entity addProduct(String code, String name, Entity companyEntity, String priceStr){
+        Company company = new Company(companyEntity);
+        Key key = KeyFactory.createKey("code_companynumber", code + company.getAccountnumber());
         Entity createdProduct = new Entity("Product", key);
         createdProduct.setProperty("code", code);
         createdProduct.setProperty("name", name);
-        createdProduct.setProperty("selling_company", KeyFactory.keyToString(company.getKey()));
+        createdProduct.setProperty("selling_company", company.getAccountnumber());
         double price = Double.parseDouble(priceStr);
         createdProduct.setProperty("price", price);
         return createdProduct;
     }
 
-    public Entity getProduct(String code){
-        Key loginKey = KeyFactory.createKey("code", code);
-        Query loginQuery = new Query("Product", loginKey);
-        List<Entity> accountList = datastore.prepare(loginQuery).asList(FetchOptions.Builder.withDefaults());
-        if (accountList.size() > 0){
-            return accountList.get(0);
+    public static List<Entity> getProductsByCode(String code, boolean mustBeBuyable){
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query productQuery = new Query("Product");
+        Query.Filter codeFilter = new Query.FilterPredicate("code", Query.FilterOperator.EQUAL, code);
+        productQuery.setFilter(codeFilter);
+        if (mustBeBuyable){
+            Query.Filter buyableFilter = new Query.FilterPredicate("buyable", Query.FilterOperator.EQUAL, true);
+            productQuery.setFilter(buyableFilter);
+        }
+        List<Entity> productsList = datastore.prepare(productQuery).asList(FetchOptions.Builder.withDefaults());
+        if (productsList.size() > 0){
+            return productsList;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public static List<Entity> getProductsByCompany(String companynumber, boolean mustBeBuyable){
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query productQuery = new Query("Product");
+        Query.Filter companyFilter = new Query.FilterPredicate("selling_company", Query.FilterOperator.EQUAL, companynumber);
+        if (mustBeBuyable){
+            Query.Filter buyableFilter = new Query.FilterPredicate("buyable", Query.FilterOperator.EQUAL, true);
+            productQuery.setFilter(buyableFilter);
+            Query.CompositeFilter compositeFilter = Query.CompositeFilterOperator.and(companyFilter, buyableFilter);
+            productQuery.setFilter(compositeFilter);
+        } else {
+            productQuery.setFilter(companyFilter);
+        }
+        List<Entity> productsList = datastore.prepare(productQuery).asList(FetchOptions.Builder.withDefaults());
+        if (productsList.size() > 0){
+            return productsList;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public static Entity getSpecificProduct(String code, String companyNumber){
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query productQuery = new Query("Product");
+        Query.Filter companyFilter = new Query.FilterPredicate("selling_company", Query.FilterOperator.EQUAL, companyNumber);
+        Query.Filter codeFilter = new Query.FilterPredicate("code", Query.FilterOperator.EQUAL, code);
+        Query.CompositeFilter compositeFilter = Query.CompositeFilterOperator.and(companyFilter, codeFilter);
+        productQuery.setFilter(compositeFilter);
+        List<Entity> productsList = datastore.prepare(productQuery).asList(FetchOptions.Builder.withDefaults());
+        if (productsList.size() > 0){
+            return productsList.get(0);
         } else {
             return null;
         }
     }
 
-    public Entity getProduct(Key productKey){
+    public static Entity getSpecificProduct(Key productKey){
         try {
+            DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
             return datastore.get(productKey);
         } catch (EntityNotFoundException e) {
             return null;
         }
-    }
-
-    public List<Entity> getProducts(String code){
-        Key productKey = KeyFactory.createKey("code", code);
-        Query productQuery = new Query("Product", productKey);
-        List<Entity> products = datastore.prepare(productQuery).asList(FetchOptions.Builder.withDefaults());
-        if (products != null) return products;
-        else return new ArrayList<>();
     }
 
     public void setCode(String code){
@@ -97,12 +132,12 @@ public class Product {
         return (String) passedEntity.getProperty("name");
     }
 
-    public void setSellingCompany(String sellingCompanyName){
-        product.setProperty("selling_company", sellingCompanyName);
+    public void setSellingCompany(String sellingCompanyAccountnumber){
+        product.setProperty("selling_company", sellingCompanyAccountnumber);
     }
 
-    public void setSellingCompany(Entity passedEntity, String sellingCompanyName){
-        passedEntity.setProperty("selling_company", sellingCompanyName);
+    public void setSellingCompany(Entity passedEntity, String sellingCompanyAccountnumber){
+        passedEntity.setProperty("selling_company", sellingCompanyAccountnumber);
     }
 
     public String getSellingCompany(){
@@ -111,18 +146,6 @@ public class Product {
 
     public String getSellingCompany(Entity passedEntity){
         return (String) passedEntity.getProperty("selling_company");
-    }
-
-    public void setImageUrl(String imageUrl){
-        product.setProperty("image_url", imageUrl);
-    }
-
-    public void setImageUrl(Entity passedEntity, String imageUrl){
-        passedEntity.setProperty("image_url", imageUrl);
-    }
-
-    public String getImageUrl(){
-        return (String) product.getProperty("image_url");
     }
 
     public String getImageUrl(Entity passedEntity){
@@ -159,6 +182,22 @@ public class Product {
 
     public boolean getSelfBuy(Entity passedEntity){
         return (boolean) passedEntity.getProperty("selfBuy");
+    }
+
+    public void setBuyable(boolean buyable){
+        product.setProperty("buyable", buyable);
+    }
+
+    public void setBuyable(Entity passedEntity, boolean buyable){
+        passedEntity.setProperty("buyable", buyable);
+    }
+
+    public boolean getBuyable(){
+        return (boolean) product.getProperty("buyable");
+    }
+
+    public boolean getBuyable(Entity passedEntity){
+        return (boolean) passedEntity.getProperty("buyable");
     }
 
     public void saveAll(){

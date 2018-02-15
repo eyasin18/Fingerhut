@@ -38,22 +38,15 @@ public class GetTransfer extends HttpServlet {
         Account receiverBuilder = new Account(receiverAccountnumber);
         Account senderBuilder = new Account(senderAccountnumber);
 
-        if (receiverBuilder.account == null){
-            resp.getWriter().println("3");
+        if (receiverBuilder.account == null || senderBuilder.account == null){
+            resp.getWriter().println("5");
             return;
         }
 
         String savedWebString = senderBuilder.getRandomWebString();
         if (!Objects.equals(webString, savedWebString)){
-            resp.getWriter().println("2");
+            resp.getWriter().println("6");
             return;
-        }
-
-        if (receiverBuilder.account == null){
-            receiverBuilder = new Company(receiverAccountnumber);
-        }
-        if (senderBuilder.account == null){
-            senderBuilder = new Company(senderAccountnumber);
         }
 
         //Öffentliche Schlüssel werden aus dem Datenspeicher gelesen
@@ -64,8 +57,8 @@ public class GetTransfer extends HttpServlet {
 
         //Antwort wird zurück gegeben
         String outputStr;
-        if (!keyAsNumbers) outputStr = URLEncoder.encode("1ò" + senderPublicKeyStr + "ò" + receiverPublicKeyStr, "UTF-8");
-        else outputStr = "1ò" + senderValues[0] + "ò" + senderValues[1] + "ò" + receiverValues[0] + "ò" + receiverValues[1];
+        if (!keyAsNumbers) outputStr = URLEncoder.encode("7ò" + senderPublicKeyStr + "ò" + receiverPublicKeyStr, "UTF-8");
+        else outputStr = "7ò" + senderValues[0] + "ò" + senderValues[1] + "ò" + receiverValues[0] + "ò" + receiverValues[1];
         resp.getWriter().println(outputStr);
     }
 
@@ -92,12 +85,6 @@ public class GetTransfer extends HttpServlet {
         //Die entsprechenden Entitäts-Builder werden initialisiert
         Account receiverBuilder = new Account(receiverAccountnumber);
         Account senderBuilder = new Account(senderAccountnumber);
-        if (receiverBuilder.account == null){
-            receiverBuilder = new Company(receiverAccountnumber);
-        }
-        if (senderBuilder.account == null){
-            senderBuilder = new Company(senderAccountnumber);
-        }
 
         String savedWebString = senderBuilder.getRandomWebString();
         if (!Objects.equals(webString, savedWebString)){
