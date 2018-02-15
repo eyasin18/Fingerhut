@@ -5,10 +5,10 @@
 <%@ page import="de.repictures.fingerhut.Web.MainTools" %>
 <%@ page import="de.repictures.fingerhut.Datastore.Product" %>
 <%@ page import="de.repictures.fingerhut.Datastore.PurchaseOrder" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.text.DecimalFormat" %>
-<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.text.DecimalFormat"%>
+<%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.util.Calendar" %>
 <%@ page import="java.text.ParseException" %>
 <%@ page import="java.util.logging.Logger" %>
@@ -244,7 +244,34 @@
                     </div>
                     <!-- Karte zum editieren eines Produkts-->
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="product">
-                        <div id="table_div2"></div>
+                        <div id="table_div2">
+                            <table class="mdl-data-table mdl-js-data-table" id="product_info_table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Preis</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>
+                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                <input id="textfield1" class="mdl-textfield__input" type="text">
+                                                <label class="mdl-textfield__label" for="textfield1">Name</label>
+                                                <span class="mdl-textfield__error"></span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                <input id="textfield2" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]">
+                                                <label class="mdl-textfield__label" >Preis</label>
+                                                <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         <div class ="wrapper">
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backProduct()" id="back_button_product">Fertig</button>
                         </div>
@@ -875,24 +902,12 @@
         ShortPurchaseOrders.style.display = "none";
         Employees.style.display = "none";
         Statistics.style.display = "none";
-        document.getElementById("table_div2").innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"product_info_table\">\n" +
-            "                                <thead>\n" +
-            "                                    <tr>\n" +
-            "                                        <th>Name</th>\n" +
-            "                                        <th>Preis</th>\n" +
-            "                                    </tr>\n" +
-            "                                </thead>\n" +
-            "                                <tbody>\n" +
-            "                                </tbody>\n" +
-            "                            </table>";
         var productInfoTable = document.getElementById("product_info_table");
         var row = productInfoTable.insertRow(document.getElementById("product_info_table").rows.length);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
-        cell1.innerHTML = "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\"><input class=\"mdl-textfield__input\" type=\"text\" pattern=\"-?[0-9]*(\.[0-9]+)?\"><label id=\"label1\" class=\"mdl-textfield__label\" ></label><span class=\"mdl-textfield__error\">Eingabe muss eine Zahl sein!</span></div>";
-        document.getElementById("label1").innerText = productarray[position].name;
-        cell2.innerHTML = "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\"><input class=\"mdl-textfield__input\" type=\"number\"><label id=\"label2\" class=\"mdl-textfield__label\" ></label><span class=\"mdl-textfield__error\">Eingabe muss eine Zahl sein!</span></div>";
-        document.getElementById("label2").innerText = productarray[position].price;
+        document.getElementById("textfield1").innerText = productarray[position].name;
+        document.getElementById("textfield2").innerText = productarray[position].price;
         }
 
     function backOrder() {
@@ -909,12 +924,18 @@
         ShortPurchaseOrders.style.display = "block";
         Employees.style.display = "block";
         Statistics.style.display = "block";
-        var theURL = "https://fingerhut388.appspot.com/updateproduct?" + "code=" + productarray[currentProductPosition].code + "&companynumber=" + <%=companyTools.getOwner(companynumber)%> + "&productName=" + document.getElementById("label1").innerText + "&price=" + document.getElementById("label2").innerText;
+        var theURL = "https://fingerhut388.appspot.com/updateproduct?" + "code=" + productarray[currentProductPosition].code + "&companynumber=" + <%=companyTools.getOwner(companynumber)%> + "&productName=" + document.getElementById("textfield1").innerText + "&price=" + document.getElementById("textfield2").innerText;
         httpAsync(theURL,"POST",3);
     }
 
     function backAddProduct(){
         //TODO: Funktion schreiben um von der Produkt hinzufügen Karte zurückzukommen
+        Products.style.display = "flex";
+        addProductCard.style.display = "none";
+        ShortPurchaseOrders.style.display = "block";
+        Employees.style.display = "block";
+        Statistics.style.display = "block";
+
     }
 
     function addPurchaseOrderItem(position) {
@@ -973,6 +994,21 @@
         ShortPurchaseOrders.style.display = "none";
         Employees.style.display = "none";
         Statistics.style.display = "none";
+        document.getElementById("table_div3").innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"product_add_table\">\n" +
+            "                                <thead>\n" +
+            "                                    <tr>\n" +
+            "                                        <th>Name</th>\n" +
+            "                                        <th>Preis</th>\n" +
+            "                                    </tr>\n" +
+            "                                </thead>\n" +
+            "                                <tbody>\n" +
+            "                                </tbody>\n" +
+            "                            </table>";
+        var productAddTable = document.getElementById("product_add_table");
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        cell1.innerHTML = "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\"><input id=\"textfield3\" class=\"mdl-textfield__input\" type=\"text\" pattern=\"-?[0-9]*(\.[0-9]+)?\"><label class=\"mdl-textfield__label\" ></label><span class=\"mdl-textfield__error\">Eingabe muss eine Zahl sein!</span></div>";
+        cell2.innerHTML = "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\"><input id=\"textfield4\" class=\"mdl-textfield__input\" type=\"number\"><label  class=\"mdl-textfield__label\" ></label><span class=\"mdl-textfield__error\">Eingabe muss eine Zahl sein!</span></div>";
     }
 
     function addProductToPurchase() {

@@ -139,8 +139,7 @@
                             </div>
                             <div class="mdl-card__supporting-text">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="dropdown_wrapper">
-                                    <input type="text" value="" class="mdl-textfield__input" id="dropdown_company_field"
-                                           readonly>
+                                    <input type="text" value="" class="mdl-textfield__input" id="dropdown_company_field" readonly>
                                     <input type="hidden" value="" name="dropdown_field">
                                     <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                                     <label for="dropdown_company_field" class="mdl-textfield__label">Unternehmen</label>
