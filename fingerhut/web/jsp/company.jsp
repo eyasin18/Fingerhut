@@ -590,7 +590,7 @@
     //Produkte betreffend
     var Products = document.getElementById("products");//Produkte Karte
     var Product = document.getElementById("product");
-    var addProductCard = document.getElementById("addProductCard");//Karte zum Hinzufügen von Produkten
+    var addProductCard = document.getElementById("addProduct");//Karte zum Hinzufügen von Produkten
     var currentProductPosition;//globale Variable zum Speichern von dem Produkt, welches gerade bearbeitet wird
 
     //Mitarbeiter betreffend
@@ -599,7 +599,7 @@
     var WorkTimes = document.getElementById("work_times");
     var EditWorkTimes = document.getElementById("edit_work_times");
 
-    addProductCard.style.display = "none";//lässt die Karte zum Hinzufügen von Produkten beim Laden der Seite verschwinden
+    addProductCard.style.display = "none"; //lässt die Karte zum Hinzufügen von Produkten beim Laden der Seite verschwinden
     PurchaseOrder.style.display = "none";
     PurchaseOrders.style.display = "none";
     ShortPurchaseOrders.style.display = "block";
