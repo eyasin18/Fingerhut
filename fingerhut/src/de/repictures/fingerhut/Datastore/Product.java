@@ -48,6 +48,7 @@ public class Product {
             Query.Filter buyableFilter = new Query.FilterPredicate("buyable", Query.FilterOperator.EQUAL, true);
             productQuery.setFilter(buyableFilter);
         }
+        productQuery.addSort("name", Query.SortDirection.ASCENDING);
         List<Entity> productsList = datastore.prepare(productQuery).asList(FetchOptions.Builder.withDefaults());
         if (productsList.size() > 0){
             return productsList;
@@ -68,6 +69,7 @@ public class Product {
         } else {
             productQuery.setFilter(companyFilter);
         }
+        productQuery.addSort("name", Query.SortDirection.ASCENDING);
         List<Entity> productsList = datastore.prepare(productQuery).asList(FetchOptions.Builder.withDefaults());
         if (productsList.size() > 0){
             return productsList;

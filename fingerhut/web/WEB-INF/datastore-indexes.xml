@@ -4,4 +4,8 @@
     <datastore-index kind="PurchaseOrder" ancestor="true" source="manual">
         <property name="date_time" direction="desc"/>
     </datastore-index>
+    <datastore-index kind="Product" ancestor="false" source="manual">
+        <property name="selling_company" direction="asc"/>
+        <property name="name" direction="asc"/>
+    </datastore-index>
 </datastore-indexes>

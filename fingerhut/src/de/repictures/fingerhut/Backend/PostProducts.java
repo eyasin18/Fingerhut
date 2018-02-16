@@ -56,6 +56,7 @@ public class PostProducts extends HttpServlet{
                 productObject.addProperty("price", product.getPrice());
                 productObject.addProperty("is_self_buy", product.getSelfBuy());
                 productObject.addProperty("code", product.getCode());
+                productObject.addProperty("is_buyable", product.getBuyable());
 
                 productArray.add(productObject);
             }
