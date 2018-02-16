@@ -244,33 +244,17 @@
                     </div>
                     <!-- Karte zum editieren eines Produkts-->
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="product">
-                        <div id="table_div2">
-                            <table class="mdl-data-table mdl-js-data-table" id="product_info_table">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Preis</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th>
-                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                                <input id="textfield1" class="mdl-textfield__input" type="text">
-                                                <label class="mdl-textfield__label" for="textfield1">Name</label>
-                                                <span class="mdl-textfield__error"></span>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                                <input id="textfield2" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]">
-                                                <label class="mdl-textfield__label" >Preis</label>
-                                                <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
-                                            </div>
-                                        </th>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="wrapper">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input id="textfield1" class="mdl-textfield__input" type="text">
+                                <label class="mdl-textfield__label" for="textfield1" id="label1"></label>
+                                <span class="mdl-textfield__error"></span>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input id="textfield2" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]">
+                                <label class="mdl-textfield__label" for="textfield2" id="label2"></label>
+                                <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
+                            </div>
                         </div>
                         <div class ="wrapper">
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backProduct()" id="back_button_product">Fertig</button>
@@ -714,8 +698,6 @@
     fillPurchaseTable();
     fillEmployees();
 
-
-
     /*if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('../js/firebase-messaging-sw.js', { scope: '/js/' }).then(function(reg) {
 
@@ -894,7 +876,7 @@
     }
 
     function editProducts(position){//Öffnet die Editieren-Karte mit den Werten der Ursprungskarte in Textfeldern
-        currentProductPosition = position;
+        currentProductPosition = position - 1;
         Products.style.display = "none";
         Product.style.display = "block";
         AddPurchase.style.display = "none";
@@ -902,13 +884,13 @@
         ShortPurchaseOrders.style.display = "none";
         Employees.style.display = "none";
         Statistics.style.display = "none";
-        var productInfoTable = document.getElementById("product_info_table");
-        var row = productInfoTable.insertRow(document.getElementById("product_info_table").rows.length);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        document.getElementById("textfield1").innerText = productarray[position].name;
-        document.getElementById("textfield2").innerText = productarray[position].price;
-        }
+        var textfield1 = document.getElementById("textfield1");
+        var textfield2 = document.getElementById("textfield2");
+        textfield1.parentElement.classList.add("is-focused");
+        textfield2.parentElement.classList.add("is-focused");
+        textfield1.value = productarray[(position - 1)].name;
+        textfield2.value = productarray[(position - 1)].price;
+    }
 
     function backOrder() {
         PurchaseOrder.style.display = "none";
@@ -924,7 +906,9 @@
         ShortPurchaseOrders.style.display = "block";
         Employees.style.display = "block";
         Statistics.style.display = "block";
-        var theURL = "https://fingerhut388.appspot.com/updateproduct?" + "code=" + productarray[currentProductPosition].code + "&companynumber=" + <%=companyTools.getOwner(companynumber)%> + "&productName=" + document.getElementById("textfield1").innerText + "&price=" + document.getElementById("textfield2").innerText;
+        var companynumber = '<%=companyTools.getOwner(companynumber)%>';
+        var theURL = "https://fingerhut388.appspot.com/updateproduct?" + "code=" + productarray[currentProductPosition].code + "&companynumber=" + companynumber + "&productName=" + document.getElementById("textfield1").innerText + "&price=" + document.getElementById("textfield2").innerText;
+        console.log(theURL);
         httpAsync(theURL,"POST",3);
     }
 
@@ -1250,9 +1234,11 @@
                 switch(responseText) {
                     case 0:
                         //TODO: vernünftige Fehlermeldung
+                        console.log("Fehler");
                         break;
                     case 1:
                         //TODO: vernünftige Erfolgsmeldung
+                        console.log("Erfolg");
                         break;
                 }
             break;

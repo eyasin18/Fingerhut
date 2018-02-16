@@ -24,6 +24,7 @@
             <script defer src="../js/sjcl.js"></script>
             <script defer src="${pageContext.request.contextPath}../js/material.min.js"></script>
             <script type="application/javascript" src="../res/values/strings.js"></script>
+            <title>Fingerhut</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Mobile-Device-Skalierung -->
 

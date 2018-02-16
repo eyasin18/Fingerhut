@@ -11,7 +11,7 @@ import com.google.gson.JsonObject;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
 import io.swagger.util.Json;
-import org.json.JSONArray;
+//import org.json.JSONArray;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

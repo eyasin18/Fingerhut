@@ -43,6 +43,7 @@
     <script defer src="../js/sjcl.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}../js/index.js"></script>
     <script type="application/javascript" src="../res/values/strings.js"></script>
+    <title>Fingerhut</title>
 </head>
 <body>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
