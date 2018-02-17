@@ -1,10 +1,11 @@
-package de.repictures.fingerhut.Debug;
+package de.repictures.fingerhut.Admin;
 
 import com.google.appengine.api.datastore.*;
 import com.google.gson.Gson;
 import de.repictures.fingerhut.Cryptor;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
+import de.repictures.fingerhut.Datastore.Tax;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,11 +17,14 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: Klasse entfernen!!
-public class AccountSetter extends HttpServlet {
+public class EditData extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        /*Tax.setBioMeatCustom(12);
+        Tax.setMeatCustom(25);
+        Tax.setPackageCustom(10);
+        Tax.setBasicIncome(2);*/
     }
 
     private void updateEntities(HttpServletRequest req, HttpServletResponse resp) throws IOException {

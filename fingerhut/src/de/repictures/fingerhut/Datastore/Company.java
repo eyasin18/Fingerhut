@@ -450,6 +450,18 @@ public class Company extends Account {
         else return 0;
     }
 
+    public void setInsolvent(boolean isInsolvent){
+        account.setProperty("is_insolvent", isInsolvent);
+    }
+
+    public boolean isInsolvent() {
+        return account.hasProperty("is_insolvent") && (boolean) account.getProperty("is_insolvent");
+    }
+
+    public boolean isInsolvent(Entity passedEntity) {
+        return passedEntity.hasProperty("is_insolvent") && (boolean) passedEntity.getProperty("is_insolvent");
+    }
+
     @Deprecated
     public void setShoppingRequests(Map<String, List<String[]>> shoppingMap){
         List<String> shoppingMapAccountnumbers = new ArrayList<>(shoppingMap.keySet());

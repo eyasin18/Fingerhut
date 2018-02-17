@@ -129,4 +129,54 @@ public class Tax {
             return 0;
         }
     }
+
+    public static void setBioMeatCustom(int percentage){
+        List<Long> taxes = new ArrayList<>();
+        taxes.add((long) percentage);
+        Key vatKey = KeyFactory.createKey("id", 7);
+        Entity vatEntity = new Entity("Tax", vatKey);
+        vatEntity.setProperty("id", 7);
+        vatEntity.setProperty("percentage", taxes);
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        datastoreService.put(vatEntity);
+    }
+
+    public static int getBioMeatCustom(){
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        Key vatKey = KeyFactory.createKey("id", 7);
+        Query taxQuery = new Query("Tax", vatKey);
+        List<Entity> vatList = datastoreService.prepare(taxQuery).asList(FetchOptions.Builder.withDefaults());
+        if (vatList.size() > 0){
+            List<Long> taxes = (List<Long>) vatList.get(0).getProperty("percentage");
+            return taxes.get(0).intValue();
+        } else {
+            return 0;
+        }
+    }
+
+    public static void setBasicIncome(double basicIncome){
+        Key incomeKey = KeyFactory.createKey("id", 6);
+        Entity incomeEntity = new Entity("Tax", incomeKey);
+        incomeEntity.setProperty("id", 6);
+        incomeEntity.setProperty("amount", basicIncome);
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        datastoreService.put(incomeEntity);
+    }
+
+    public static Number getBasicIncome(){
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        Key incomeKey = KeyFactory.createKey("id", 6);
+        Query taxQuery = new Query("Tax", incomeKey);
+        List<Entity> vatList = datastoreService.prepare(taxQuery).asList(FetchOptions.Builder.withDefaults());
+        if (vatList.size() > 0){
+            Number number = (Number) vatList.get(0).getProperty("amount");
+            if (number.doubleValue() >= 2){
+                return number;
+            } else {
+                return 2;
+            }
+        } else {
+            return 2;
+        }
+    }
 }

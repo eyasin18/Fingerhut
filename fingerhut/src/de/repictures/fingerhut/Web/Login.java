@@ -41,6 +41,10 @@ public class Login extends HttpServlet{
 
         if (Objects.equals(savedPasswordHash, passwordHash)){
             accountGetter.updateRandomWebString();
+            if (!accountGetter.getIsPrepaid() && !accountGetter.gotBasicIncome()){
+                accountGetter.transferBasicIncome();
+                accountGetter.setGotBasicIncome(true);
+            }
             accountGetter.saveAll();
             resp.getWriter().println("1~" + accountGetter.getRandomWebString());
         } else {

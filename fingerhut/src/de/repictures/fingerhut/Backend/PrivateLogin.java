@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class PrivateLogin extends HttpServlet {
 
     private Logger log = Logger.getLogger(Account.class.getName());
-    public static final int appVersion = 11;
+    public static final int appVersion = 12;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -109,6 +109,10 @@ public class PrivateLogin extends HttpServlet {
             log.info("\nInputPassword: " + inputPassword + "\nSavedSaltedPassword: " + savedPassword + "\nSavedHashedPassword: " + account.getHashedPassword(queriedAccounts.get(0))
             + "\nServer Timestamp: " + serverTimeStamp);
             if (Objects.equals(savedPassword, inputPassword)){
+                if (!account.getIsPrepaid(queriedAccounts.get(0)) && !account.gotBasicIncome(queriedAccounts.get(0))){
+                    account.transferBasicIncome(queriedAccounts.get(0));
+                    account.setGotBasicIncome(queriedAccounts.get(0), true);
+                }
                 account.setLoginAttempts(queriedAccounts.get(0), 0);
                 account.saveAll(queriedAccounts.get(0));
 

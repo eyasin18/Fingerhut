@@ -325,15 +325,19 @@ public class Transfer {
         companyGetter.saveAll();
     }
 
-    public static void transferWage(double netWage, double tax, Company payingCompany, Account receivingAccount){
+    public static void transferWage(double netWage, double tax, boolean basicIncome, Company payingCompany, Account receivingAccount){
         Calendar currentTime = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("EEEE HH:mm", Locale.GERMANY);
         format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
         DecimalFormat df = new DecimalFormat("0.00");
-        String purpose = "Ihr Lohn für " + format.format(currentTime.getTime()) + " Uhr"
-                + "\nBruttobetrag: " + df.format(netWage + tax) + "S"
-                + "\nIhnen wurden " + df.format(tax) + "S als Lohnsteuer abgezogen"
-                + "\nIhr Nettobetrag beläuft sich auf " + df.format(netWage) + "S";
+        String purpose;
+        if (!basicIncome)
+            purpose = "Ihr Lohn für " + format.format(currentTime.getTime()) + " Uhr"
+                    + "\nBruttobetrag: " + df.format(netWage + tax) + "S"
+                    + "\nIhnen wurden " + df.format(tax) + "S als Lohnsteuer abgezogen"
+                    + "\nIhr Nettobetrag beläuft sich auf " + df.format(netWage) + "S";
+        else
+            purpose = "Ihr Grundeinkommen für " + format.format(currentTime.getTime()) + " Uhr in Höhe von " + df.format(netWage) + "S";
 
         Cryptor cryptor = new Cryptor();
 
@@ -369,7 +373,8 @@ public class Transfer {
         transferBuilder.setReceiverPurpose(new Text(encryptedReceiverPurposeHex));
         transferBuilder.setReceiverNameForSender(cryptor.bytesToHex(encryptedReceiverNameForSender));
         transferBuilder.setReceiverAesKey(encryptedReceiverAesKeyHex);
-        transferBuilder.setType("Lohn");
+        if (!basicIncome) transferBuilder.setType("Lohn");
+        else transferBuilder.setType("Grundeinkommen");
         transferBuilder.saveAll();
 
         Entity savedTransfer = transferBuilder.getTransfer(datetime);

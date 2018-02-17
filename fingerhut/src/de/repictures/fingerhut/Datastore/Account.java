@@ -12,10 +12,7 @@ import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -171,7 +168,7 @@ public class Account {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query accountQuery = new Query("Account");
         Query.Filter isPrepaidFilter = new Query.FilterPredicate("is_prepaid", Query.FilterOperator.EQUAL, true);
-        Query.Filter isExpiredFilter = new Query.FilterPredicate("expire_date", Query.FilterOperator.LESS_THAN_OR_EQUAL, getCurrentMinutes());
+        Query.Filter isExpiredFilter = new Query.FilterPredicate("expire_date", Query.FilterOperator.LESS_THAN_OR_EQUAL, getCurrentRoundedMinutes());
         Query.CompositeFilter compositeFilter = Query.CompositeFilterOperator.and(isPrepaidFilter, isExpiredFilter);
         accountQuery.setFilter(compositeFilter);
         return datastore.prepare(accountQuery).asList(FetchOptions.Builder.withDefaults());
@@ -250,6 +247,10 @@ public class Account {
     }
 
     public void setBalance(Entity passedEntity, float balance){
+        passedEntity.setProperty("balance", balance);
+    }
+
+    public void setBalance(Entity passedEntity, double balance){
         passedEntity.setProperty("balance", balance);
     }
 
@@ -372,6 +373,8 @@ public class Account {
      * 5 = Geld wechseln
      * 6 = Mitarbeiter hinzufügen
      * 7 = Prepaidkonto hinzufügen
+     * 8 = Ausweis scanner
+     * 9 = Waareneinfuhr
      */
 
     public void setFeatures(ArrayList<Long> features, String companynumber){
@@ -913,6 +916,71 @@ public class Account {
         }
     }
 
+    public void enterState(){
+        account.setProperty("state_entry_time", getCurrentMinutes());
+        account.setProperty("is_present", true);
+        account.setProperty("was_present", true);
+    }
+
+    public long exitState(){
+        long entryTime = ((Number) account.getProperty("state_entry_time")).longValue();
+        long currentTime = getCurrentMinutes();
+        account.setProperty("is_present", false);
+        long presenceTime = 0;
+        if (account.hasProperty("presence_time"))
+            presenceTime = ((Number) account.getProperty("presence_time")).longValue();
+        presenceTime = presenceTime + (currentTime - entryTime);
+        account.setProperty("presence_time", presenceTime);
+        return presenceTime;
+    }
+
+    public boolean isPresent(){
+        boolean present = false;
+        if (account.hasProperty("is_present"))
+            present = (boolean) account.getProperty("is_present");
+        return present;
+    }
+
+    public void setGotBasicIncome(boolean gotBasicIncome){
+        account.setProperty("got_basic_income", gotBasicIncome);
+    }
+
+    public void setGotBasicIncome(Entity passedEntity, boolean gotBasicIncome){
+        passedEntity.setProperty("got_basic_income", gotBasicIncome);
+    }
+
+    public boolean gotBasicIncome() {
+        return account.hasProperty("got_basic_income") && (boolean) account.getProperty("got_basic_income");
+    }
+
+    public boolean gotBasicIncome(Entity passedEntity) {
+        return passedEntity.hasProperty("got_basic_income") && (boolean) passedEntity.getProperty("got_basic_income");
+    }
+
+    public void transferBasicIncome(){
+        Company finanzministerium = new Company("0098");
+        double basicIncome = Tax.getBasicIncome().doubleValue();
+        double finanzministeriumBalance = finanzministerium.getBalanceDouble();
+        double userBalance = getBalanceDouble();
+        userBalance += basicIncome;
+        finanzministeriumBalance -= basicIncome;
+        finanzministerium.setBalance(finanzministeriumBalance);
+        setBalance(userBalance);
+        Transfer.transferWage(basicIncome, 0, true, finanzministerium, Account.this);
+    }
+
+    public void transferBasicIncome(Entity passedEntity){
+        Company finanzministerium = new Company("0098");
+        double basicIncome = Tax.getBasicIncome().doubleValue();
+        double finanzministeriumBalance = finanzministerium.getBalanceDouble();
+        double userBalance = getBalanceDouble(passedEntity);
+        userBalance += basicIncome;
+        finanzministeriumBalance -= basicIncome;
+        finanzministerium.setBalance(finanzministeriumBalance);
+        setBalance(passedEntity, userBalance);
+        Transfer.transferWage(basicIncome, 0, true, finanzministerium, new Account(passedEntity));
+    }
+
     public void saveAll(){
         datastore.put(account);
     }
@@ -957,11 +1025,19 @@ public class Account {
         return days*1440 + hours*60 + minutes;
     }
 
-    public static long getCurrentMinutes(){
+    public static long getCurrentRoundedMinutes(){
         Calendar currentTime = Calendar.getInstance();
         int days = currentTime.get(Calendar.DAY_OF_WEEK) - 2;
         int hours = currentTime.get(Calendar.HOUR_OF_DAY) + 1;
         int minutes = ((int) currentTime.get(Calendar.MINUTE)/30)*30;
+        return days*1440 + hours*60 + minutes;
+    }
+
+    public static long getCurrentMinutes(){
+        Calendar currentTime = Calendar.getInstance();
+        int days = currentTime.get(Calendar.DAY_OF_WEEK) - 2;
+        int hours = currentTime.get(Calendar.HOUR_OF_DAY) + 1;
+        int minutes = currentTime.get(Calendar.MINUTE);
         return days*1440 + hours*60 + minutes;
     }
 }

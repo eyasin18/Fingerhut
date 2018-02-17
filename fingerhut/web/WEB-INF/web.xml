@@ -113,12 +113,12 @@
         <url-pattern>/message</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>AccountSetter</servlet-name>
-        <servlet-class>de.repictures.fingerhut.Debug.AccountSetter</servlet-class>
+        <servlet-name>DataEditor</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Admin.EditData</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>AccountSetter</servlet-name>
-        <url-pattern>/setaccount</url-pattern>
+        <servlet-name>DataEditor</servlet-name>
+        <url-pattern>/admin/editdata</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>WebLogin</servlet-name>
@@ -191,14 +191,6 @@
     <servlet-mapping>
         <servlet-name>PostSellingProducts</servlet-name>
         <url-pattern>/postsellingproducts</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>SetTaxes</servlet-name>
-        <servlet-class>de.repictures.fingerhut.Debug.TaxSetter</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SetTaxes</servlet-name>
-        <url-pattern>/dsettax</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>PostEmployees</servlet-name>
@@ -287,6 +279,38 @@
     <servlet-mapping>
         <servlet-name>UpdateProduct</servlet-name>
         <url-pattern>/updateproduct</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>RegisterPerson</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.RegisterPerson</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RegisterPerson</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ResetStats</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Admin.ResetStats</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ResetStats</servlet-name>
+        <url-pattern>/admin/resetstats</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>SetAccountTimes</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Admin.SetAccountTimes</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SetAccountTimes</servlet-name>
+        <url-pattern>/admin/setaccounttimes</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>SquareCustoms</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.SquareCustoms</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SquareCustoms</servlet-name>
+        <url-pattern>/squarecustoms</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>jsp/index.jsp</welcome-file>

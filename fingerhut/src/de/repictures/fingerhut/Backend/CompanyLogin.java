@@ -36,6 +36,11 @@ public class CompanyLogin extends HttpServlet{
             return;
         }
 
+        if (companyGetter.isInsolvent(company)){
+            resp.getWriter().println(4);
+            return;
+        }
+
         String savedPassword = companyGetter.getHashedPassword(company);
 
         log("Input Password = " + inputPassword + "\n\nSaved Password = " + savedPassword);

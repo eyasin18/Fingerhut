@@ -116,8 +116,9 @@ public class TransferWage extends HttpServlet {
         double wage = accountGetter.getSpecificWage(payingCompany.getAccountnumber());
 
         if (companyHasNotEnoughMoney(companyBalance, wage)){
-            //TODO: Unternehmen insolvent
             log("Company " + payingCompany.getAccountnumber() + " has no money");
+            payingCompany.setInsolvent(true);
+            return;
         }
 
         double fractionalPart = wage % 1;
@@ -140,7 +141,7 @@ public class TransferWage extends HttpServlet {
         double netWage = (wage - tax);
 
         //Geld transferieren
-        Transfer.transferWage(netWage, tax, payingCompany, accountGetter);
+        Transfer.transferWage(netWage, tax, false, payingCompany, accountGetter);
         companyBalance = (companyBalance-wage);
         double receiverBalance = accountGetter.getBalanceDouble() + netWage;
         double fmBalance = finanzministerium.getBalanceDouble() + tax;
