@@ -211,7 +211,7 @@
                         </div>
                     </div>
 
-                    <!-- Hier beginnt der Teil der für die Karte Produkt zuständig ist ist -->
+                    <!-- Hier beginnt der Teil der für die Karte Produkte zuständig ist ist -->
 
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="products">
                         <h4 class="mdl-typography--headline" id="products_heading">Produkte</h4>
@@ -254,6 +254,16 @@
                                 <input id="textfield2" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]">
                                 <label class="mdl-textfield__label" for="textfield2" id="label2"></label>
                                 <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
+                            </div>
+                            <div>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
+                                    <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" value="true">
+                                    <span class="mdl-checkbox__label">Kunden können dieses Produkt selbst kaufen</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-2">
+                                    <input type="checkbox" id="checkbox-2" class="mdl-checkbox__input" value="true">
+                                    <span class="mdl-checkbox__label">Kunden können dieses Produkt kaufen</span>
+                                </label>
                             </div>
                         </div>
                         <div class ="wrapper">
@@ -449,6 +459,9 @@
                     </div>
                 </div>
             </div>
+            <!--<div id="example" class="mdl-js-snackbar mdl-snackbar">
+                <div class="mdl-snackbar__text"></div>
+            </div>-->
         </main>
     </div>
 </body>
@@ -477,7 +490,10 @@
     var Products = document.getElementById("products");//Produkte Karte
     var Product = document.getElementById("product");
     var addProductCard = document.getElementById("addProduct");//Karte zum Hinzufügen von Produkten
-    var currentProductPosition;//globale Variable zum Speichern von dem Produkt, welches gerade bearbeitet wird
+    var currentProductPosition;//globale Variable zum Speichern von der Position des Produktes, welches gerade bearbeitet wird
+    var checkbox1 = document.getElementById("checkbox-1");//Checkbox ob ein Produkt "Selfbuy" ist
+    var checkbox2 = document.getElementById("checkbox-2");//Checkbox ob ein Proddukt "Buyable" ist
+    var snackbarContainer = document.querySelector('#example');
 
     //Mitarbeiter betreffend
     var Employees = document.getElementById("employees");
@@ -511,7 +527,7 @@
 
 
     //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
-    var product = pojo('name', 'price', 'code', 'amount' , 'selfBuy');
+    var product = pojo('name', 'price', 'code', 'amount' , 'selfBuy', 'buyable');
     var productarray = [];
     var iterate = 0;
     <%
@@ -521,11 +537,13 @@
             var getPrice = <%= products.get(i).getPrice() %>;
             var getCode = <%= products.get(i).getCode() %>;
             var getSelfBuy = <%= products.get(i).getSelfBuy() %>;
+            var getBuyable = <%= products.get(i).getBuyable()%>;
             productarray[iterate] = product(
                 getName,
                 getPrice,
                 getCode,
-                getSelfBuy
+                getSelfBuy,
+                getBuyable
             );
             iterate++;
             <%
@@ -780,6 +798,8 @@
         Statistics.style.display = "none";
         var textfield1 = document.getElementById("textfield1");
         var textfield2 = document.getElementById("textfield2");
+        //if (productarray[currentProductPosition].selfbuy){checkbox1.setAttribute("checked","checked");}
+        //if (productarray[currentProductPosition].buyable){checkbox2.setAttribute("checked","checked");}
         textfield1.parentElement.classList.add("is-focused");
         textfield2.parentElement.classList.add("is-focused");
         textfield1.value = productarray[(position - 1)].name;
@@ -800,10 +820,29 @@
         ShortPurchaseOrders.style.display = "block";
         Employees.style.display = "block";
         Statistics.style.display = "block";
-        var companynumber = '<%=companyTools.getOwner(companynumber)%>';
-        var theURL = "https://fingerhut388.appspot.com/updateproduct?" + "code=" + productarray[currentProductPosition].code + "&companynumber=" + companynumber + "&productName=" + document.getElementById("textfield1").innerText + "&price=" + document.getElementById("textfield2").innerText;
-        console.log(theURL);
+        var companynumber = '<%= companynumber %>';
+        var theURL = "https://fingerhut388.appspot.com/updateproduct?" + "code=" + productarray[currentProductPosition].code + "&companynumber=" + companynumber;
+        if (typeof document.getElementById("textfield1").value === "string"){
+            console.log("Erfolg");
+            theURL += "&name=" + encodeURIComponent(document.getElementById("textfield1").value);
+        }
+        if (typeof parseFloat(document.getElementById("textfield2").value) === "number"){
+            theURL += "&price=" + parseFloat(document.getElementById("textfield2").value);
+        }
+        if(checkbox1.checked == true){
+            theURL += "&selfbuy=" + checkbox1.value;
+        }
+        else{
+            theURL+= "&selfbuy=" + "false";
+        }
+        if(checkbox2.checked == true){
+            theURL += "&buyable=" + checkbox2.value;
+        }
+        else{
+            theURL+= "&buyable=" + "false";
+        }
         httpAsync(theURL,"POST",3);
+        location.reload(true);
     }
 
     function backAddProduct(){
@@ -1128,12 +1167,18 @@
                 switch(responseText) {
                     case 0:
                         //TODO: vernünftige Fehlermeldung
-                        console.log("Fehler");
-                        break;
+                        /*console.log("Fehler");
+                        window['counter'] = 0;
+                        var data1 = {message: 'Fehler' + ++counter};
+                        snackbarContainer.MaterialSnackbar.showSnackbar(data1);
+                        break;*/
                     case 1:
                         //TODO: vernünftige Erfolgsmeldung
-                        console.log("Erfolg");
-                        break;
+                        /*console.log("Erfolg");
+                        window['counter'] = 0;
+                        var data2 = {message: 'Erfolg' + ++counter};
+                        snackbarContainer.MaterialSnackbar.showSnackbar(data2);
+                        break;*/
                 }
             break;
         }
@@ -1188,7 +1233,6 @@
             }
                 break;
         }
-
     }
 
     function addNewPurchase() {
