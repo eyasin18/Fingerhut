@@ -607,8 +607,6 @@
     fillShortPurchaseTable();
     fillPurchaseTable();
     fillEmployees();
-    generateCheckboxes();
-    console.log(Accountnumber);
 
     /*if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('../js/firebase-messaging-sw.js', { scope: '/js/' }).then(function(reg) {
@@ -1355,41 +1353,97 @@
             row.onclick = function(){editWorkTime(this.rowIndex)};
         }
         var index = employeesObject.accountnumbers.indexOf(Accountnumber);
+        var wrapper = document.getElementById("checkbox_wrapper");
+        wrapper.innerHTML = "";
+        console.log(employeesObject.features[index]);
         for(var j = 0; j < employeesObject.features[index].length; j++){
             switch(employeesObject.features[index][j]){
                 case 0:
+                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_products\">\n" +
+                        "                                    <input type=\"checkbox\" id=\"manage_products\" class=\"mdl-checkbox__input\">\n" +
+                        "                                    <span class=\"mdl-checkbox__label\">Produkte verwalten</span>\n" +
+                        "                                </label>";
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        manageProducts.parentElement.MaterialCheckbox.check();
+                        document.getElementById("manage_products").parentElement.MaterialCheckbox.check();
                     }
                     break;
                 case 1:
+                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_auth_codes\">\n" +
+                        "                                    <input type=\"checkbox\" id=\"manage_auth_codes\" class=\"mdl-checkbox__input\">\n" +
+                        "                                    <span class=\"mdl-checkbox__label\">Authentifizierungs QR-Codes lesen und schreiben</span>\n" +
+                        "                                </label>";
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        manageAuthCodes.parentElement.MaterialCheckbox.check();
+                        document.getElementById("manage_auth_codes").parentElement.MaterialCheckbox.check();
                     }
                     break;
                 case 2:
+                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_purchase_orders\">\n" +
+                        "                                    <input type=\"checkbox\" id=\"manage_purchase_orders\" class=\"mdl-checkbox__input\">\n" +
+                        "                                    <span class=\"mdl-checkbox__label\">Kaufaufträge</span>\n" +
+                        "                                </label>";
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        managePurchaseOrders.parentElement.MaterialCheckbox.check();
+                        document.getElementById("manage_purchase_orders").parentElement.MaterialCheckbox.check();
                     }
                     break;
                 case 3:
+                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_employees\">\n" +
+                        "                                    <input type=\"checkbox\" id=\"manage_employees\" class=\"mdl-checkbox__input\">\n" +
+                        "                                    <span class=\"mdl-checkbox__label\">Mitarbeiter verwalten</span>\n" +
+                        "                                </label>";
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        manageEmployees.parentElement.MaterialCheckbox.check();
+                        document.getElementById("manage_employees").parentElement.MaterialCheckbox.check();
                     }
                     break;
                 case 4:
+                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_statistics\">\n" +
+                        "                                    <input type=\"checkbox\" id=\"manage_statistics\" class=\"mdl-checkbox__input\">\n" +
+                        "                                    <span class=\"mdl-checkbox__label\">Statistiken</span>\n" +
+                        "                                </label>";
+                    if(employeesObject.features[position].includes(employeesObject.features[index][j])){
+                        document.getElementById("manage_statistics").parentElement.MaterialCheckbox.check();
+                    }
                     break;
                 case 5:
+                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_change\">\n" +
+                        "                                    <input type=\"checkbox\" id=\"manage_change\" class=\"mdl-checkbox__input\">\n" +
+                        "                                    <span class=\"mdl-checkbox__label\">Geld wechseln</span>\n" +
+                        "                                </label>";
+                    if(employeesObject.features[position].includes(employeesObject.features[index][j])){
+                        document.getElementById("manage_change").parentElement.MaterialCheckbox.check();
+                    }
                     break;
                 case 6:
+                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_add_employees\">\n" +
+                        "                                    <input type=\"checkbox\" id=\"manage_add_employees\" class=\"mdl-checkbox__input\">\n" +
+                        "                                    <span class=\"mdl-checkbox__label\">Mitarbeiter hinzufügen</span>\n" +
+                        "                                </label>";
+                    if(employeesObject.features[position].includes(employeesObject.features[index][j])){
+                        document.getElementById("manage_add_employees").parentElement.MaterialCheckbox.check();
+                    }
                     break;
                 case 7:
+                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_prepaid\">\n" +
+                        "                                    <input type=\"checkbox\" id=\"manage_prepaid\" class=\"mdl-checkbox__input\">\n" +
+                        "                                    <span class=\"mdl-checkbox__label\">Prepaidkonto hinzufügen</span>\n" +
+                        "                                </label>";
+                    if(employeesObject.features[position].includes(employeesObject.features[index][j])){
+                        document.getElementById("manage_prepaid").parentElement.MaterialCheckbox.check();
+                    }
                     break;
-                case 8:
+                /*case 8:
+                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_products\">\n" +
+                        "                                    <input type=\"checkbox\" id=\"manage_products\" class=\"mdl-checkbox__input\">\n" +
+                        "                                    <span class=\"mdl-checkbox__label\">Produkte verwalten</span>\n" +
+                        "                                </label>";
+                        //var manageProducts = document.getElementById("manage_products");
                     break;
                 case 9:
-                    break;
-
+                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_products\">\n" +
+                        "                                    <input type=\"checkbox\" id=\"manage_products\" class=\"mdl-checkbox__input\">\n" +
+                        "                                    <span class=\"mdl-checkbox__label\">Produkte verwalten</span>\n" +
+                        "                                </label>";
+                        //var manageProducts = document.getElementById("manage_products");
+                    break;*/
             }
         }
         /*for(var j = 0; j < employeesObject.features[position].length; j++){
@@ -1441,85 +1495,6 @@
             }
         }*/
 
-    }
-    function generateCheckboxes() {
-        var index = employeesObject.accountnumbers.indexOf(Accountnumber);
-        var wrapper = document.getElementById("checkbox_wrapper");
-        console.log(employeesObject.features[index]);
-        for(var j = 0; j < employeesObject.features[index].length; j++){
-            switch(employeesObject.features[index][j]){
-                case 0:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_products\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_products\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Produkte verwalten</span>\n" +
-                        "                                </label>";
-                    manageProducts = document.getElementById("manage_products");
-                    break;
-                case 1:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_auth_codes\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_auth_codes\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Authentifizierungs QR-Codes lesen und schreiben</span>\n" +
-                        "                                </label>";
-                    manageAuthCodes = document.getElementById("manage_auth_codes");
-                    break;
-                case 2:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_purchase_orders\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_purchase_orders\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Kaufaufträge</span>\n" +
-                        "                                </label>";
-                    managePurchaseOrders = document.getElementById("manage_purchase_orders");
-                    break;
-                case 3:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_employees\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_employees\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Mitarbeiter verwalten</span>\n" +
-                        "                                </label>";
-                    manageEmployees = document.getElementById("manage_employees");
-                    break;
-                case 4:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_statistics\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_statistics\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Statistiken</span>\n" +
-                        "                                </label>";
-                    manageStatistics = document.getElementById("manage_statistics");
-                    break;
-                case 5:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_change\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_change\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Geld wechseln</span>\n" +
-                        "                                </label>";
-                    manageChange = document.getElementById("manage_change");
-                    break;
-                case 6:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_add_employees\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_add_employees\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Mitarbeiter hinzufügen</span>\n" +
-                        "                                </label>";
-                    manageAddEmployees = document.getElementById("manage_add_employees");
-                    break;
-                case 7:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_prepaid\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_prepaid\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Prepaidkonto hinzufügen</span>\n" +
-                        "                                </label>";
-                    managePrepaid = document.getElementById("manage_prepaid");
-                    break;
-                /*case 8:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_products\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_products\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Produkte verwalten</span>\n" +
-                        "                                </label>";
-                        //var manageProducts = document.getElementById("manage_products");
-                    break;
-                case 9:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_products\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_products\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Produkte verwalten</span>\n" +
-                        "                                </label>";
-                        //var manageProducts = document.getElementById("manage_products");
-                    break;*/
-            }
-        }
     }
     function cancelEmployeeChanges() {
         Employees.style.display = "block";
