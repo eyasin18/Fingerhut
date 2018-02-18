@@ -10,7 +10,7 @@
         <label for="2">Kontomnummer</label>
     </div>
     <button id="3" onclick="onButtonClick()">
-        Button
+        Abschließen
     </button>
 </div>
 
@@ -18,7 +18,7 @@
     var textField2 = document.getElementById("2");
 
     function onButtonClick() {
-        var uri = "https://2-dot-fingerhut388.appspot.com/saveaccount?accountnumber=" + textField2.value.toString();
+        var uri = "https://fingerhut388.appspot.com/admin/saveaccount?accountnumber=" + textField2.value.toString();
         window.location = encodeURI(uri);
     }
 

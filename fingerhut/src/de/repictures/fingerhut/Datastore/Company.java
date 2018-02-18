@@ -35,7 +35,7 @@ public class Company extends Account {
         this.company = this.account;
     }
 
-    public void postAccount(String companynumber, String ownername, String password){
+    public void postAccount(String companynumber, String ownername, String password, int sector){
         if (password == null){
             Random rand = new Random();
             password = String.format("%04d", rand.nextInt(10000));
@@ -67,6 +67,7 @@ public class Company extends Account {
         setHashedPassword(company, encryptedPassword);
         setOwner(company, ownername);
         setBalance(company, 0.0f);
+        setSector(company, sector);
         company.setProperty("transferarray", new ArrayList<String>());
         setPrivateKeyStr(company, encryptedPrivateKeyStr);
         setPublicKeyStr(company, publicKeyStr);

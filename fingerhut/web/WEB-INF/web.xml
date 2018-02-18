@@ -10,11 +10,11 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>SaveAccount</servlet-name>
-        <servlet-class>de.repictures.fingerhut.Backend.SaveAccount</servlet-class>
+        <servlet-class>de.repictures.fingerhut.Admin.SaveAccount</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>SaveAccount</servlet-name>
-        <url-pattern>/saveaccount</url-pattern>
+        <url-pattern>/admin/saveaccount</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>PostFinancialStatus</servlet-name>
@@ -50,11 +50,11 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>SaveCompany</servlet-name>
-        <servlet-class>de.repictures.fingerhut.Backend.SaveCompany</servlet-class>
+        <servlet-class>de.repictures.fingerhut.Admin.SaveCompany</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>SaveCompany</servlet-name>
-        <url-pattern>/savecompany</url-pattern>
+        <url-pattern>/admin/savecompany</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>PostProducts</servlet-name>
@@ -311,6 +311,30 @@
     <servlet-mapping>
         <servlet-name>SquareCustoms</servlet-name>
         <url-pattern>/squarecustoms</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AddCompany</servlet-name>
+        <jsp-file>jsp/add_company.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddCompany</servlet-name>
+        <url-pattern>/admin/addcompany</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ManageEmployees</servlet-name>
+        <jsp-file>jsp/manage_employees.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ManageEmployees</servlet-name>
+        <url-pattern>/admin/manageemployees</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AddEmployee</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Admin.AddEmployee</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddEmployee</servlet-name>
+        <url-pattern>/admin/addemployee</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>jsp/index.jsp</welcome-file>

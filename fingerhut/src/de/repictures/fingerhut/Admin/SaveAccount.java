@@ -1,4 +1,4 @@
-package de.repictures.fingerhut.Backend;
+package de.repictures.fingerhut.Admin;
 
 import com.google.appengine.api.datastore.Entity;
 import de.repictures.fingerhut.Datastore.Account;
