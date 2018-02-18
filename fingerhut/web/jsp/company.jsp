@@ -300,7 +300,7 @@
                         <h6 class="mdl-typography--title" id="employee_accountnumber">0004</h6>
                         <div class="wrapper">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="bruttolohn">
+                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="bruttolohn" onchange="setNetWage()">
                                 <label class="mdl-textfield__label" for="bruttolohn">Bruttolohn</label>
                                 <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
                             </div>
@@ -1282,7 +1282,6 @@
     }
     function fillPurchaseTable() {
         var table = document.getElementById("purchase_table");
-        console.log(purchase_order_array);
         if(purchase_order_array[0].prices_list != null){
             for(var i = 0; i<purchase_order_array.length; i++) {
                 var row = table.insertRow(document.getElementById("purchase_table").rows.length);
@@ -1345,7 +1344,7 @@
         employeeAccountnumber.innerText = employeesObject.accountnumbers[position];
         bruttolohn.parentElement.classList.add("is-focused");
         bruttolohn.value = employeesObject.wages[position];
-        nettolohn.innerText = "Nettolohn: " + " S";
+        nettolohn.innerText = "Nettolohn: " + getNetWage(employeesObject.wages[position]) + " S";
         for(var i = 0; i < employeesObject.start_times[position].length; i++) {
             var row = table.insertRow(document.getElementById("work_times_table").rows.length);
             var cell1 = row.insertCell(0);
@@ -1357,7 +1356,6 @@
         var index = employeesObject.accountnumbers.indexOf(Accountnumber);
         var wrapper = document.getElementById("checkbox_wrapper");
         wrapper.innerHTML = "";
-        console.log(employeesObject.features[index]);
         for(var j = 0; j < employeesObject.features[index].length; j++){
             switch(employeesObject.features[index][j]){
                 case 0:
@@ -1440,22 +1438,26 @@
                         document.getElementById("manage_prepaid").parentElement.MaterialCheckbox.check();
                     }
                     break;
-                /*case 8:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_products\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_products\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Produkte verwalten</span>\n" +
+                case 8:
+                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"scan_id\">\n" +
+                        "                                    <input type=\"checkbox\" id=\"scan_id\" class=\"mdl-checkbox__input\">\n" +
+                        "                                    <span class=\"mdl-checkbox__label\">Ausweise scannen</span>\n" +
                         "                                </label>";
-                         componentHandler.upgradeDom();
-                        //var manageProducts = document.getElementById("manage_products");
+                    componentHandler.upgradeDom();
+                    if(employeesObject.features[position].includes(employeesObject.features[index][j])){
+                        document.getElementById("scan_id").parentElement.MaterialCheckbox.check();
+                    }
                     break;
                 case 9:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_products\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_products\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Produkte verwalten</span>\n" +
+                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"item_import\">\n" +
+                        "                                    <input type=\"checkbox\" id=\"item_import\" class=\"mdl-checkbox__input\">\n" +
+                        "                                    <span class=\"mdl-checkbox__label\">Wareneinfuhr</span>\n" +
                         "                                </label>";
-                         componentHandler.upgradeDom();
-                        //var manageProducts = document.getElementById("manage_products");
-                    break;*/
+                    componentHandler.upgradeDom();
+                    if(employeesObject.features[position].includes(employeesObject.features[index][j])){
+                        document.getElementById("item_import").parentElement.MaterialCheckbox.check();
+                    }
+                    break;
             }
         }
 
@@ -1531,10 +1533,36 @@
         var children = wrapper.children;
         for (var j = 0; j < children.length; j++) {
             if(children[j].classList.contains("is-checked")){
-                console.log(children[j].children[0].id);
-                switch (children[j].childNodes[0].id){
+                switch (children[j].children[0].id){
                     case "manage_products":
-                        console.log("blub2");
+                        featuresArray.push(0);
+                        break;
+                    case "manage_auth_codes":
+                        featuresArray.push(1);
+                        break;
+                    case "manage_purchase_orders":
+                        featuresArray.push(2);
+                        break;
+                    case "manage_employees":
+                        featuresArray.push(3);
+                        break;
+                    case "manage_statistics":
+                        featuresArray.push(4);
+                        break;
+                    case "manage_change":
+                        featuresArray.push(5);
+                        break;
+                    case "manage_add_employees":
+                        featuresArray.push(6);
+                        break;
+                    case "manage_prepaid":
+                        featuresArray.push(7);
+                        break;
+                    case "scan_id":
+                        featuresArray.push(8);
+                        break;
+                    case "item_import":
+                        featuresArray.push(9);
                         break;
                 }
             }
@@ -1576,37 +1604,48 @@
         }
         var wage = document.getElementById("bruttolohn").value;
             if(!isNaN(wage) && parseFloat(wage) >= 1) {
-                var JsonObject = JSON.stringify({
+                var jsonObject = JSON.stringify({
                     "accountnumber": employeesObject.accountnumbers[EmployeePosition],
                     "wage": parseFloat(wage).toFixed(2),
                     "start_times": startTimesArray,
                     "end_times": endTimesArray,
-                    "features": ""
+                    "features": featuresArray
                 });
-                console.log(JsonObject);
+                var url = "https://fingerhut388.appspot.com/getemployee?companynumber=" + "<%=companynumber%>"
+                + "&body=" + encodeURIComponent(jsonObject)
+                + "&editoraccountnumber=" + Accountnumber
+                + "&authstring=" + "<%=code%>"
             }
             else{
-                EmployeeError.innerText = "Der Bruttolohn muss mindestens einen Stromer betragen!"
+                EmployeeError.innerText = "Der Bruttolohn muss mindestens einen Stromer betragen!";
             }
     }
+    function getNetWage(grossWage) {
+        var fractionalPart = grossWage%1;
+        var integralPart = grossWage-fractionalPart;
 
-        function getNetWage(grossWage) {
-            var fractionalPart = grossWage%1;
-            var integralPart = groosWage-fractionalPart;
-
-            //Prozentsatz berechnen
-            var integralPercentage = 0;
-            for (var i = 0; i < integralPart; i++){
-                if(i < wageTaxes.length) integralPercentage += wageTaxes[i];
-                else integralPercentage += 100;
-            }
-            integralPercentage = (integralPercentage/integralPart);
-            var fractionPercentage = 0;
-            if (integralPart < wageTaxes.length) fractionPercentage = wageTaxes[integralPart];
-            else fractionPercentage = 100;
-
-            var tax = ((integralPart * (integralPercentage/100)) + (fractionalPart * (fractionPercentage/100)));
-            return grossWage - tax;
+        //Prozentsatz berechnen
+        var integralPercentage = 0;
+        for (var i = 0; i < integralPart; i++){
+            if(i < wageTaxes.length) integralPercentage += wageTaxes[i];
+            else integralPercentage += 100;
         }
+        integralPercentage = (integralPercentage/integralPart);
+        var fractionPercentage = 0;
+        if (integralPart < wageTaxes.length) fractionPercentage = wageTaxes[integralPart];
+        else fractionPercentage = 100;
+
+        var tax = ((integralPart * (integralPercentage/100)) + (fractionalPart * (fractionPercentage/100)));
+        return (grossWage - tax).toFixed(2);
+    }
+    function setNetWage() {
+        var wage = document.getElementById("bruttolohn").value;
+        if(!isNaN(wage) && parseFloat(wage) >= 1) {
+            document.getElementById("nettolohn").innerText = "Nettolohn: " + getNetWage(parseFloat(wage)) + " S";
+        }
+        else{
+            EmployeeError.innerText = "Der Bruttolohn muss mindestens einen Stromer betragen!";
+        }
+    }
     </script>
 </html>
