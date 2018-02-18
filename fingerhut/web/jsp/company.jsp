@@ -320,6 +320,7 @@
                         <div class="wrapper">
                             <div id="checkbox_wrapper">
                             </div>
+                            <h6 id="save_employee_changes_error" class="title"></h6>
                             <div class ="wrapper">
                                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="saveEmployeeChanges()" id="save_employee_changes">Speichern</button>
                                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelEmployeeChanges()" id="cancel_employee_changes">Abbrechen</button>
@@ -339,12 +340,12 @@
                                 <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                                 <label for="days_input" class="mdl-textfield__label">Tag</label>
                                 <ul for="days_dropdown" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                                    <li class="mdl-menu__item">Montag</li>
-                                    <li class="mdl-menu__item">Dienstag</li>
-                                    <li class="mdl-menu__item">Mittwoch</li>
-                                    <li class="mdl-menu__item">Donnerstag</li>
-                                    <li class="mdl-menu__item">Freitag</li>
-                                    <li class="mdl-menu__item">Samstag</li>
+                                    <li class="mdl-menu__item">Mo</li>
+                                    <li class="mdl-menu__item">Di</li>
+                                    <li class="mdl-menu__item">Mi</li>
+                                    <li class="mdl-menu__item">Do</li>
+                                    <li class="mdl-menu__item">Fr</li>
+                                    <li class="mdl-menu__item">Sa</li>
                                 </ul>
                             </div>
                         </div>
@@ -362,8 +363,8 @@
                                             <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                                             <label for="begin_hours_input" class="mdl-textfield__label">Stunde</label>
                                             <ul for="begin_hours_dropdown" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                                                <li class="mdl-menu__item">8</li>
-                                                <li class="mdl-menu__item">9</li>
+                                                <li class="mdl-menu__item">08</li>
+                                                <li class="mdl-menu__item">09</li>
                                                 <li class="mdl-menu__item">10</li>
                                                 <li class="mdl-menu__item">11</li>
                                                 <li class="mdl-menu__item">12</li>
@@ -404,7 +405,7 @@
                                             <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                                             <label for="end_hours_input" class="mdl-textfield__label">Stunde</label>
                                             <ul for="end_hours_dropdown" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                                                <li class="mdl-menu__item">9</li>
+                                                <li class="mdl-menu__item">09</li>
                                                 <li class="mdl-menu__item">10</li>
                                                 <li class="mdl-menu__item">11</li>
                                                 <li class="mdl-menu__item">12</li>
@@ -435,6 +436,7 @@
                                     </td>
                                 </tr>
                             </table>
+                            <h6 id="add_new_work_time_error" class="title"></h6>
                             <div class="wrapper">
                                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="saveNewWorkTime()" id="save_new_work_time">Speichern</button>
                                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelNewWorkTime()" id="cancel_new_work_time">Abbrechen</button>
@@ -500,17 +502,9 @@
     var Employee = document.getElementById("employee");
     var WorkTimes = document.getElementById("work_times");
     var EditWorkTimes = document.getElementById("edit_work_times");
-    var manageProducts;
-    var manageAuthCodes;
-    var managePurchaseOrders;
-    var manageEmployees;
-    var manageStatistics;
-    var manageChange;
-    var manageAddEmployees;
-    var managePrepaid;
-    //var manageProducts;
-    //var manageProducts;
     var EmployeePosition;
+    var TimePosition;
+    var EmployeeError = document.getElementById("save_employee_changes_error");
 
     addProductCard.style.display = "none"; //lässt die Karte zum Hinzufügen von Produkten beim Laden der Seite verschwinden
     PurchaseOrder.style.display = "none";
@@ -1363,6 +1357,7 @@
                         "                                    <input type=\"checkbox\" id=\"manage_products\" class=\"mdl-checkbox__input\">\n" +
                         "                                    <span class=\"mdl-checkbox__label\">Produkte verwalten</span>\n" +
                         "                                </label>";
+                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
                         document.getElementById("manage_products").parentElement.MaterialCheckbox.check();
                     }
@@ -1372,6 +1367,7 @@
                         "                                    <input type=\"checkbox\" id=\"manage_auth_codes\" class=\"mdl-checkbox__input\">\n" +
                         "                                    <span class=\"mdl-checkbox__label\">Authentifizierungs QR-Codes lesen und schreiben</span>\n" +
                         "                                </label>";
+                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
                         document.getElementById("manage_auth_codes").parentElement.MaterialCheckbox.check();
                     }
@@ -1381,6 +1377,7 @@
                         "                                    <input type=\"checkbox\" id=\"manage_purchase_orders\" class=\"mdl-checkbox__input\">\n" +
                         "                                    <span class=\"mdl-checkbox__label\">Kaufaufträge</span>\n" +
                         "                                </label>";
+                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
                         document.getElementById("manage_purchase_orders").parentElement.MaterialCheckbox.check();
                     }
@@ -1390,6 +1387,7 @@
                         "                                    <input type=\"checkbox\" id=\"manage_employees\" class=\"mdl-checkbox__input\">\n" +
                         "                                    <span class=\"mdl-checkbox__label\">Mitarbeiter verwalten</span>\n" +
                         "                                </label>";
+                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
                         document.getElementById("manage_employees").parentElement.MaterialCheckbox.check();
                     }
@@ -1399,6 +1397,7 @@
                         "                                    <input type=\"checkbox\" id=\"manage_statistics\" class=\"mdl-checkbox__input\">\n" +
                         "                                    <span class=\"mdl-checkbox__label\">Statistiken</span>\n" +
                         "                                </label>";
+                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
                         document.getElementById("manage_statistics").parentElement.MaterialCheckbox.check();
                     }
@@ -1408,6 +1407,7 @@
                         "                                    <input type=\"checkbox\" id=\"manage_change\" class=\"mdl-checkbox__input\">\n" +
                         "                                    <span class=\"mdl-checkbox__label\">Geld wechseln</span>\n" +
                         "                                </label>";
+                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
                         document.getElementById("manage_change").parentElement.MaterialCheckbox.check();
                     }
@@ -1417,6 +1417,7 @@
                         "                                    <input type=\"checkbox\" id=\"manage_add_employees\" class=\"mdl-checkbox__input\">\n" +
                         "                                    <span class=\"mdl-checkbox__label\">Mitarbeiter hinzufügen</span>\n" +
                         "                                </label>";
+                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
                         document.getElementById("manage_add_employees").parentElement.MaterialCheckbox.check();
                     }
@@ -1426,6 +1427,7 @@
                         "                                    <input type=\"checkbox\" id=\"manage_prepaid\" class=\"mdl-checkbox__input\">\n" +
                         "                                    <span class=\"mdl-checkbox__label\">Prepaidkonto hinzufügen</span>\n" +
                         "                                </label>";
+                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
                         document.getElementById("manage_prepaid").parentElement.MaterialCheckbox.check();
                     }
@@ -1435,6 +1437,7 @@
                         "                                    <input type=\"checkbox\" id=\"manage_products\" class=\"mdl-checkbox__input\">\n" +
                         "                                    <span class=\"mdl-checkbox__label\">Produkte verwalten</span>\n" +
                         "                                </label>";
+                         componentHandler.upgradeDom();
                         //var manageProducts = document.getElementById("manage_products");
                     break;
                 case 9:
@@ -1442,58 +1445,11 @@
                         "                                    <input type=\"checkbox\" id=\"manage_products\" class=\"mdl-checkbox__input\">\n" +
                         "                                    <span class=\"mdl-checkbox__label\">Produkte verwalten</span>\n" +
                         "                                </label>";
+                         componentHandler.upgradeDom();
                         //var manageProducts = document.getElementById("manage_products");
                     break;*/
             }
         }
-        /*for(var j = 0; j < employeesObject.features[position].length; j++){
-            switch(employeesObject.features[position][j]) {
-                case 0:
-                    if (typeof manageProducts !== 'undefined') {
-                        manageProducts.parentElement.MaterialCheckbox.check();
-                    }
-                    break;
-                case 1:
-                    if (typeof manageAuthCodes !== 'undefined') {
-                        manageAuthCodes.parentElement.MaterialCheckbox.check();
-                    }
-                    break;
-                case 2:
-                    if (typeof managePurchaseOrders !== 'undefined') {
-                        managePurchaseOrders.parentElement.MaterialCheckbox.check();
-                    }
-                    break;
-                case 3:
-                    if (typeof manageEmployees !== 'undefined') {
-                        manageEmployees.parentElement.MaterialCheckbox.check();
-                    }
-                    break;
-                case 4:
-                    if (typeof manageStatistics !== 'undefined') {
-                        manageStatistics.parentElement.MaterialCheckbox.check();
-                    }
-                    break;
-                case 5:
-                    if (typeof manageChange !== 'undefined') {
-                        manageChange.parentElement.MaterialCheckbox.check();
-                    }
-                    break;
-                case 6:
-                    if (typeof manageAddEmployees !== 'undefined') {
-                        manageAddEmployees.parentElement.MaterialCheckbox.check();
-                    }
-                    break;
-                case 7:
-                    if (typeof managePrepaid !== 'undefined') {
-                        managePrepaid.parentElement.MaterialCheckbox.check();
-                    }
-                    break;
-                case 8:
-                    break;
-                case 9:
-                    break;
-            }
-        }*/
 
     }
     function cancelEmployeeChanges() {
@@ -1512,40 +1468,118 @@
         Employee.style.display = "block";
     }
     function saveNewWorkTime() {
-        WorkTimes.style.display = "none";
-        Employee.style.display = "block";
+        var table = document.getElementById("work_times_table");
+        var day = document.getElementById("days_input").value;
+        var beginHours = document.getElementById("begin_hours_input").value;
+        var beginMinutes = document.getElementById("begin_minutes_input").value;
+        var endHours = document.getElementById("end_hours_input").value;
+        var endMinutes = document.getElementById("end_minutes_input").value;
+        var error = document.getElementById("add_new_work_time_error");
+        if(beginHours !== "" && beginMinutes !== "" && endHours !== "" && endMinutes !== "" && day !== "") {
+            if (parseInt(beginHours) <= parseInt(endHours)) {
+                var row = table.insertRow(document.getElementById("work_times_table").rows.length);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                cell1.innerHTML = day + " " + beginHours + ":" + beginMinutes + "Uhr";
+                cell2.innerHTML = day + " " + endHours + ":" + endMinutes + "Uhr";
+                row.onclick = function(){editWorkTime(this.rowIndex)};
+                WorkTimes.style.display = "none";
+                Employee.style.display = "block";
+            }
+            else {
+                error.innerText = "Die Startzeit muss kleiner als die Endzeit sein!";
+            }
+        }
+        else{
+            error.innerText = "Alle Felder müssen ausgefüllt sein!";
+        }
     }
     function cancelWorkTime() {
-        Employee.style.display = "block";
-        EditWorkTimes.style.display = "none";
-    }
-    function saveWorkTime() {
         Employee.style.display = "block";
         EditWorkTimes.style.display = "none";
     }
     function deleteWorkTime() {
         Employee.style.display = "block";
         EditWorkTimes.style.display = "none";
+        var table = document.getElementById("work_times_table");
+        table.deleteRow(TimePosition);
     }
     function editWorkTime(position) {
         Employee.style.display = "none";
         EditWorkTimes.style.display = "block";
+        TimePosition = position;
         var table = document.getElementById("work_times_table");
         var startTime = document.getElementById("edit_start_time");
         var endTime = document.getElementById("edit_end_time");
         startTime.innerHTML = "Von: " + table.rows[position].cells[0].innerHTML;
         endTime.innerHTML = "Bis: " + table.rows[position].cells[1].innerHTML;
     }
-    /*function saveEmployeeChanges() {
+    function saveEmployeeChanges() {
         var startTimesArray = [];
         var endTimesArray = [];
-        var JsonObject = JSON.stringify({
-            "accountnumber": employeesObject.accountnumbers[EmployeePosition],
-            "wage": document.getElementById("bruttolohn").value,
-            "start_times": "",
-            "end_times":
-            "features":
-        });
-    }*/
+        var featuresArray = [];
+        var table = document.getElementById("work_times_table");
+        var wrapper = document.getElementById("checkbox_wrapper");
+        var children = wrapper.children;
+        for (var j = 0; j < children.length; j++) {
+            if(children[j].classList.contains("is-checked")){
+                console.log(children[j].children[0].id);
+                switch (children[j].childNodes[0].id){
+                    case "manage_products":
+                        console.log("blub2");
+                        break;
+                }
+            }
+        }
+        for(var i = 1; i < table.rows.length; i++){
+            var startTimeString = table.rows[i].cells[0].innerHTML;
+            var endTimeString = table.rows[i].cells[1].innerHTML;
+            var startSplit = startTimeString.split(" ");
+            var endSplit = endTimeString.split(" ");
+            var startTimeSplit = startSplit[1].split(":");
+            var endTimeSplit = endSplit[1].split(":");
+            switch(startSplit[0]){
+                case "Mo":
+                    startTimesArray.push(1440 + (parseInt(startTimeSplit[0]) * 60) + parseInt(startTimeSplit[1]));
+                    endTimesArray.push(1440 + (parseInt(endTimeSplit[0]) * 60) + parseInt(endTimeSplit[1]));
+                    break;
+                case "Di":
+                    startTimesArray.push((1440 * 2) + (parseInt(startTimeSplit[0]) * 60) + parseInt(startTimeSplit[1]));
+                    endTimesArray.push((1440 * 2) + (parseInt(endTimeSplit[0]) * 60) + parseInt(endTimeSplit[1]));
+                    break;
+                case "Mi":
+                    startTimesArray.push((1440 * 3) + (parseInt(startTimeSplit[0]) * 60) + parseInt(startTimeSplit[1]));
+                    endTimesArray.push((1440 * 3) + (parseInt(endTimeSplit[0]) * 60) + parseInt(endTimeSplit[1]));
+                    break;
+                case "Do":
+                    startTimesArray.push((1440 * 4) + (parseInt(startTimeSplit[0]) * 60) + parseInt(startTimeSplit[1]));
+                    endTimesArray.push((1440 * 4) + (parseInt(endTimeSplit[0]) * 60) + parseInt(endTimeSplit[1]));
+                    break;
+                case "Fr":
+                    startTimesArray.push((1440 * 5) + (parseInt(startTimeSplit[0]) * 60) + parseInt(startTimeSplit[1]));
+                    endTimesArray.push((1440 * 5) + (parseInt(endTimeSplit[0]) * 60) + parseInt(endTimeSplit[1]));
+                    break;
+                case "Sa":
+                    startTimesArray.push((1440 * 6) + (parseInt(startTimeSplit[0]) * 60) + parseInt(startTimeSplit[1]));
+                    endTimesArray.push((1440 * 6) + (parseInt(endTimeSplit[0]) * 60) + parseInt(endTimeSplit[1]));
+                    break;
+
+            }
+        }
+        var wage = document.getElementById("bruttolohn").value;
+            if(!isNaN(wage) && parseFloat(wage) >= 1) {
+                var JsonObject = JSON.stringify({
+                    "accountnumber": employeesObject.accountnumbers[EmployeePosition],
+                    "wage": parseFloat(wage).toFixed(2),
+                    "start_times": startTimesArray,
+                    "end_times": endTimesArray,
+                    "features": ""
+                });
+                console.log(JsonObject);
+            }
+            else{
+                EmployeeError.innerText = "Der Bruttolohn muss mindestens einen Stromer betragen!"
+            }
+    }
     </script>
 </html>
