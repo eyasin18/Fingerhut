@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}../css/material.green-light_green.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}../css/getmdl-select.min.css">
     <script defer src="${pageContext.request.contextPath}../js/material.min.js"></script>
+    <script defer src="${pageContext.request.contextPath}../js/getmdl-select.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script language="JavaScript" type="text/javascript" src="../js/jsbn.js"></script>
     <script language="JavaScript" type="text/javascript" src="../js/prng4.js"></script>
@@ -147,6 +148,7 @@
                                     <ul for="dropdown_field" class="mdl-menu mdl-menu--bottom-left mdl-js-menu" id="dropdown_list">
                                     </ul>
                                 </div>
+                                <h6 class="title" id="companynumber_error"></h6>
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="companypass_view" onkeypress="return companyLoginEnterPressed(event);">
                                     <input class="mdl-textfield__input" type="password" id="companypass" pattern="-?[0-9]*(\.[0-9]+)?"/>
                                     <label class="mdl-textfield__label" for="companypass" id="companypass_label">Passwort</label>
@@ -178,6 +180,8 @@
 
     var companypass = document.getElementById('companypass');
     var companypassError = document.getElementById('companypass_error');
+    var companynumberError = document.getElementById('companynumber_error');
+    var companynumber;
 
     var submitSpinner = document.getElementById('submit_spinner');
     var submitButton = document.getElementById('submit_button');
@@ -308,7 +312,6 @@
             case 2:
                 submitButton.textContent = strings.loginButtonText;
                 submitSpinner.style.visibility = 'hidden';
-                console.log(responseStr);
                 switch (parseInt(responseStr)){
                     case 0:
                         //Unternehmen existiert nicht
@@ -322,7 +325,8 @@
                         break;
                     case 2:
                         //Webstring nicht aktuell
-                        console.log("Webstring nicht aktuell");
+                        companypassError.parentElement.className += ' is-invalid';
+                        companypassError.textContent = "Bitte logge dich neu ein";
                         break;
                     case 1:
                         //Alles gut
@@ -335,7 +339,6 @@
     }
 
     function processPostResponse(responseStr, callerid) {
-        console.log(responseStr);
         var notification = document.querySelector('#toast');
         notification.MaterialSnackbar.showSnackbar(
             {
@@ -349,38 +352,40 @@
     function companyLogin(){
         //TODO: Spinner ist weg :o
         submitSpinner.style.visibility = 'visible';
-        submitButton.textContent = '';
+        //submitButton.textContent = '';
         companypassError.parentElement.className = companypassError.parentElement.className.replace(" is-invalid", "");
         companypassError.textContent = '';
+        companynumber = document.getElementById("dropdown_company_field").value;
+        if(companynumber !== "") {
+            var hash = sjcl.hash.sha256.hash(companypass.value);
+            var encryptedPassword = sjcl.codec.hex.fromBits(hash);
 
-        var hash = sjcl.hash.sha256.hash(companypass.value);
-        var encryptedPassword = sjcl.codec.hex.fromBits(hash);
-
-        var companyLoginUrl = "https://fingerhut388.appspot.com/companylogin?companynumber=0002"
-            + "&accountnumber=<%=accountnumber%>&password=" + encryptedPassword
-            + "&webstring=<%=code%>";
-
-        console.log("Is Admin? " + isAdmin);
-        console.log(platform.name);
-        if(!isChrome && !isFirefox && !isOpera){
-            if(!isAdmin) {
-                companypassError = document.getElementById('companypass_error');
-                companypassError.parentElement.className += ' is-invalid';
-                companypassError.textContent = "Sie müssen Chrome, Firefox oder Opera benutzen um sich auf der Unternehmensseite anmelden zu können.";
-            } else {
-                if (confirm("Kaufaufträge können sie nur mit Chrome, Firefox und Opera einsehen und bearbeiten.") === true) {
-                    httpAsync(companyLoginUrl, "GET", 2);
+            var companyLoginUrl = "https://fingerhut388.appspot.com/companylogin?companynumber=" + companynumber
+                + "&accountnumber=<%=accountnumber%>&password=" + encryptedPassword
+                + "&webstring=<%=code%>";
+            if (!isChrome && !isFirefox && !isOpera) {
+                if (!isAdmin) {
+                    companypassError = document.getElementById('companypass_error');
+                    companypassError.parentElement.className += ' is-invalid';
+                    companypassError.textContent = "Sie müssen Chrome, Firefox oder Opera benutzen um sich auf der Unternehmensseite anmelden zu können.";
                 } else {
-                    httpAsync(companyLoginUrl, "GET", 2);
+                    if (confirm("Kaufaufträge können sie nur mit Chrome, Firefox und Opera einsehen und bearbeiten.") === true) {
+                        httpAsync(companyLoginUrl, "GET", 2);
+                    } else {
+                        httpAsync(companyLoginUrl, "GET", 2);
+                    }
                 }
+            } else {
+                httpAsync(companyLoginUrl, "GET", 2);
             }
-        } else {
-            httpAsync(companyLoginUrl, "GET", 2);
+        }
+        else{
+            companynumberError.textContent = "Bitte wählen sie eine Kontonummer aus!";
         }
     }
 
     function processCompanyLogin() {
-        window.location = "https://fingerhut388.appspot.com/company?accountnumber=<%= accountnumber%>&companynumber=0002&webstring=<%= code %>";
+        window.location = "https://fingerhut388.appspot.com/company?accountnumber=<%= accountnumber%>&companynumber=" + companynumber + "&webstring=<%= code %>";
     }
 
     function companyLoginEnterPressed(event) {
@@ -400,7 +405,7 @@
             List<String> companyNumbers = mainTools.getCompanyNumbers(accountnumber);
             for (String companyNumber : companyNumbers) {
                 %>
-                companyNumbers.push(<%= companyNumber%>);
+                companyNumbers.push("<%= companyNumber%>");
                 <%
             }
         %>
@@ -408,9 +413,8 @@
         for (var i = 0; i < companyNumbers.length; i++) {
             var line = document.createElement("li");
             line.classList.add("mdl-menu__item");
-            line.innerText = companyNumbers[i];
+            line.innerText = String(companyNumbers[i]);
             dropdown_list.appendChild(line);
-            console.log(line);
         }
     }
 

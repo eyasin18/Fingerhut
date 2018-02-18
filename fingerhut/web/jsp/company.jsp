@@ -1212,7 +1212,7 @@
                     document.getElementById("cancel_purchase_button").disabled = false;
                     break;
             }
-            break;
+                break;
             case 2: switch (parseInt(responseText)){
                 case 0:
                     document.getElementById("confirm_error").innerText = "Die Daten wurden nicht richtig übertragen!";
@@ -1232,6 +1232,29 @@
                     break;
             }
                 break;
+            case 3: switch (parseInt(responseText)){
+                case 0:
+                    EmployeeError.innerText = "Die Daten wurden nicht richtig übergeben!";
+                    document.getElementById("save_employee_changes").disabled = false;
+                    break;
+                case 1:
+                    EmployeeError.innerText = "Bitte logge dich neu ein!";
+                    document.getElementById("save_employee_changes").disabled = false;
+                    break;
+                case 2:
+                    EmployeeError.innerText = "";
+                    Employees.style.display = "block";
+                    Employee.style.display = "none";
+                    ShortPurchaseOrders.style.display = "block";
+                    Statistics.style.display = "block";
+                    Products.style.display = "block";
+                    document.getElementById("save_employee_changes").disabled = false;
+                    break;
+                case 3:
+                    EmployeeError.innerText = "Du hast nicht die Berechtigung Mitarbeiter zu ändern!";
+                    document.getElementById("save_employee_changes").disabled = false;
+                    break;
+            }
         }
     }
 
@@ -1525,6 +1548,7 @@
         endTime.innerHTML = "Bis: " + table.rows[position].cells[1].innerHTML;
     }
     function saveEmployeeChanges() {
+        document.getElementById("save_employee_changes").disabled = true;
         var startTimesArray = [];
         var endTimesArray = [];
         var featuresArray = [];
@@ -1614,7 +1638,8 @@
                 var url = "https://fingerhut388.appspot.com/getemployee?companynumber=" + "<%=companynumber%>"
                 + "&body=" + encodeURIComponent(jsonObject)
                 + "&editoraccountnumber=" + Accountnumber
-                + "&authstring=" + "<%=code%>"
+                + "&authstring=" + "<%=code%>";
+                httpAsync(url, "POST", 3);
             }
             else{
                 EmployeeError.innerText = "Der Bruttolohn muss mindestens einen Stromer betragen!";
@@ -1638,6 +1663,7 @@
         var tax = ((integralPart * (integralPercentage/100)) + (fractionalPart * (fractionPercentage/100)));
         return (grossWage - tax).toFixed(2);
     }
+    //Nettogehalt eintragen
     function setNetWage() {
         var wage = document.getElementById("bruttolohn").value;
         if(!isNaN(wage) && parseFloat(wage) >= 1) {
