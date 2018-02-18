@@ -346,7 +346,6 @@
                 timeout: 3000
             }
         );
-        window.location.reload();
     }
 
     function companyLogin(){

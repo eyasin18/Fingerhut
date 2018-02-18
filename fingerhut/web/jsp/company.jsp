@@ -1639,7 +1639,7 @@
                 + "&body=" + encodeURIComponent(jsonObject)
                 + "&editoraccountnumber=" + Accountnumber
                 + "&authstring=" + "<%=code%>";
-                httpAsync(url, "POST", 3);
+                httpAsync(url, "GET", 3);
             }
             else{
                 EmployeeError.innerText = "Der Bruttolohn muss mindestens einen Stromer betragen!";

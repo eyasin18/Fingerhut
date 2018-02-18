@@ -2,7 +2,9 @@
 <html>
 <head>
     <title>Es ist ein Fehler aufgetreten...</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}../css/errorpage.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}../css/material.green-light_green.min.css">
+    <script defer src="${pageContext.request.contextPath}../js/material.min.js"></script>
 </head>
 <body>
 <!-- Always shows a header, even in smaller screens. -->
@@ -17,9 +19,9 @@
     </header>
     <main class="mdl-layout__content">
         <div class="page-content">
-            <img src="${pageContext.request.contextPath}../res/images/Tom.png" alt="Hier müsste eigentlich ein Bild sein ..">
-            <h2>Entschuldige das hätte nicht passieren dürfen ....</h2>
-            <p>Bitte lade die Seite erneut. Sollte dieser Fehler weiterhin erscheinen, melde dich bitt bei der FutureCentralBank</p>
+            <img src="${pageContext.request.contextPath}../res/images/Tom.png" alt="Hier müsste eigentlich ein Bild sein .." id="image">
+            <h2 class="center">Entschuldige, das hätte nicht passieren dürfen...</h2>
+            <p class="center">Bitte lade die Seite erneut. Sollte dieser Fehler weiterhin erscheinen, melde dich bitte bei der FutureCentralBank</p>
         </div>
     </main>
 </div>
