@@ -4,10 +4,7 @@ import com.google.appengine.api.datastore.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import de.repictures.fingerhut.Datastore.Account;
-import de.repictures.fingerhut.Datastore.Company;
-import de.repictures.fingerhut.Datastore.Product;
-import de.repictures.fingerhut.Datastore.PurchaseOrder;
+import de.repictures.fingerhut.Datastore.*;
 import io.swagger.util.Json;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,9 +21,11 @@ public class CompanyTools {
     private boolean isAuthenticated = false;
     private String[] weekdays = {"Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"};
     private DecimalFormat timePattern = new DecimalFormat("00");
+    public List<Long> wageTaxes;
 
     public CompanyTools(String accountnumber){
         accountGetter = new Account(accountnumber);
+        wageTaxes = Tax.getWageTax();
     }
 
     public boolean isAuthentificated(String code) {

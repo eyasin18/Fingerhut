@@ -591,6 +591,14 @@
         }
     %>
 
+    //Füllt einen array für die Lohnsteuer
+    var wageTaxes = [];
+    <%
+    for(int i = 0; i < companyTools.wageTaxes.size(); i++) {
+      %> wageTaxes[<%=i%>] = <%= companyTools.wageTaxes.get(i)%>;<%;
+    }
+    %>
+
 //erstellt ein Objekt mit den Daten aller Mitarbeiter
 
     var employeesJsonStr = '<%= companyTools.getEmployeesJsonStr(companynumber) %>';
@@ -1581,5 +1589,24 @@
                 EmployeeError.innerText = "Der Bruttolohn muss mindestens einen Stromer betragen!"
             }
     }
+
+        function getNetWage(grossWage) {
+            var fractionalPart = grossWage%1;
+            var integralPart = groosWage-fractionalPart;
+
+            //Prozentsatz berechnen
+            var integralPercentage = 0;
+            for (var i = 0; i < integralPart; i++){
+                if(i < wageTaxes.length) integralPercentage += wageTaxes[i];
+                else integralPercentage += 100;
+            }
+            integralPercentage = (integralPercentage/integralPart);
+            var fractionPercentage = 0;
+            if (integralPart < wageTaxes.length) fractionPercentage = wageTaxes[integralPart];
+            else fractionPercentage = 100;
+
+            var tax = ((integralPart * (integralPercentage/100)) + (fractionalPart * (fractionPercentage/100)));
+            return grossWage - tax;
+        }
     </script>
 </html>
