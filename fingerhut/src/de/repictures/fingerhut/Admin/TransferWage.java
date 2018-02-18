@@ -101,7 +101,8 @@ public class TransferWage extends HttpServlet {
                             && Account.getDaysFromMinutes(currentTime) == Account.getDaysFromMinutes(startTimes.get(i).getAsInt())
                             && endTimes.get(i).getAsInt() > currentTime
                             && startTimes.get(i).getAsInt() < currentTime
-                            || endTimes.get(i).getAsInt() == currentTime) {
+                            && startTimes.get(i).getAsInt() != endTimes.get(i).getAsInt()
+                            || endTimes.get(i).getAsInt() == currentTime && startTimes.get(i).getAsInt() != endTimes.get(i).getAsInt()) {
                         payWage(accountGetter, company);
                         break;
                     }

@@ -1036,6 +1036,7 @@ public class Account {
     public static long getCurrentMinutes(){
         Calendar currentTime = Calendar.getInstance();
         int days = currentTime.get(Calendar.DAY_OF_WEEK) - 2;
+        if (days < 1) days = 7;
         int hours = currentTime.get(Calendar.HOUR_OF_DAY) + 1;
         int minutes = currentTime.get(Calendar.MINUTE);
         return days*1440 + hours*60 + minutes;

@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
+import de.repictures.fingerhut.Datastore.Tax;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,8 +40,12 @@ public class PrivateLogin extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Gson gson = new Gson();
         JsonObject object = new JsonObject();
+        if (Tax.getIsServerLocked().intValue() > 0){
+            object.addProperty("response_code", -2);
+            resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
+            return;
+        }
 
         //Parameter die dem Server bei der Anfrage übergeben werden
         String accountnumber = req.getParameter("accountnumber");
@@ -109,7 +114,7 @@ public class PrivateLogin extends HttpServlet {
             log.info("\nInputPassword: " + inputPassword + "\nSavedSaltedPassword: " + savedPassword + "\nSavedHashedPassword: " + account.getHashedPassword(queriedAccounts.get(0))
             + "\nServer Timestamp: " + serverTimeStamp);
             if (Objects.equals(savedPassword, inputPassword)){
-                if (!account.getIsPrepaid(queriedAccounts.get(0)) && !account.gotBasicIncome(queriedAccounts.get(0))){
+                if (!account.getIsPrepaid(queriedAccounts.get(0)) && !account.gotBasicIncome(queriedAccounts.get(0)) && Account.getDaysFromMinutes(Account.getCurrentMinutes()) != 6){
                     account.transferBasicIncome(queriedAccounts.get(0));
                     account.setGotBasicIncome(queriedAccounts.get(0), true);
                 }

@@ -179,4 +179,25 @@ public class Tax {
             return 2;
         }
     }
+
+    public static void setIsServerLocked(int lockCode){
+        Key incomeKey = KeyFactory.createKey("id", 8);
+        Entity incomeEntity = new Entity("Tax", incomeKey);
+        incomeEntity.setProperty("id", 8);
+        incomeEntity.setProperty("amount", lockCode);
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        datastoreService.put(incomeEntity);
+    }
+
+    public static Number getIsServerLocked(){
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        Key incomeKey = KeyFactory.createKey("id", 8);
+        Query taxQuery = new Query("Tax", incomeKey);
+        List<Entity> vatList = datastoreService.prepare(taxQuery).asList(FetchOptions.Builder.withDefaults());
+        if (vatList.size() > 0){
+            return (Number) vatList.get(0).getProperty("amount");
+        } else {
+            return 0;
+        }
+    }
 }

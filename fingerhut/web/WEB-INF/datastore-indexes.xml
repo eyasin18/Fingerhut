@@ -12,4 +12,9 @@
         <property name="buyable" direction="asc"/>
         <property name="name" direction="asc"/>
     </datastore-index>
+    <datastore-index kind="Product" ancestor="false" source="manual">
+        <property name="buyable" direction="asc"/>
+        <property name="code" direction="asc"/>
+        <property name="name" direction="asc"/>
+    </datastore-index>
 </datastore-indexes>

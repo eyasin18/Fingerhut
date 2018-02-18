@@ -21,10 +21,7 @@ public class EditData extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        /*Tax.setBioMeatCustom(12);
-        Tax.setMeatCustom(25);
-        Tax.setPackageCustom(10);
-        Tax.setBasicIncome(2);*/
+        Tax.setIsServerLocked(0);
     }
 
     private void updateEntities(HttpServletRequest req, HttpServletResponse resp) throws IOException {

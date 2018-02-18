@@ -43,10 +43,13 @@ public class Product {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query productQuery = new Query("Product");
         Query.Filter codeFilter = new Query.FilterPredicate("code", Query.FilterOperator.EQUAL, code);
-        productQuery.setFilter(codeFilter);
         if (mustBeBuyable){
             Query.Filter buyableFilter = new Query.FilterPredicate("buyable", Query.FilterOperator.EQUAL, true);
             productQuery.setFilter(buyableFilter);
+            Query.CompositeFilter compositeFilter = Query.CompositeFilterOperator.and(codeFilter, buyableFilter);
+            productQuery.setFilter(compositeFilter);
+        } else {
+            productQuery.setFilter(codeFilter);
         }
         productQuery.addSort("name", Query.SortDirection.ASCENDING);
         List<Entity> productsList = datastore.prepare(productQuery).asList(FetchOptions.Builder.withDefaults());
