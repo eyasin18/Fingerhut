@@ -41,3 +41,7 @@
 .demo-footer .mdl-mini-footer--link-list a {
     font-size: 13px;
 }
+
+#heading{
+    word-wrap: break-word;
+}

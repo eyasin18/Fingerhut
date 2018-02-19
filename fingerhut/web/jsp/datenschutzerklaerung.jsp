@@ -42,7 +42,7 @@
         <div class="demo-container mdl-grid">
             <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
             <div class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
-                <h3>Datenschutzerklärung</h3>
+                <h3 id="heading">Datenschutzerklärung</h3>
                 <p>
                     Das Bezahlsystem Fingerhut wurde durch Yasin Ekinci, Max Buchholz und Fabian Schmid erstellt. Bei der Nutzung der Fingerhut App und Webapp werden keine Personenbezogenen Daten gespeichert. Der Zugriff auf das Konto erfolgt einzig und allein über eine vierstellige Kontonummer sowie einer vierstelligen Pin, welche in keinster Weise mit dem Kontoinhaber in Verbindung zu bringen sind.
                 </p>
