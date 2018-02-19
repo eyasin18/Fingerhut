@@ -67,7 +67,7 @@
                     Kontaktdaten: support@stromberg-gymnasium-saz.de
                 </p>
                 <p>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="window.location.href='https://fingerhut388.appspot.com'">
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="goBack()">
                         Alles klar!
                     </button>
                 </p>
@@ -85,3 +85,8 @@
 </div>
 </body>
 </html>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
