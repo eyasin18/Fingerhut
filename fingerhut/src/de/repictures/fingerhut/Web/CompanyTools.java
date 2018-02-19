@@ -44,6 +44,11 @@ public class CompanyTools {
         return companyGetter.getOwner();
     }
 
+    public String getBalance(String accountnumber){
+        Company companyGetter = new Company(accountnumber);
+        return companyGetter.getOwner();
+    }
+
     public List<Product> querySellingProducts(String companynumber){
         List<Entity> productEntities = Product.getProductsByCompany(companynumber, false);
         List<Product> products = new ArrayList<>();
