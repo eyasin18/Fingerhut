@@ -54,6 +54,14 @@
                         <div class="mdl-spinner mdl-js-spinner is-active" id="submit_spinner"></div>
                     </div>
                 </div>
+                <footer class="demo-footer mdl-mini-footer">
+                    <div class="mdl-mini-footer--left-section">
+                        <ul class="mdl-mini-footer--link-list">
+                            <li><a target="_blank" href="http://stromberg-gymnasium-saz.de/">SaZ-Homepage</a></li>
+                            <li><a target="_blank" href="https://fingerhut388.appspot.com/datenschutz">Datenschutzerklärung</a></li>
+                        </ul>
+                    </div>
+                </footer>
             </main>
         </div>
         <script src="${pageContext.request.contextPath}../js/indexscript.js"></script>

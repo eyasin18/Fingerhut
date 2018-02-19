@@ -59,7 +59,7 @@
                 <p>
                     In der Android App wird der Firebase Service verwendet, dessen Datenschutzerklärung ist unter folgendem Link erreichbar:
                 </p>
-                <p><a name="https://www.google.com/policies/privacy/">https://www.google.com/policies/privacy/</a></p>
+                <p><a href="https://www.google.com/policies/privacy/" style="color: blue">https://www.google.com/policies/privacy/</a></p>
                 <p>
                     Die einzige Möglichkeit dieser Datenschutzerklärung zu wiedersprechen ist diese Applikation nicht zu nutzen. Die vom Nutzer angegebenen Daten können im Nachhinein mindestens bis zum 03.03.2018 nicht gelöscht werden. Jegliche Anfragen der Nutzer zum Löschen ihrer Daten werden bis dahin also ignoriert.
                 </p>
