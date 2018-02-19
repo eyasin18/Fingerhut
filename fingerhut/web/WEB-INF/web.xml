@@ -242,7 +242,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>Signoff</servlet-name>
-        <servlet-class>de.repictures.fingerhut.Web.Signoff</servlet-class>
+        <servlet-class>de.repictures.fingerhut.Web.SignOff</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Signoff</servlet-name>
@@ -335,6 +335,14 @@
     <servlet-mapping>
         <servlet-name>AddEmployee</servlet-name>
         <url-pattern>/admin/addemployee</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>CheckWebstring</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Web.CheckWebstring</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CheckWebstring</servlet-name>
+        <url-pattern>/checkwebstring</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>jsp/index.jsp</welcome-file>

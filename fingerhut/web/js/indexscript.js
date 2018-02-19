@@ -30,6 +30,8 @@ submitSpinner.style.visibility = 'hidden';
 
 var accountnumber;
 
+window.addEventListener('popstate', function() {checkWebstring()});
+
 function onButtonClick() {
     console.log("clicked");
     var usernameInput = document.getElementById('username');
@@ -67,14 +69,26 @@ function httpPostAsync(theUrl) {
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200){
             console.log(xmlHttp.responseText);
-            processResponse(xmlHttp.responseText);
+            processPostResponse(xmlHttp.responseText);
         }
     };
     xmlHttp.open("POST", theUrl, true); // true for asynchronous
     xmlHttp.send(null);
 }
 
-function processResponse(responseStr) {
+function httpGetAsync(theUrl, callerid) {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200){
+            console.log(xmlHttp.responseText);
+            processGetResponse(xmlHttp.responseText, callerid);
+        }
+    };
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous
+    xmlHttp.send(null);
+}
+
+function processPostResponse(responseStr) {
     var responses = responseStr.split("~");
     var ele;
 
@@ -116,5 +130,26 @@ function processResponse(responseStr) {
 function enterPressed(event) {
     if (event.keyCode === 13){
         onButtonClick();
+    }
+}
+
+function checkWebstring() {
+    var theUrl = url + "/checkwebstring?accountnumber=<%=accountnumber%>&webstring=<%=code%>";
+    console.log(theUrl);
+    //httpGetAsync(theUrl, 4);
+    var date = new Date();
+    console.log(date.getTime());
+}
+
+function processGetResponse(responseStr, callerid){
+    switch (callerid){
+        case 4:
+            console.log(responseStr);
+            if(parseInt(responseStr) === 1){
+                history.back();
+            } else {
+                history.pushState(null, null, window.location.pathname);
+            }
+            break;
     }
 }

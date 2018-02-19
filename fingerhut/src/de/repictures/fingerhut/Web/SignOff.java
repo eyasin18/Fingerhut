@@ -9,7 +9,7 @@ import de.repictures.fingerhut.Datastore.Account;
 import java.io.IOException;
 import java.util.Objects;
 
-public class Signoff extends HttpServlet{
+public class SignOff extends HttpServlet{
 
     protected void doGet(HttpServletRequest req,HttpServletResponse resp) throws ServletException, IOException{
         String accountnumber = req.getParameter("accountnumber");
@@ -19,8 +19,9 @@ public class Signoff extends HttpServlet{
         String currentWebstring = currentAccount.getRandomWebString();
 
         if(Objects.equals(siteWebstring, currentWebstring)){
-            resp.getWriter().println("1");
             currentAccount.updateRandomWebString();
+            currentAccount.saveAll();
+            resp.getWriter().println("1");
         }
         else{
             resp.getWriter().println("0");

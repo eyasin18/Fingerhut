@@ -9,7 +9,7 @@
 <%@ page import="java.util.Objects" %>
 <%@ page import="java.util.logging.Logger" %>
 <%@ page import="de.repictures.fingerhut.Web.MainTools" %>
-<%@ page import="de.repictures.fingerhut.Web.Signoff" %>
+<%@ page import="de.repictures.fingerhut.Web.SignOff" %>
 <%@ page import="static de.repictures.fingerhut.Datastore.Tax.getVAT" %>
 <%@ page import="de.repictures.fingerhut.Datastore.Account" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -46,7 +46,7 @@
     <script type="application/javascript" src="../res/values/strings.js"></script>
     <title>Fingerhut</title>
 </head>
-<body>
+<body onpageshow="checkWebstring()">
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
@@ -165,6 +165,15 @@
                 </div>
             </div>
         </section>
+        <footer class="demo-footer mdl-mini-footer" id="footer">
+            <div class="mdl-mini-footer--left-section">
+                <ul class="mdl-mini-footer--link-list">
+                    <li><a target="_blank" href="https://fingerhut388.appspot.com/">Login</a></li>
+                    <li><a target="_blank" href="http://stromberg-gymnasium-saz.de/">SaZ-Homepage</a></li>
+                    <li><a href="https://fingerhut388.appspot.com/datenschutz">Datenschutzerklärung</a></li>
+                </ul>
+            </div>
+        </footer>
     </main>
 </div>
 <script type="application/javascript">
@@ -199,7 +208,7 @@
     submitSpinner.style.visibility = 'hidden';
 
     fillDropdown();
-
+    window.onpageshow = function(){checkWebstring()};
     function onButtonClick(){
 
         document.getElementById('transfer_button');
@@ -334,7 +343,15 @@
                         break;
                 }
                 break;
-            case 3: window.location.replace(url);
+            case 3:
+                window.location.replace(url);
+                break;
+            case 4:
+                console.log("Ficken " + responseStr);
+                if (parseInt(responseStr) === 0){
+                    window.location.replace(url);
+                }
+                break
         }
     }
 
@@ -415,6 +432,14 @@
             line.innerText = String(companyNumbers[i]);
             dropdown_list.appendChild(line);
         }
+    }
+
+    function checkWebstring() {
+        var theUrl = url + "/checkwebstring?accountnumber=<%=accountnumber%>&webstring=<%=code%>";
+        console.log(theUrl);
+        httpAsync(theUrl, "GET", 4);
+        var date = new Date();
+        console.log(date.getTime());
     }
 
 </script>

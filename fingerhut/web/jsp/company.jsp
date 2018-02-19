@@ -464,15 +464,6 @@
             <!--<div id="example" class="mdl-js-snackbar mdl-snackbar">
                 <div class="mdl-snackbar__text"></div>
             </div>-->
-            <footer class="demo-footer mdl-mini-footer" id="footer">
-                <div class="mdl-mini-footer--left-section">
-                    <ul class="mdl-mini-footer--link-list">
-                        <li><a target="_blank" href="https://fingerhut388.appspot.com/">Login</a></li>
-                        <li><a target="_blank" href="http://stromberg-gymnasium-saz.de/">SaZ-Homepage</a></li>
-                        <li><a href="https://fingerhut388.appspot.com/datenschutz">Datenschutzerklärung</a></li>
-                    </ul>
-                </div>
-            </footer>
         </main>
     </div>
 </body>
@@ -1189,7 +1180,11 @@
                         snackbarContainer.MaterialSnackbar.showSnackbar(data2);
                         break;*/
                 }
-            break;
+                break;
+            case 4:
+                console.log("Ficken " + responseText);
+                window.location.replace("https://fingerhut388.appspot.com");
+                break;
         }
     }
 
@@ -1337,9 +1332,6 @@
             }
         }
     }
-    function signoff(){
-        /* TODO: machen dass hier was funzt :)*/
-    }
     function fillEmployees() {
         console.log(employeesObject);
         var table = document.getElementById("employees_table");
@@ -1391,103 +1383,83 @@
         for(var j = 0; j < employeesObject.features[index].length; j++){
             switch(employeesObject.features[index][j]){
                 case 0:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_products\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_products\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Produkte verwalten</span>\n" +
-                        "                                </label>";
-                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        document.getElementById("manage_products").parentElement.MaterialCheckbox.check();
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_products\" checked><label for=\"manage_products\">Produkte bearbeiten</label><br>";
+                    }
+                    else{
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_products\"><label for=\"manage_products\">Produkte bearbeiten</label><br>";
                     }
                     break;
                 case 1:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_auth_codes\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_auth_codes\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Authentifizierungs QR-Codes lesen und schreiben</span>\n" +
-                        "                                </label>";
-                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        document.getElementById("manage_auth_codes").parentElement.MaterialCheckbox.check();
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_auth_codes\" checked><label for=\"manage_auth_codes\">Authentifizierungs QR-Codes lesen und schreiben</label><br>";
+                    }
+                    else{
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_auth_codes\"><label for=\"manage_auth_codes\">Authentifizierungs QR-Codes lesen und schreiben</label><br>";
                     }
                     break;
                 case 2:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_purchase_orders\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_purchase_orders\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Kaufaufträge</span>\n" +
-                        "                                </label>";
-                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        document.getElementById("manage_purchase_orders").parentElement.MaterialCheckbox.check();
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_purchase_orders\" checked><label for=\"manage_purchase_orders\">Kaufaufträge</label><br>";
+                    }
+                    else{
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_purchase_orders\"><label for=\"manage_purchase_orders\">Kaufaufträge</label><br>";
                     }
                     break;
                 case 3:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_employees\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_employees\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Mitarbeiter verwalten</span>\n" +
-                        "                                </label>";
-                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        document.getElementById("manage_employees").parentElement.MaterialCheckbox.check();
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_employees\" checked><label for=\"manage_employees\">Mitarbeiter verwalten</label><br>";
+                    }
+                    else{
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_employees\"><label for=\"manage_employees\">Mitarbeiter verwalten</label><br>";
                     }
                     break;
                 case 4:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_statistics\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_statistics\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Statistiken</span>\n" +
-                        "                                </label>";
-                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        document.getElementById("manage_statistics").parentElement.MaterialCheckbox.check();
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_statistics\" checked><label for=\"manage_statistics\">Statistiken</label><br>";
+                    }
+                    else{
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_statistics\"><label for=\"manage_statistics\">Statistiken</label><br>";
                     }
                     break;
                 case 5:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_change\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_change\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Geld wechseln</span>\n" +
-                        "                                </label>";
-                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        document.getElementById("manage_change").parentElement.MaterialCheckbox.check();
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_change\" checked><label for=\"manage_change\">Geld wechseln</label><br>";
+                    }
+                    else{
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_change\"><label for=\"manage_change\">Geld wechseln</label><br>";
                     }
                     break;
                 case 6:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_add_employees\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_add_employees\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Mitarbeiter hinzufügen</span>\n" +
-                        "                                </label>";
-                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        document.getElementById("manage_add_employees").parentElement.MaterialCheckbox.check();
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_add_employees\" checked><label for=\"manage_add_employees\">Mitarbeiter hinzufügen</label><br>";
+                    }
+                    else{
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_add_employees\"><label for=\"manage_add_employees\">Mitarbeiter hinzufügen</label><br>";
                     }
                     break;
                 case 7:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"manage_prepaid\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"manage_prepaid\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Prepaidkonto hinzufügen</span>\n" +
-                        "                                </label>";
-                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        document.getElementById("manage_prepaid").parentElement.MaterialCheckbox.check();
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_prepaid\" checked><label for=\"manage_prepaid\">Prepaidkonto hinzufügen</label><br>";
+                    }
+                    else{
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"manage_prepaid\"><label for=\"manage_prepaid\">Prepaidkonto hinzufügen</label><br>";
                     }
                     break;
                 case 8:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"scan_id\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"scan_id\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Ausweise scannen</span>\n" +
-                        "                                </label>";
-                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        document.getElementById("scan_id").parentElement.MaterialCheckbox.check();
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"scan_id\" checked><label for=\"scan_id\">Ausweise scannen</label><br>";
+                    }
+                    else{
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"scan_id\"><label for=\"scan_id\">Ausweise scannen</label><br>";
                     }
                     break;
                 case 9:
-                    wrapper.innerHTML += "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect margin-bottom\" for=\"item_import\">\n" +
-                        "                                    <input type=\"checkbox\" id=\"item_import\" class=\"mdl-checkbox__input\">\n" +
-                        "                                    <span class=\"mdl-checkbox__label\">Wareneinfuhr</span>\n" +
-                        "                                </label>";
-                    componentHandler.upgradeDom();
                     if(employeesObject.features[position].includes(employeesObject.features[index][j])){
-                        document.getElementById("item_import").parentElement.MaterialCheckbox.check();
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"item_import\" checked><label for=\"item_import\">Wareneinfuhr</label><br>";
+                    }
+                    else{
+                        wrapper.innerHTML += "<input type=\"checkbox\" id=\"item_import\"><label for=\"item_import\">Wareneinfuhr</label><br>";
                     }
                     break;
             }
@@ -1565,8 +1537,8 @@
         var wrapper = document.getElementById("checkbox_wrapper");
         var children = wrapper.children;
         for (var j = 0; j < children.length; j++) {
-            if(children[j].classList.contains("is-checked")){
-                switch (children[j].children[0].id){
+            if(children[j].checked){
+                switch (children[j].id){
                     case "manage_products":
                         featuresArray.push(0);
                         break;
@@ -1600,6 +1572,7 @@
                 }
             }
         }
+        console.log(featuresArray);
         for(var i = 1; i < table.rows.length; i++){
             var startTimeString = table.rows[i].cells[0].innerHTML;
             var endTimeString = table.rows[i].cells[1].innerHTML;
@@ -1609,28 +1582,28 @@
             var endTimeSplit = endSplit[1].split(":");
             switch(startSplit[0]){
                 case "Mo":
+                    startTimesArray.push((parseInt(startTimeSplit[0]) * 60) + parseInt(startTimeSplit[1]));
+                    endTimesArray.push((parseInt(endTimeSplit[0]) * 60) + parseInt(endTimeSplit[1]));
+                    break;
+                case "Di":
                     startTimesArray.push(1440 + (parseInt(startTimeSplit[0]) * 60) + parseInt(startTimeSplit[1]));
                     endTimesArray.push(1440 + (parseInt(endTimeSplit[0]) * 60) + parseInt(endTimeSplit[1]));
                     break;
-                case "Di":
+                case "Mi":
                     startTimesArray.push((1440 * 2) + (parseInt(startTimeSplit[0]) * 60) + parseInt(startTimeSplit[1]));
                     endTimesArray.push((1440 * 2) + (parseInt(endTimeSplit[0]) * 60) + parseInt(endTimeSplit[1]));
                     break;
-                case "Mi":
+                case "Do":
                     startTimesArray.push((1440 * 3) + (parseInt(startTimeSplit[0]) * 60) + parseInt(startTimeSplit[1]));
                     endTimesArray.push((1440 * 3) + (parseInt(endTimeSplit[0]) * 60) + parseInt(endTimeSplit[1]));
                     break;
-                case "Do":
+                case "Fr":
                     startTimesArray.push((1440 * 4) + (parseInt(startTimeSplit[0]) * 60) + parseInt(startTimeSplit[1]));
                     endTimesArray.push((1440 * 4) + (parseInt(endTimeSplit[0]) * 60) + parseInt(endTimeSplit[1]));
                     break;
-                case "Fr":
+                case "Sa":
                     startTimesArray.push((1440 * 5) + (parseInt(startTimeSplit[0]) * 60) + parseInt(startTimeSplit[1]));
                     endTimesArray.push((1440 * 5) + (parseInt(endTimeSplit[0]) * 60) + parseInt(endTimeSplit[1]));
-                    break;
-                case "Sa":
-                    startTimesArray.push((1440 * 6) + (parseInt(startTimeSplit[0]) * 60) + parseInt(startTimeSplit[1]));
-                    endTimesArray.push((1440 * 6) + (parseInt(endTimeSplit[0]) * 60) + parseInt(endTimeSplit[1]));
                     break;
 
             }
@@ -1646,9 +1619,9 @@
                 });
                 var url = "https://fingerhut388.appspot.com/getemployee?companynumber=" + "<%=companynumber%>"
                 + "&body=" + encodeURIComponent(jsonObject)
-                + "&editoraccountnumber=" + Accountnumber
+                + "&editoraccoutnumber=" + Accountnumber
                 + "&authstring=" + "<%=code%>";
-                httpAsync(url, "GET", 3);
+                httpAsync(url, "POST", 3);
             }
             else{
                 EmployeeError.innerText = "Der Bruttolohn muss mindestens einen Stromer betragen!";
@@ -1681,6 +1654,10 @@
         else{
             EmployeeError.innerText = "Der Bruttolohn muss mindestens einen Stromer betragen!";
         }
+    }
+    function signoff(){
+        var theurl =  "https://fingerhut388.appspot.com/signoff?accountnumber=<%= accountnumber %>&webstring=<%= code %>";
+        httpAsync(theurl, "GET",4);
     }
     </script>
 </html>
