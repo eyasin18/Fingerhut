@@ -54,7 +54,7 @@
                         <div class="mdl-spinner mdl-js-spinner is-active" id="submit_spinner"></div>
                     </div>
                 </div>
-                <footer class="demo-footer mdl-mini-footer">
+                <footer class="demo-footer mdl-mini-footer" id="footer">
                     <div class="mdl-mini-footer--left-section">
                         <ul class="mdl-mini-footer--link-list">
                             <li><a target="_blank" href="http://stromberg-gymnasium-saz.de/">SaZ-Homepage</a></li>
