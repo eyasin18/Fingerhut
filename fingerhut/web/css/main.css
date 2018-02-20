@@ -68,10 +68,9 @@
 #dropdown_list{
     z-index: 1001;
 }
-#stuff_wrapper{
-    margin-right: auto;
-    margin-left: auto;
-}
 #transfer_button{
     margin-bottom: 20px;
+}
+#transfer_error{
+    text-align: center;
 }

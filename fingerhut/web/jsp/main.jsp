@@ -23,9 +23,6 @@
     if (!mainTools.isAuthentificated(code)){
         response.sendRedirect("https://fingerhut388.appspot.com/");
     }
-    String balancestring = mainTools.getBalance(accountnumber);
-    float balancenumber = java.lang.Float.parseFloat(balancestring);
-    balancestring = String.format("%.2f", balancenumber);
     %>
 
 <html>
@@ -73,11 +70,9 @@
             <div class="page-content">
                 <div class="content-grid mdl-grid">
                     <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col content-grid mdl-grid">
-                        <div class="mdl-card__title">
-                            <h1 class="mdl-card__title-text">Girokonto</h1>
-                        </div>
                         <div id="stuff_wrapper" class="mdl-card__supporting-text">
-                            <h3 class="title">Kontostand: <%= balancestring %></h3>
+                            <h1 id="account_type"></h1>
+                            <h3 class="title" id="balance_field"></h3>
                             <h3 class="title">Mehrwertsteuer : <%= getVAT() %> %</h3>
                         </div>
                     </div>
@@ -189,10 +184,16 @@
 
     fillDropdown();
     window.onpageshow = function(){checkWebstring()};
+    if(<%=mainTools.isPrepaid()%>){
+        document.getElementById("account_type").innerText = "Prepaidkonto";
+    }
+    else {
+        document.getElementById("account_type").innerText = "Girokonto";
+    }
+    getBalance();
 
     function onButtonClick(){
         document.getElementById("transfer_error").innerText = "";
-        document.getElementById('transfer_button').disabled = true;
 
         var accountnumberError = document.getElementById('accountnumber_error');
         accountnumberError.parentElement.className = accountnumberError.parentElement.className.replace(" is-invalid", "");
@@ -218,8 +219,12 @@
         }
         amount = Math.round(amount * 100) / 100;
         document.getElementById("amount").value = amount;
-        getURL = url + "/transfer?receiveraccountnumber=" + receiveraccountnumber + "&senderaccountnumber=<%= accountnumber %>&webstring=<%= code %>&keyssnumbers=true";
-        httpAsync(getURL,"GET", 1);
+        var postUrl = url + "/transfer?amount=" + amount
+            + "&receiveraccountnumber=" + receiveraccountnumber
+            + "&senderaccountnumber=<%= accountnumber%>"
+            + "&code=<%=code%>";
+        document.getElementById('transfer_button').disabled = true;
+        httpAsync(postUrl, "POST", 1);
         document.getElementById('transfer_button').removeAttribute("disabled");
     }
 
@@ -238,69 +243,6 @@
 
     function processGetResponse(responseStr, callerid){
         switch (callerid) {
-            case 1:
-                var responses = responseStr.split("ò");
-                switch (parseInt(responses[0])) {
-                    case 1:
-                        /*var senderModulus = responses[1];
-                        var senderExponent = responses[2];
-                        var receiverModulus = responses[3];
-                        var receiverExponent = responses[4];
-
-                        //TODO: Schlüssel zufällig generieren
-                        var senderAesKey = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-                        var receiverAesKey = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-                        var purpose = "Hallo Welt! Ich bin hier!";
-
-                        var purposeBytes = aesjs.utils.utf8.toBytes(purpose);
-                        var aesSenderEcb = new aesjs.ModeOfOperation.ecb(senderAesKey);
-
-                        var encryptedSenderBytes = aesSenderEcb.encrypt(purposeBytes);
-                        var encryptedSenderPurposeHex = aesjs.utils.hex.fromBytes(encryptedSenderBytes);
-                        console.log(encryptedSenderPurposeHex);
-
-                        var aesReceiverEcb = new aesjs.ModeOfOperation.ecb(receiverAesKey);
-                        var encryptedReceiverBytes = aesReceiverEcb.encrypt(purposeBytes);
-                        var encryptedReceiverPurposeHex = aesjs.utils.hex.fromBytes(encryptedReceiverBytes);
-                        console.log(encryptedReceiverPurposeHex);
-
-                        var senderAesKeyHex = aesjs.utils.hex.fromBytes(senderAesKey);
-                        var receiverAesKeyHex = aesjs.utils.hex.fromBytes(receiverAesKey);
-
-                        var senderRSA = new RSAKey();
-                        senderRSA.setPublic(senderModulus, senderExponent);
-                        String.fromCharCode.apply(null, senderAesKey);
-                        var encryptedSenderAESKey = senderRSA.encrypt(senderAesKey);
-
-                        var receiverRSA = new RSAKey();
-                        receiverRSA.setPublic(receiverModulus, receiverExponent);
-                        var encryptedReceiverAESKey = receiverRSA.encrypt(receiverAesKey);*/
-
-                        var postUrl = url + "/transfer?amount=" + amount
-                            + "&receiveraccountnumber=" + receiveraccountnumber
-                            + "&senderaccountnumber=<%= accountnumber%>"
-                            + "&code=<%=code%>"/*
-                    + "&senderpurpose=" + encryptedSenderPurposeHex
-                    + "&senderkey=" + encryptedSenderAESKey
-                    + "&receiverpurpose=" + encryptedReceiverPurposeHex
-                    + "&receiverkey=" + encryptedReceiverAESKey*/;
-                        httpAsync(postUrl, "POST", 1);
-                        break;
-                    case 2:
-                        document.getElementById("transfer_error").innerText = "Bitte logge dich neu ein.";
-                        document.getElementById('transfer_button').disabled = false;
-                        break;
-                    case 3:
-                        var ele = document.getElementById('accountnumber_error');
-                        ele.parentElement.className += ' is-invalid';
-                        ele.textContent = strings.pinError;
-                        document.getElementById('transfer_button').disabled = false;
-                        break;
-                    default:
-                        break;
-                }
-                break;
-
             case 2:
                 submitButton.textContent = strings.loginButtonText;
                 submitSpinner.style.visibility = 'hidden';
@@ -338,10 +280,33 @@
     }
 
     function processPostResponse(responseStr, callerid) {
-        document.getElementById("transfer_error").innerText = "Der Kaufauftrag wurde erfolgreich durchgeführt.";
+        switch (parseInt(responseStr)){
+            case 1:
+                document.getElementById("transfer_error").innerText = "Du hast nicht genug Geld um den Kaufauftrag auszuführen.";
+                break;
+            case 2:
+                document.getElementById("transfer_error").innerText = "Der Empfänger existiert nicht.";
+                break;
+            case 3:
+                document.getElementById("transfer_error").innerText = "Der Kaufauftrag wurde erfolgreich durchgeführt.";
+                getBalance();
+                break;
+            case 4:
+                document.getElementById("transfer_error").innerText = "Du kannst dir nicht selbst Geld überweisen.";
+                break;
+            case 5:
+                document.getElementById("transfer_error").innerText = "Bitte logge dich neu ein.";
+                break;
+            case 6:
+                document.getElementById("transfer_error").innerText = "Der Empfänger existiert nicht.";
+                break;
+        }
         document.getElementById("receiver").value = "";
+        document.getElementById("receiver").parentElement.classList.remove("is-dirty");
         document.getElementById("amount").value = "";
+        document.getElementById("amount").parentElement.classList.remove("is-dirty");
         document.getElementById("accountnumber").value = "";
+        document.getElementById("accountnumber").parentElement.classList.remove("is-dirty");
         document.getElementById('transfer_button').disabled = false;
     }
 
@@ -422,6 +387,14 @@
         console.log(date.getTime());
     }
 
+    function getBalance() {
+        <%
+        String balancestring = mainTools.getBalance(accountnumber);
+        float balancenumber = java.lang.Float.parseFloat(balancestring);
+        balancestring = String.format("%.2f", balancenumber);
+    %>
+        document.getElementById("balance_field").innerText = "Kontostand: " + "<%=balancestring%>";
+    }
 </script>
 </body>
 </html>

@@ -32,8 +32,8 @@ public class MainTools {
 
     public boolean isCompanyAdmin(String companynumber){
         List<Long> featuresList = accountGetter.getSpecificFeatures(companynumber);
-        log.info("Contains 0: " + featuresList.contains(0L) + "\nContains 5: " + featuresList.contains(5L) + "\nContains 7: " + featuresList.contains(7L));
-        return featuresList.contains(0L) && featuresList.contains(5L) && featuresList.contains(7L);
+        log.info("Contains 0: " + featuresList.contains(0L) + "\nContains 2: " + featuresList.contains(2L) + "\nContains 3: " + featuresList.contains(3L)+ "\nContains 4: " + featuresList.contains(4L));
+        return featuresList.contains(0L) && featuresList.contains(2L) && featuresList.contains(3L) && featuresList.contains(4L);
     }
 
     public String getBalance(String accountnumber){
@@ -51,5 +51,9 @@ public class MainTools {
             companyNumbers.add(company.getAccountnumber());
         }
         return companyNumbers;
+    }
+
+    public boolean isPrepaid(){
+        return accountGetter.getIsPrepaid();
     }
 }
