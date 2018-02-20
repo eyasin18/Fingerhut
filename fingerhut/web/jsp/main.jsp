@@ -23,6 +23,9 @@
     if (!mainTools.isAuthentificated(code)){
         response.sendRedirect("https://fingerhut388.appspot.com/");
     }
+    String balancestring = mainTools.getBalance(accountnumber);
+    float balancenumber = java.lang.Float.parseFloat(balancestring);
+    balancestring = String.format("%.2f", balancenumber);
     %>
 
 <html>
@@ -44,6 +47,7 @@
     <script defer src="../js/sjcl.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}../js/index.js"></script>
     <script type="application/javascript" src="../res/values/strings.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}../res/images/favicon.ico">
     <title>Fingerhut</title>
 </head>
 <body onpageshow="checkWebstring()">
@@ -69,24 +73,12 @@
             <div class="page-content">
                 <div class="content-grid mdl-grid">
                     <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col content-grid mdl-grid">
-                        <div class="mdl-card mdl-cell mdl-cell--6-col">
-                            <div id="balance">
-                                <script>
-                                    <%
-                                    String balancestring = mainTools.getBalance(accountnumber);
-                                    float balancenumber = java.lang.Float.parseFloat(balancestring);
-                                    balancestring = String.format("%.2f", balancenumber);
-                                    %>
-                                </script>
-                                <h3>Kontostand: <%= balancestring %></h3>
-                                <br>
-                                <h3>Mehrwertsteuer : <%= getVAT() %> %</h3>
-                            </div>
+                        <div class="mdl-card__title">
+                            <h1 class="mdl-card__title-text">Girokonto</h1>
                         </div>
-                        <div class="mdl-card mdl-cell mdl-cell--6-col">
-                            <div class="mdl-card__title mdl-color-text--green" id="kontostand">
-                                <h1>Girokonto</h1>
-                            </div>
+                        <div id="stuff_wrapper" class="mdl-card__supporting-text">
+                            <h3 class="title">Kontostand: <%= balancestring %></h3>
+                            <h3 class="title">Mehrwertsteuer : <%= getVAT() %> %</h3>
                         </div>
                     </div>
                 </div>
@@ -97,10 +89,10 @@
                 <div class="content-grid mdl-grid">
                     <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
                         <div class="mdl-card__title" id="transfer_heading">
-                            <h2>Überweisen</h2>
+                            <h3>Überweisen</h3>
                         </div>
                         <div id="cash_icon">
-                            <img src="../res/images/cash.svg" alt="cash_icon" style="width:128px;height:128px;">
+                            <img src="../res/images/cash.svg" alt="cash_icon" style="width:100px;height:100px;">
                         </div>
                         <div id="form" class="mdl-card">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -117,14 +109,11 @@
                                 <label class="mdl-textfield__label" for="amount">Betrag</label>
                                 <span class="mdl-textfield__error" id="amount_error"></span>
                             </div>
+                            <h6 id="transfer_error" class="title"></h6>
                             <div class="mdl-card__actions">
                                 <button id="transfer_button" onclick="onButtonClick()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white" type="button">
                                     Überweisen
                                 </button>
-                                <div id="toast" class="mdl-js-snackbar mdl-snackbar">
-                                    <div class="mdl-snackbar__text"></div>
-                                    <button class="mdl-snackbar__action" type="button"></button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -165,15 +154,6 @@
                 </div>
             </div>
         </section>
-        <footer class="demo-footer mdl-mini-footer" id="footer">
-            <div class="mdl-mini-footer--left-section">
-                <ul class="mdl-mini-footer--link-list">
-                    <li><a target="_blank" href="https://fingerhut388.appspot.com/">Login</a></li>
-                    <li><a target="_blank" href="http://stromberg-gymnasium-saz.de/">SaZ-Homepage</a></li>
-                    <li><a href="https://fingerhut388.appspot.com/datenschutz">Datenschutzerklärung</a></li>
-                </ul>
-            </div>
-        </footer>
     </main>
 </div>
 <script type="application/javascript">
@@ -209,9 +189,10 @@
 
     fillDropdown();
     window.onpageshow = function(){checkWebstring()};
-    function onButtonClick(){
 
-        document.getElementById('transfer_button');
+    function onButtonClick(){
+        document.getElementById("transfer_error").innerText = "";
+        document.getElementById('transfer_button').disabled = true;
 
         var accountnumberError = document.getElementById('accountnumber_error');
         accountnumberError.parentElement.className = accountnumberError.parentElement.className.replace(" is-invalid", "");
@@ -306,12 +287,14 @@
                         httpAsync(postUrl, "POST", 1);
                         break;
                     case 2:
-                        //TODO: Nutzer sagen er muss sich nochmal anmelden
+                        document.getElementById("transfer_error").innerText = "Bitte logge dich neu ein.";
+                        document.getElementById('transfer_button').disabled = false;
                         break;
                     case 3:
                         var ele = document.getElementById('accountnumber_error');
                         ele.parentElement.className += ' is-invalid';
                         ele.textContent = strings.pinError;
+                        document.getElementById('transfer_button').disabled = false;
                         break;
                     default:
                         break;
@@ -347,7 +330,6 @@
                 window.location.replace(url);
                 break;
             case 4:
-                console.log("Ficken " + responseStr);
                 if (parseInt(responseStr) === 0){
                     window.location.replace(url);
                 }
@@ -356,13 +338,11 @@
     }
 
     function processPostResponse(responseStr, callerid) {
-        var notification = document.querySelector('#toast');
-        notification.MaterialSnackbar.showSnackbar(
-            {
-                message: 'Überweisung erfolgreich',
-                timeout: 3000
-            }
-        );
+        document.getElementById("transfer_error").innerText = "Der Kaufauftrag wurde erfolgreich durchgeführt.";
+        document.getElementById("receiver").value = "";
+        document.getElementById("amount").value = "";
+        document.getElementById("accountnumber").value = "";
+        document.getElementById('transfer_button').disabled = false;
     }
 
     function companyLogin(){

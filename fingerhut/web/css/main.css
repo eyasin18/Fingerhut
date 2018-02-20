@@ -9,11 +9,6 @@
     margin-right: auto;
     margin-left: auto;
 }
-#kontostand{
-    margin-left: auto;
-    margin-bottom: auto;
-    margin-top: auto;
-}
 #balance{
     margin-right: auto;
     margin-bottom: auto;
@@ -73,12 +68,10 @@
 #dropdown_list{
     z-index: 1001;
 }
-#footer{
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    z-index: 1000;
+#stuff_wrapper{
+    margin-right: auto;
+    margin-left: auto;
 }
-.page-content{
-    margin-bottom: 100px;
+#transfer_button{
+    margin-bottom: 20px;
 }

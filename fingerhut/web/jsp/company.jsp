@@ -44,6 +44,7 @@
         <script defer src="${pageContext.request.contextPath}../js/getmdl-select.min.js"></script>
         <script defer src="${pageContext.request.contextPath}../js/material.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}../res/images/favicon.ico">
         <title>
             <%=
             companyTools.getOwner(companynumber)
@@ -1182,7 +1183,6 @@
                 }
                 break;
             case 4:
-                console.log("Ficken " + responseText);
                 window.location.replace("https://fingerhut388.appspot.com");
                 break;
         }
