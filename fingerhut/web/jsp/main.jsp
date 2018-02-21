@@ -45,6 +45,7 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}../js/index.js"></script>
     <script type="application/javascript" src="../res/values/strings.js"></script>
     <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}../res/images/favicon.ico">
+    <link rel="manifest" href=../json/manifest.json">
     <title>Fingerhut</title>
 </head>
 <body onpageshow="checkWebstring()">
@@ -184,7 +185,7 @@
         document.getElementById("account_type").innerText = "Prepaidkonto";
     }
     else {
-        document.getElementById("account_type").innerText = "Girokonto";
+        document.getElementById("account_type").innerText = "Bürgerkonto";
     }
     getBalance();
 
@@ -357,6 +358,7 @@
                 %>
                 companyNumbers.push("<%= companyNumber%>");
                 <%
+
             }
         %>
         var dropdown_list = document.getElementById("dropdown_list");
