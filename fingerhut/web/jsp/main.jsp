@@ -157,10 +157,6 @@
     var url = "https://fingerhut388.appspot.com";
     var encryptedPurpose = "";
     var getURL;
-    var isOpera = (platform.name === 'Opera') && (platform.version >= 50);
-    var isFirefox = ((platform.name === 'Firefox') && (platform.version >= 44)) || ((platform.name === 'Firefox for iOS') && (platform.version >= 37));
-    var isChrome = (platform.name === 'Chrome') || (platform.name === 'Chrome Mobile');
-    var isAdmin = <%= mainTools.isCompanyAdmin("0002") %>;
 
     var companypass = document.getElementById('companypass');
     var companypassError = document.getElementById('companypass_error');
@@ -320,25 +316,18 @@
         if(companynumber !== "") {
             var hash = sjcl.hash.sha256.hash(companypass.value);
             var encryptedPassword = sjcl.codec.hex.fromBits(hash);
-
+            var isAdmin = <%= mainTools.isCompanyAdmin("0002")%>;
             var companyLoginUrl = "https://fingerhut388.appspot.com/companylogin?companynumber=" + companynumber
                 + "&accountnumber=<%=accountnumber%>&password=" + encryptedPassword
                 + "&webstring=<%=code%>";
-            if (!isChrome && !isFirefox && !isOpera) {
                 if (!isAdmin) {
                     companypassError = document.getElementById('companypass_error');
                     companypassError.parentElement.className += ' is-invalid';
-                    companypassError.textContent = "Sie müssen Chrome, Firefox oder Opera benutzen um sich auf der Unternehmensseite anmelden zu können.";
-                } else {
-                    if (confirm("Kaufaufträge können sie nur mit Chrome, Firefox und Opera einsehen und bearbeiten.") === true) {
-                        httpAsync(companyLoginUrl, "GET", 2);
-                    } else {
-                        httpAsync(companyLoginUrl, "GET", 2);
-                    }
+                    companypassError.textContent = "Sie haben nicht die nötigen Berechtigungen um sich bei der Unternehmensseite anmelden zu können.";
                 }
-            } else {
-                httpAsync(companyLoginUrl, "GET", 2);
-            }
+                else {
+                    httpAsync(companyLoginUrl, "GET", 2);
+                }
         }
         else{
             companynumberError.textContent = "Bitte wählen sie eine Kontonummer aus!";

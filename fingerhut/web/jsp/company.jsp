@@ -1533,6 +1533,7 @@
         var startTimesArray = [];
         var endTimesArray = [];
         var featuresArray = employeesObject.features[EmployeePosition];
+        console.log(featuresArray);
         var table = document.getElementById("work_times_table");
         var wrapper = document.getElementById("checkbox_wrapper");
         var children = wrapper.children;
@@ -1578,6 +1579,40 @@
                     case "item_import":
                         var index9 = featuresArray.indexOf(9);
                         if (index9 !== -1) featuresArray.splice(index9, 1);
+                        break;
+                }
+            }
+            else{
+                switch (children[j].id) {
+                    case "manage_products":
+                        featuresArray.push(0);
+                        break;
+                    case "manage_auth_codes":
+                        featuresArray.push(1);
+                        break;
+                    case "manage_purchase_orders":
+                        featuresArray.push(2);
+                        break;
+                    case "manage_employees":
+                        featuresArray.push(3);
+                        break;
+                    case "manage_statistics":
+                        featuresArray.push(4);
+                        break;
+                    case "manage_change":
+                        featuresArray.push(5);
+                        break;
+                    case "manage_add_employees":
+                        featuresArray.push(6);
+                        break;
+                    case "manage_prepaid":
+                        featuresArray.push(7);
+                        break;
+                    case "scan_id":
+                        featuresArray.push(8);
+                        break;
+                    case "item_import":
+                        featuresArray.push(9);
                         break;
                 }
             }
