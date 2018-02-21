@@ -1532,42 +1532,52 @@
         document.getElementById("save_employee_changes").disabled = true;
         var startTimesArray = [];
         var endTimesArray = [];
-        var featuresArray = [];
+        var featuresArray = employeesObject.features[EmployeePosition];
         var table = document.getElementById("work_times_table");
         var wrapper = document.getElementById("checkbox_wrapper");
         var children = wrapper.children;
         for (var j = 0; j < children.length; j++) {
-            if(children[j].checked){
+            if(!children[j].checked){
                 switch (children[j].id){
                     case "manage_products":
-                        featuresArray.push(0);
+                        var index = featuresArray.indexOf(0);
+                        if (index !== -1) featuresArray.splice(index, 1);
                         break;
                     case "manage_auth_codes":
-                        featuresArray.push(1);
+                        var index1 = featuresArray.indexOf(1);
+                        if (index1 !== -1) featuresArray.splice(index1, 1);
                         break;
                     case "manage_purchase_orders":
-                        featuresArray.push(2);
+                        var index2 = featuresArray.indexOf(2);
+                        if (index2 !== -1) featuresArray.splice(index2, 1);
                         break;
                     case "manage_employees":
-                        featuresArray.push(3);
+                        var index3 = featuresArray.indexOf(3);
+                        if (index3 !== -1) featuresArray.splice(index3, 1);
                         break;
                     case "manage_statistics":
-                        featuresArray.push(4);
+                        var index4 = featuresArray.indexOf(4);
+                        if (index4 !== -1) featuresArray.splice(index4, 1);
                         break;
                     case "manage_change":
-                        featuresArray.push(5);
+                        var index5 = featuresArray.indexOf(5);
+                        if (index5 !== -1) featuresArray.splice(index5, 1);
                         break;
                     case "manage_add_employees":
-                        featuresArray.push(6);
+                        var index6 = featuresArray.indexOf(6);
+                        if (index6 !== -1) featuresArray.splice(index6, 1);
                         break;
                     case "manage_prepaid":
-                        featuresArray.push(7);
+                        var index7 = featuresArray.indexOf(7);
+                        if (index7 !== -1) featuresArray.splice(index7, 1);
                         break;
                     case "scan_id":
-                        featuresArray.push(8);
+                        var index8 = featuresArray.indexOf(8);
+                        if (index8 !== -1) featuresArray.splice(index8, 1);
                         break;
                     case "item_import":
-                        featuresArray.push(9);
+                        var index9 = featuresArray.indexOf(9);
+                        if (index9 !== -1) featuresArray.splice(index9, 1);
                         break;
                 }
             }
