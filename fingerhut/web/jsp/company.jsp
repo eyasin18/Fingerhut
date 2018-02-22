@@ -28,6 +28,9 @@
     }
     CompanyTools companyTools = new CompanyTools(accountnumber);
     PurchaseOrder[] purchaseOrders = companyTools.queryPurchasOrders(companynumber, request);
+
+    double balance = companyTools.getBalance(companynumber);
+    String balancestring = String.format("%.2f", balance);
 %>
 
 <!doctype html>
@@ -208,7 +211,7 @@
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="statistics">
                         <h4 class="mdl-typography--headline" id="statistics_heading">Statistiken</h4>
                         <div class="mdl-card__supporting-text">
-                           Hier können sie die Statistiken ihres Unternehmens einsehen.
+                           <h3>Kontostand ihres Unternehmens: <%= balancestring %> S</h3>
                         </div>
                     </div>
 

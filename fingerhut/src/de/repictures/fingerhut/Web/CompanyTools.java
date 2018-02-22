@@ -44,9 +44,9 @@ public class CompanyTools {
         return companyGetter.getOwner();
     }
 
-    public String getBalance(String accountnumber){
+    public double getBalance(String accountnumber){
         Company companyGetter = new Company(accountnumber);
-        return companyGetter.getOwner();
+        return companyGetter.getBalanceDouble();
     }
 
     public List<Product> querySellingProducts(String companynumber){
