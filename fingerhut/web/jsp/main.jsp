@@ -163,6 +163,7 @@
     var companypassError = document.getElementById('companypass_error');
     var companynumberError = document.getElementById('companynumber_error');
     var companynumber;
+    var companyNumbers = [];
 
     var submitSpinner = document.getElementById('submit_spinner');
     var submitButton = document.getElementById('submit_button');
@@ -317,11 +318,16 @@
         if(companynumber !== "") {
             var hash = sjcl.hash.sha256.hash(companypass.value);
             var encryptedPassword = sjcl.codec.hex.fromBits(hash);
-            var isAdmin = <%= mainTools.isCompanyAdmin("0002")%>;
+            var isAdmins = [];
+            <%
+            for (boolean isAdmin : mainTools.getIsAdmins()){
+                %> isAdmins.push(<%=isAdmin%>); <%
+            }
+            %>
             var companyLoginUrl = "https://fingerhut388.appspot.com/companylogin?companynumber=" + companynumber
                 + "&accountnumber=<%=accountnumber%>&password=" + encryptedPassword
                 + "&webstring=<%=code%>";
-                if (!isAdmin) {
+                if (!isAdmins[companyNumbers.indexOf(companynumber)]) {
                     companypassError = document.getElementById('companypass_error');
                     companypassError.parentElement.className += ' is-invalid';
                     companypassError.textContent = "Sie haben nicht die nötigen Berechtigungen um sich bei der Unternehmensseite anmelden zu können.";
@@ -351,7 +357,6 @@
     }
 
     function fillDropdown() {
-        var companyNumbers = [];
         <%
             List<String> companyNumbers = mainTools.getCompanyNumbers(accountnumber);
             for (String companyNumber : companyNumbers) {

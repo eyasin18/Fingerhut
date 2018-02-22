@@ -409,6 +409,7 @@ public class Account {
             JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
             ArrayList<Long> features = new ArrayList<>();
             JsonArray jsonArray = jsonObject.getAsJsonArray(companynumber);
+            if (jsonArray == null) jsonArray = new JsonArray();
             for (int i = 0; i < jsonArray.size(); i++) {
                 features.add(jsonArray.get(i).getAsLong());
             }
@@ -422,6 +423,7 @@ public class Account {
             JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
             ArrayList<Long> features = new ArrayList<>();
             JsonArray jsonArray = jsonObject.getAsJsonArray(companynumber);
+            if (jsonArray == null) jsonArray = new JsonArray();
             for (int i = 0; i < jsonArray.size(); i++) {
                 features.add(jsonArray.get(i).getAsLong());
             }
