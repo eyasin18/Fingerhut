@@ -17,4 +17,8 @@
         <property name="code" direction="asc"/>
         <property name="name" direction="asc"/>
     </datastore-index>
+    <datastore-index kind="Account" ancestor="false" source="manual">
+        <property name="is_prepaid" direction="asc"/>
+        <property name="expire_date" direction="asc"/>
+    </datastore-index>
 </datastore-indexes>

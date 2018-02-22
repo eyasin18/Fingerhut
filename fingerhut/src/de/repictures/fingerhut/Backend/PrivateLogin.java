@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 public class PrivateLogin extends HttpServlet {
 
     private Logger log = Logger.getLogger(Account.class.getName());
-    public static final int appVersion = 13;
+    public static final int appVersion = 14;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -167,8 +167,8 @@ public class PrivateLogin extends HttpServlet {
                     object.addProperty("failed_attempts", failedAttempts);
                     resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
                 } else {
-                    account.countUpLoginAttempts();
-                    account.saveAll();
+                    account.countUpLoginAttempts(queriedAccounts.get(0));
+                    account.saveAll(queriedAccounts.get(0));
                     object.addProperty("response_code", 1);
                     object.addProperty("failed_attempts", failedAttempts);
                     resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
