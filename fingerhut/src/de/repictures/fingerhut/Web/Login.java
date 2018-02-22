@@ -55,7 +55,7 @@ public class Login extends HttpServlet{
                 return;
             }
 
-            long failedAttempts = accountGetter.countUpLoginAttempts();
+            long failedAttempts = accountGetter.getLoginAttempts();
             if (failedAttempts > 9) {
                 resp.getWriter().println(URLEncoder.encode("6", "UTF-8"));
                 return;
@@ -73,6 +73,8 @@ public class Login extends HttpServlet{
             accountGetter.saveAll();
             resp.getWriter().println(URLEncoder.encode("1ò" + accountGetter.getRandomWebString(), "UTF-8"));
         } else {
+            accountGetter.countUpLoginAttempts();
+            accountGetter.saveAll();
             resp.getWriter().println("2");
         }
     }

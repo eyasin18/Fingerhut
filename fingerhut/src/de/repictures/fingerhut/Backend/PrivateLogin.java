@@ -80,7 +80,7 @@ public class PrivateLogin extends HttpServlet {
         //Wenn du einen gefunden hast, dann...
         if (queriedAccounts.size() > 0){
 
-            long failedAttempts = account.countUpLoginAttempts(queriedAccounts.get(0));
+            long failedAttempts = account.getLoginAttempts(queriedAccounts.get(0));
             if (!account.getIsPrepaid(queriedAccounts.get(0))) {
                 //Vergleiche den empfangenen Authentifizierungspart mit dem auf der Datenbank
                 String authCode = account.getAuthString(queriedAccounts.get(0));
@@ -161,11 +161,14 @@ public class PrivateLogin extends HttpServlet {
                     Calendar cooldownTime = Calendar.getInstance(Locale.getDefault());
                     cooldownTime.add(Calendar.SECOND, (int) cooldownSeconds);
                     account.setCooldownTime(queriedAccounts.get(0), cooldownTime.getTime());
+                    account.countUpLoginAttempts();
                     account.saveAll(queriedAccounts.get(0));
                     object.addProperty("response_code", 1);
                     object.addProperty("failed_attempts", failedAttempts);
                     resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
                 } else {
+                    account.countUpLoginAttempts();
+                    account.saveAll();
                     object.addProperty("response_code", 1);
                     object.addProperty("failed_attempts", failedAttempts);
                     resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
