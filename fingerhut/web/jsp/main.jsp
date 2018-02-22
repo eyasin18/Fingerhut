@@ -45,7 +45,7 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}../js/index.js"></script>
     <script type="application/javascript" src="../res/values/strings.js"></script>
     <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}../res/images/favicon.ico">
-    <link rel="manifest" href=../json/manifest.json">
+    <link rel="apple-touch-icon" href="${pageContext.request.contextPath}../res/images/apple-touch-icon.png">
     <title>Fingerhut</title>
 </head>
 <body onpageshow="checkWebstring()">

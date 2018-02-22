@@ -39,12 +39,12 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}../css/material.green-light_green.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}../css/css.css" type="text/css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}../css/getmdl-select.min.css">
-        <link rel="manifest" href="../json/manifest.json">
         <script defer src="../js/sjcl.js"></script>
         <script defer src="${pageContext.request.contextPath}../js/getmdl-select.min.js"></script>
         <script defer src="${pageContext.request.contextPath}../js/material.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}../res/images/favicon.ico">
+        <link rel="apple-touch-icon" href="${pageContext.request.contextPath}../res/images/apple-touch-icon.png">
         <title>
             <%=
             companyTools.getOwner(companynumber)
