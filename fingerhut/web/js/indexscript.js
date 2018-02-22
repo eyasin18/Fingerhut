@@ -89,7 +89,7 @@ function httpGetAsync(theUrl, callerid) {
 }
 
 function processPostResponse(responseStr) {
-    var responses = responseStr.split("ò");
+    var responses = decodeURIComponent(responseStr).split("ò");
     var ele;
 
     switch (parseInt(responses[0])){

@@ -71,7 +71,7 @@ public class Login extends HttpServlet{
                 accountGetter.setGotBasicIncome(true);
             }
             accountGetter.saveAll();
-            resp.getWriter().println("1ò" + accountGetter.getRandomWebString());
+            resp.getWriter().println(URLEncoder.encode("1ò" + accountGetter.getRandomWebString(), "UTF-8"));
         } else {
             resp.getWriter().println("2");
         }
