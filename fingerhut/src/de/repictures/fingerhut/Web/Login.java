@@ -1,12 +1,16 @@
 package de.repictures.fingerhut.Web;
 
 import de.repictures.fingerhut.Datastore.Account;
+import de.repictures.fingerhut.Datastore.Tax;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -17,6 +21,11 @@ public class Login extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (Tax.getIsServerLocked().intValue() > 0){
+            resp.getWriter().println(URLEncoder.encode("-2", "UTF-8"));
+            return;
+        }
+
         String accountnumber = req.getParameter("accountnumber");
         String passwordHash = req.getParameter("password");
 
@@ -37,6 +46,22 @@ public class Login extends HttpServlet{
             return;
         }
 
+        if (!accountGetter.getIsPrepaid()) {
+            Calendar cooldownTimeCalendar = accountGetter.getCooldownTime();
+            if (cooldownTimeCalendar != null && cooldownTimeCalendar.after(Calendar.getInstance(Locale.getDefault()))) {
+                SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", Locale.getDefault());
+                String cooldownTimeStr = f.format(cooldownTimeCalendar.getTime());
+                resp.getWriter().println(URLEncoder.encode("5ò" + cooldownTimeStr, "UTF-8"));
+                return;
+            }
+
+            long failedAttempts = accountGetter.countUpLoginAttempts();
+            if (failedAttempts > 9) {
+                resp.getWriter().println(URLEncoder.encode("6", "UTF-8"));
+                return;
+            }
+        }
+
         String savedPasswordHash = accountGetter.getHashedPassword();
 
         if (Objects.equals(savedPasswordHash, passwordHash)){
@@ -46,7 +71,7 @@ public class Login extends HttpServlet{
                 accountGetter.setGotBasicIncome(true);
             }
             accountGetter.saveAll();
-            resp.getWriter().println("1~" + accountGetter.getRandomWebString());
+            resp.getWriter().println("1ò" + accountGetter.getRandomWebString());
         } else {
             resp.getWriter().println("2");
         }

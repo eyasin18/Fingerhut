@@ -89,10 +89,19 @@ function httpGetAsync(theUrl, callerid) {
 }
 
 function processPostResponse(responseStr) {
-    var responses = responseStr.split("~");
+    var responses = responseStr.split("ò");
     var ele;
 
     switch (parseInt(responses[0])){
+        case -2:
+            //Server ist gesperrt
+            break;
+        case 5:
+            //response[1]: Zeit wenn Cooldown abgelaufen ist in dd.MM.yyyy HH:mm:ss.SSSS z
+            break;
+        case 6:
+            //Konto gesperrt! Geh zu FCB
+            break;
         case 0:
             submitSpinner.style.visibility = 'hidden';
             submitButton.textContent = strings.loginButtonText;
