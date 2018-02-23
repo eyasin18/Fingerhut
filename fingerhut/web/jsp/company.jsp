@@ -272,6 +272,7 @@
                         </div>
                         <div class ="wrapper">
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backProduct()" id="back_button_product">Fertig</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelProduct()" id="cancel_button_product">Abbrechen</button>
                         </div>
                     </div>
                     <!-- Karte zum hinzufügen eines Produktes-->
@@ -808,6 +809,15 @@
         textfield2.parentElement.classList.add("is-focused");
         textfield1.value = productarray[(position - 1)].name;
         textfield2.value = productarray[(position - 1)].price;
+    }
+
+    function cancelProduct(){
+        Products.style.display = "flex";
+        Product.style.display = "none";
+        addProductCard.style.display = "none";
+        ShortPurchaseOrders.style.display = "block";
+        Employees.style.display = "block";
+        Statistics.style.display = "block";
     }
 
     function backOrder() {
