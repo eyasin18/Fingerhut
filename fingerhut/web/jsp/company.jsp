@@ -251,12 +251,12 @@
                         <div class="wrapper">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="textfield1" class="mdl-textfield__input" type="text">
-                                <label class="mdl-textfield__label" for="textfield1" id="label1"></label>
+                                <label class="mdl-textfield__label" for="textfield1" id="label1">Name</label>
                                 <span class="mdl-textfield__error"></span>
                             </div>
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="textfield2" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]">
-                                <label class="mdl-textfield__label" for="textfield2" id="label2"></label>
+                                <label class="mdl-textfield__label" for="textfield2" id="label2">Preis</label>
                                 <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
                             </div>
                             <div>
@@ -271,16 +271,42 @@
                             </div>
                         </div>
                         <div class ="wrapper">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backProduct()" id="back_button_product">Fertig</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="finishProduct()" id="back_button_product">Fertig</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelProduct()" id="cancel_button_product">Abbrechen</button>
                         </div>
                     </div>
                     <!-- Karte zum hinzufügen eines Produktes-->
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="addProduct">
-                        <div id="table_div3"></div>
                         <div class="wrapper">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="back_button_addProduct" onclick="backAddProduct()">
-                                Fertig
-                            </button>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input id="textfield3" class="mdl-textfield__input" type="text">
+                                <label class="mdl-textfield__label" for="textfield3" id="label3">7 - 13 Stelliger Code</label>
+                                <span class="mdl-textfield__error"></span>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input id="textfield4" class="mdl-textfield__input" type="text">
+                                <label class="mdl-textfield__label" for="textfield4" id="label4">Name</label>
+                                <span class="mdl-textfield__error"></span>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input id="textfield5" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]">
+                                <label class="mdl-textfield__label" for="textfield5" id="label5">Preis</label>
+                                <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
+                            </div>
+                            <div>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-3">
+                                    <input type="checkbox" id="checkbox-3" class="mdl-checkbox__input" value="true">
+                                    <span class="mdl-checkbox__label">Kunden können dieses Produkt selbst kaufen</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-4">
+                                    <input type="checkbox" id="checkbox-4" class="mdl-checkbox__input" value="true">
+                                    <span class="mdl-checkbox__label">Kunden können dieses Produkt kaufen</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="wrapper">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="back_button_addProduct" onclick="">Fertig</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelProduct()" id="cancel_button_addProduct">Abbrechen</button>
                         </div>
                     </div>
                 <!-- Mitarbeiter Karte -->
@@ -474,7 +500,8 @@
 <script src="${pageContext.request.contextPath}../js/pojo.js" ></script>
     <script>
 
-    var Accountnumber = "<%=accountnumber%>";
+    var accountnumber = "<%=accountnumber%>";
+    var companynumber = "<%= companynumber %>";
 
     //Kaufaufträge betreffend
     var PurchaseOrder = document.getElementById("purchase_order");
@@ -494,7 +521,7 @@
 
     //Produkte betreffend
     var Products = document.getElementById("products");//Produkte Karte
-    var Product = document.getElementById("product");
+    var Product = document.getElementById("product");//Produkte bearbeiten Karte
     var addProductCard = document.getElementById("addProduct");//Karte zum Hinzufügen von Produkten
     var currentProductPosition;//globale Variable zum Speichern von der Position des Produktes, welches gerade bearbeitet wird
     var checkbox1 = document.getElementById("checkbox-1");//Checkbox ob ein Produkt "Selfbuy" ist
@@ -510,19 +537,14 @@
     var TimePosition;
     var EmployeeError = document.getElementById("save_employee_changes_error");
 
-    addProductCard.style.display = "none"; //lässt die Karte zum Hinzufügen von Produkten beim Laden der Seite verschwinden
+    cancelProduct();
     PurchaseOrder.style.display = "none";
     PurchaseOrders.style.display = "none";
-    ShortPurchaseOrders.style.display = "block";
     AddPurchase.style.display = "none";
     AddProductToPurchase.style.display = "none";
-    Product.style.display = "none";
-    Employees.style.display = "block";
-    Statistics.style.display = "block";
     Employee.style.display = "none";
     WorkTimes.style.display = "none";
     EditWorkTimes.style.display = "none";
-
 
     //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
     var product = pojo('name', 'price', 'code', 'amount' , 'selfBuy', 'buyable');
@@ -810,6 +832,15 @@
         textfield2.value = productarray[(position - 1)].price;
     }
 
+    function cancelProduct(){// Funktion die beim Aufrufen der Abbrechenbuttons der Produkte-Karten ausgeführt wird
+        Products.style.display = "flex";
+        Product.style.display = "none";
+        addProductCard.style.display = "none";
+        ShortPurchaseOrders.style.display = "block";
+        Employees.style.display = "block";
+        Statistics.style.display = "block";
+    }
+
     function backOrder() {
         PurchaseOrder.style.display = "none";
         ShortPurchaseOrders.style.display = "block";
@@ -818,13 +849,13 @@
         Products.style.display = "block";
     }
 
-    function backProduct(){
+    function finishProduct(){
         Products.style.display = "flex";
         Product.style.display = "none";
         ShortPurchaseOrders.style.display = "block";
         Employees.style.display = "block";
         Statistics.style.display = "block";
-        var companynumber = '<%= companynumber %>';
+
         var theURL = "https://fingerhut388.appspot.com/updateproduct?" + "code=" + productarray[currentProductPosition].code + "&companynumber=" + companynumber;
         if (typeof document.getElementById("textfield1").value === "string"){
             console.log("Erfolg");
@@ -847,16 +878,6 @@
         }
         httpAsync(theURL,"POST",3);
         location.reload(true);
-    }
-
-    function backAddProduct(){
-        //TODO: Funktion schreiben um von der Produkt hinzufügen Karte zurückzukommen
-        Products.style.display = "flex";
-        addProductCard.style.display = "none";
-        ShortPurchaseOrders.style.display = "block";
-        Employees.style.display = "block";
-        Statistics.style.display = "block";
-
     }
 
     function addPurchaseOrderItem(position) {
@@ -1380,7 +1401,7 @@
             cell2.innerHTML = employeesObject.end_times[position][i];
             row.onclick = function(){editWorkTime(this.rowIndex)};
         }
-        var index = employeesObject.accountnumbers.indexOf(Accountnumber);
+        var index = employeesObject.accountnumbers.indexOf(accountnumber);
         var wrapper = document.getElementById("checkbox_wrapper");
         wrapper.innerHTML = "";
         for(var j = 0; j < employeesObject.features[index].length; j++){
@@ -1667,7 +1688,7 @@
                 });
                 var url = "https://fingerhut388.appspot.com/getemployee?companynumber=" + "<%=companynumber%>"
                 + "&body=" + encodeURIComponent(jsonObject)
-                + "&editoraccoutnumber=" + Accountnumber
+                + "&editoraccoutnumber=" + accountnumber
                 + "&authstring=" + "<%=code%>";
                 httpAsync(url, "POST", 3);
             }
