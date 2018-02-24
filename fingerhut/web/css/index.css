@@ -26,10 +26,12 @@
 }
 
 #submit_spinner{
-    position:fixed;
+    z-index: 1000;
+    position: absolute;
     border-color: #FFFF00 !important;
 }
 
 #submit_spinner:after {
+    z-index: 1000;
     border-color: #FFFF00 !important;
 }

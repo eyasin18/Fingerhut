@@ -13,26 +13,28 @@ var submitButton = document.getElementById('submit_button');
 //Text des Buttons aus der String.js beziehen
 submitButton.textContent = strings.loginButtonText;
 //ermittelt die Höhe und Breite des Anmeldebuttons
-var buttonWidth = window.getComputedStyle(submitButton, null).width;
-var buttonHeight = window.getComputedStyle(submitButton, null).height;
-submitButton.style.setProperty("width", buttonWidth, "");
-var spinnerHeight = parseInt(buttonHeight, 10) - 12;
-var rect = submitButton.getBoundingClientRect();
-
-submitSpinner.style.height = spinnerHeight + "px";
-submitSpinner.style.width = spinnerHeight + "px";
-submitSpinner.style.top = (rect.top + 6) + "px";
-var spinnerLeftInt = rect.left + parseInt(buttonWidth)/2 - spinnerHeight/2;
-submitSpinner.style.left = spinnerLeftInt + "px";
+var buttonWidth;
+var buttonHeight;
+var spinnerHeight;
+var rect;
 submitSpinner.style.visibility = 'hidden';
-
-
-
 var accountnumber;
 
 window.addEventListener('popstate', function() {checkWebstring()});
 
 function onButtonClick() {
+    buttonWidth = window.getComputedStyle(submitButton, null).width;
+    buttonHeight = window.getComputedStyle(submitButton, null).height;
+    submitButton.style.setProperty("width", buttonWidth, "");
+    spinnerHeight = parseInt(buttonHeight, 10) - 12;
+    rect = submitButton.getBoundingClientRect();
+
+    submitSpinner.style.height = spinnerHeight + "px";
+    submitSpinner.style.width = spinnerHeight + "px";
+    submitSpinner.style.top = (rect.top + 6) + "px";
+    var spinnerLeftInt = rect.left + parseInt(buttonWidth)/2 - spinnerHeight/2;
+    submitSpinner.style.left = spinnerLeftInt + "px";
+
     console.log("clicked");
     var usernameInput = document.getElementById('username');
     var passwordInput = document.getElementById('userpass');
@@ -60,7 +62,7 @@ function onButtonClick() {
     var urlStr = url + "/web/login?accountnumber=" + accountnumber + "&password=" + hashHex;
 
     submitButton.textContent = '';
-    //submitSpinner.style.visibility = 'visible';
+    submitSpinner.style.visibility = 'hidden';
     httpPostAsync(urlStr);
 }
 
@@ -94,13 +96,25 @@ function processPostResponse(responseStr) {
 
     switch (parseInt(responses[0])){
         case -2:
-            //Server ist gesperrt
+            submitSpinner.style.visibility = 'hidden';
+            submitButton.textContent = strings.loginButtonText;
+            ele = document.getElementById('username_error');
+            ele.parentElement.className += ' is-invalid';
+            ele.textContent = strings.serverIsClosed;
             break;
         case 5:
-            //response[1]: Zeit wenn Cooldown abgelaufen ist in dd.MM.yyyy HH:mm:ss.SSSS z
+            submitSpinner.style.visibility = 'hidden';
+            submitButton.textContent = strings.loginButtonText;
+            ele = document.getElementById('username_error');
+            ele.parentElement.className += ' is-invalid';
+            ele.textContent = "Dein Account ist bis um " + responses[1].value + " Uhr gesperrt.";
             break;
         case 6:
-            //Konto gesperrt! Geh zu FCB
+            submitSpinner.style.visibility = 'hidden';
+            submitButton.textContent = strings.loginButtonText;
+            ele = document.getElementById('username_error');
+            ele.parentElement.className += ' is-invalid';
+            ele.textContent = strings.accountLocked;
             break;
         case 0:
             submitSpinner.style.visibility = 'hidden';

@@ -59,12 +59,12 @@ public class CompanyTools {
         return products;
     }
 
-    public PurchaseOrder[] queryPurchasOrders(String companynumber, HttpServletRequest req){
+    public List<PurchaseOrder> queryPurchasOrders(String companynumber, HttpServletRequest req){
         Company companyGetter = new Company(companynumber);
         List<Entity> purchaseOrderEntities = new PurchaseOrder(companyGetter.account, req.getLocale()).getPurchaseOrders(companyGetter.account.getKey());
-        PurchaseOrder[] purchaseOrders = new PurchaseOrder[purchaseOrderEntities.size()];
-        for (int i = 0; i < purchaseOrderEntities.size(); i++){
-            purchaseOrders[i] = new PurchaseOrder(companyGetter.account, purchaseOrderEntities.get(i), req.getLocale());
+        List<PurchaseOrder> purchaseOrders = new ArrayList<>();
+        for (Entity purchaseOrderEntity : purchaseOrderEntities) {
+            purchaseOrders.add(new PurchaseOrder(companyGetter.account, purchaseOrderEntity, req.getLocale()));
         }
         return purchaseOrders;
     }

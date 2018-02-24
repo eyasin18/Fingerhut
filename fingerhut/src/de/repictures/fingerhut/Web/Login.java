@@ -49,7 +49,7 @@ public class Login extends HttpServlet{
         if (!accountGetter.getIsPrepaid()) {
             Calendar cooldownTimeCalendar = accountGetter.getCooldownTime();
             if (cooldownTimeCalendar != null && cooldownTimeCalendar.after(Calendar.getInstance(Locale.getDefault()))) {
-                SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", Locale.getDefault());
+                SimpleDateFormat f = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
                 String cooldownTimeStr = f.format(cooldownTimeCalendar.getTime());
                 resp.getWriter().println(URLEncoder.encode("5ò" + cooldownTimeStr, "UTF-8"));
                 return;

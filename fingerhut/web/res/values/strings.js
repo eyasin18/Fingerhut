@@ -24,7 +24,9 @@ function deStrings() {
         amountFormatError: "Formatfehler",
         serverError: "Server Fehler",
         noNumberInputError: "Eingabe muss eine Zahl sein",
-        loginButtonText : "Anmelden"
+        loginButtonText : "Anmelden",
+        serverIsClosed : "Der Server ist aktuell gesperrt",
+        accountLocked : "Dein Konto ist gesperrt, begib dich zur Zentralbank"
     };
 }
 
@@ -36,6 +38,8 @@ function enStrings() {
         pinError : "Password not valid",
         serverError : "Server error",
         noNumberInputError: "Input has to be a number",
-        loginButtonText : "Log in"
+        loginButtonText : "Log in",
+        serverIsClosed : "The server is closed.",
+        accountLocked : "Your account is locked"
     };
 }

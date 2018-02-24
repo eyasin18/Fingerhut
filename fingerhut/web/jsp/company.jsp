@@ -27,7 +27,7 @@
         response.sendRedirect("https://fingerhut388.appspot.com/");
     }
     CompanyTools companyTools = new CompanyTools(accountnumber);
-    PurchaseOrder[] purchaseOrders = companyTools.queryPurchasOrders(companynumber, request);
+    List<PurchaseOrder> purchaseOrders = companyTools.queryPurchasOrders(companynumber, request);
 
     double balance = companyTools.getBalance(companynumber);
     String balancestring = String.format("%.2f", balance);
@@ -211,7 +211,7 @@
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="statistics">
                         <h4 class="mdl-typography--headline" id="statistics_heading">Statistiken</h4>
                         <div class="mdl-card__supporting-text">
-                           <h3>Kontostand ihres Unternehmens: <%= balancestring %> S</h3>
+                           <h3 id="company_balance">Kontostand ihres Unternehmens: <%= balancestring %> S</h3>
                         </div>
                     </div>
 
@@ -499,7 +499,6 @@
 </body>
 <script src="${pageContext.request.contextPath}../js/pojo.js" ></script>
     <script>
-
     var accountnumber = "<%=accountnumber%>";
     var companynumber = "<%= companynumber %>";
 
@@ -575,15 +574,15 @@
     var purchase_order_array = [];
     var iterate1 = 0;
     <%
-        for(int i = 0; i < purchaseOrders.length; i++){
+        for(int i = 0; i < purchaseOrders.size(); i++){
             %>
-        var getBuyerAccountnumber = "<%= purchaseOrders[i].getBuyerAccountnumber() %>";
-        var getCompleted = <%= purchaseOrders[i].getCompleted() %>;
+        var getBuyerAccountnumber = "<%= purchaseOrders.get(i).getBuyerAccountnumber() %>";
+        var getCompleted = <%= purchaseOrders.get(i).getCompleted() %>;
         <%
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", request.getLocale());
             Calendar calendar = Calendar.getInstance();
             try {
-                calendar.setTime(sdf.parse(purchaseOrders[i].getDateTime()));
+                calendar.setTime(sdf.parse(purchaseOrders.get(i).getDateTime()));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -591,10 +590,10 @@
             String dateTimeStr = sdf.format(calendar.getTime()) + " Uhr";
         %>
         var getDateTime = '<%= dateTimeStr %>';
-        var getIsSelfBuyList = <%= purchaseOrders[i].getIsSelfBuyList() %>;
-        var getNumber = <%= purchaseOrders[i].getNumber() %>;
-        var getPricesList = <%= purchaseOrders[i].getPricesList() %>;
-        var getProductCodesList = <%= purchaseOrders[i].getProductCodesList() %>;
+        var getIsSelfBuyList = <%= purchaseOrders.get(i).getIsSelfBuyList() %>;
+        var getNumber = <%= purchaseOrders.get(i).getNumber() %>;
+        var getPricesList = <%= purchaseOrders.get(i).getPricesList() %>;
+        var getProductCodesList = <%= purchaseOrders.get(i).getProductCodesList() %>;
         purchase_order_array[iterate1] = purchase_order(
             getBuyerAccountnumber,
             getCompleted,
@@ -608,11 +607,11 @@
 }
 %>
     <%
-        for(int iterator = 0; iterator < purchaseOrders.length; iterator++){
+        for(int iterator = 0; iterator < purchaseOrders.size(); iterator++){
             %>
             var iterator = <%= iterator%>;
-            purchase_order_array[iterator].prices_list = <%= purchaseOrders[iterator].getPricesList() %>;
-            purchase_order_array[iterator].amounts_list = <%= purchaseOrders[iterator].getAmountsList() %>;
+            purchase_order_array[iterator].prices_list = <%= purchaseOrders.get(iterator).getPricesList() %>;
+            purchase_order_array[iterator].amounts_list = <%= purchaseOrders.get(iterator).getAmountsList() %>;
         <%
         }
     %>
@@ -630,87 +629,14 @@
     var employeesJsonStr = '<%= companyTools.getEmployeesJsonStr(companynumber) %>';
     var employeesObject = JSON.parse(employeesJsonStr);
 
-    purchase_order_array[0].prices_list = <%= purchaseOrders[0].getPricesList() %>;
+    <%List<Double> pricesList = new ArrayList<>();
+    if (purchaseOrders.size() > 0) pricesList = purchaseOrders.get(0).getPricesList();%>
+
+    if (purchase_order_array.length > 0) purchase_order_array[0].prices_list =  <%=pricesList %>;
     fillDropdown();
     fillShortPurchaseTable();
     fillPurchaseTable();
     fillEmployees();
-
-    /*if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('../js/firebase-messaging-sw.js', { scope: '/js/' }).then(function(reg) {
-
-            if(reg.installing) {
-                console.log('Service worker installing');
-            } else if(reg.waiting) {
-                console.log('Service worker installed');
-            } else if(reg.active) {
-                console.log('Service worker active');
-            }
-
-        }).catch(function(error) {
-            // registration failed
-            console.log('Registration failed with ' + error);
-        });
-
-    var config = {
-        apiKey: "AIzaSyCDc9cZesVuUdSgb1eJiTv1Pj_Rq3BzFTA",
-        authDomain: "fingerhut388.firebaseapp.com",
-        databaseURL: "https://fingerhut388.firebaseio.com",
-        projectId: "fingerhut388",
-        storageBucket: "fingerhut388.appspot.com",
-        messagingSenderId: "337864032929"
-    };
-
-    firebase.initializeApp(config);
-    var messaging = firebase.messaging();
-    var registrationToken;
-
-    messaging.getToken()
-        .then(function(currentToken) {
-            if (currentToken) {
-                console.log("Token received: " + currentToken);
-                registrationToken = currentToken;
-            } else {
-                // Show permission request.
-                console.log('No Instance ID token available. Request permission to generate one.');
-                messaging.requestPermission()
-                    .then(function() {
-                        console.log('Notification permission granted.');
-                        console.log("Token: " + messaging.getToken());
-                        // TODO(developer): Retrieve an Instance ID token for use with FCM.
-                        // [START_EXCLUDE]
-                        // In many cases once an app has been granted notification permission, it
-                        // should update its UI reflecting this.
-                        resetUI();
-                        // [END_EXCLUDE]
-                    })
-                    .catch(function(err) {
-                        console.log('Unable to get permission to notify.', err);
-                    });
-                //messaging.refreshAuthToken();
-                console.log("Token received: " + currentToken);
-            }
-        })
-        .catch(function(err) {
-            console.log('An error occurred while retrieving token. ', err);
-        });
-
-    // Callback fired if Instance ID token is updated.
-    messaging.onTokenRefresh(function() {
-        messaging.getToken()
-            .then(function(refreshedToken) {
-                console.log('Token refreshed.');
-                console.log("Refreshed token: " + refreshedToken);
-            })
-            .catch(function(err) {
-                console.log('Unable to retrieve refreshed token ', err);
-            });
-    });
-
-    messaging.onMessage(function (payload) {
-        console.log("Message received", payload);
-    });
-    }*/
 
     //Funktion zum hinzufügen eines neuen Kaufauftrags
     function newTableEntryOrder(date,account,amount){
@@ -1333,7 +1259,7 @@
     }
     function fillPurchaseTable() {
         var table = document.getElementById("purchase_table");
-        if(purchase_order_array[0].prices_list != null){
+        if(purchase_order_array.length > 0 && purchase_order_array[0].prices_list != null){
             for(var i = 0; i<purchase_order_array.length; i++) {
                 var row = table.insertRow(document.getElementById("purchase_table").rows.length);
                 var cell1 = row.insertCell(0);

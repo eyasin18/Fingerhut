@@ -288,6 +288,7 @@
             case 3:
                 document.getElementById("transfer_error").innerText = "Der Kaufauftrag wurde erfolgreich durchgeführt.";
                 getBalance();
+                location.reload();
                 break;
             case 4:
                 document.getElementById("transfer_error").innerText = "Du kannst dir nicht selbst Geld überweisen.";
