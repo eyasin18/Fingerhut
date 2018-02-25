@@ -21,14 +21,11 @@ public class EditData extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Query query = new Query("Account");
-        Query.Filter attemptsFilter = new Query.FilterPredicate("login_attempts", Query.FilterOperator.GREATER_THAN, 0);
-        query.setFilter(attemptsFilter);
-        List<Entity> accountEntities = DatastoreServiceFactory.getDatastoreService().prepare(query).asList(FetchOptions.Builder.withDefaults());
-        for (Entity accountEntity : accountEntities){
-            Account account = new Account(accountEntity);
-            account.setLoginAttempts(0);
-            account.saveAll();
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        Query query = new Query("Transfer");
+        List<Entity> transferEntities = datastoreService.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        for (Entity transferEntity : transferEntities){
+            datastoreService.delete(transferEntity.getKey());
         }
     }
 

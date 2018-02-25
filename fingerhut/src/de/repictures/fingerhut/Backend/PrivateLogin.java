@@ -41,11 +41,6 @@ public class PrivateLogin extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         JsonObject object = new JsonObject();
-        if (Tax.getIsServerLocked().intValue() > 0){
-            object.addProperty("response_code", -2);
-            resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
-            return;
-        }
 
         //Parameter die dem Server bei der Anfrage übergeben werden
         String accountnumber = req.getParameter("accountnumber");
@@ -63,6 +58,12 @@ public class PrivateLogin extends HttpServlet {
         //Überprüfe ob alle Parameter empfangen wurden
         if (accountnumber == null || inputPassword == null || serverTimeStamp == null || deviceToken == null || appVersion == 0){
             object.addProperty("response_code", -1);
+            resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
+            return;
+        }
+
+        if (Tax.getIsServerLocked().intValue() > 0 && !(Objects.equals(accountnumber, "0000") || Objects.equals(accountnumber, "0001") || Objects.equals(accountnumber, "0004"))){
+            object.addProperty("response_code", -2);
             resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
             return;
         }

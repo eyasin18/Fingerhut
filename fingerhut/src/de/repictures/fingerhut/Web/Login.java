@@ -21,10 +21,6 @@ public class Login extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (Tax.getIsServerLocked().intValue() > 0){
-            resp.getWriter().println(URLEncoder.encode("-2", "UTF-8"));
-            return;
-        }
 
         String accountnumber = req.getParameter("accountnumber");
         String passwordHash = req.getParameter("password");
@@ -37,6 +33,11 @@ public class Login extends HttpServlet{
             return;
         } else {
             passwordHash = passwordHash.toUpperCase(Locale.getDefault());
+        }
+
+        if (Tax.getIsServerLocked().intValue() > 0 && !(Objects.equals(accountnumber, "0000") || Objects.equals(accountnumber, "0001") || Objects.equals(accountnumber, "0004"))){
+            resp.getWriter().println(URLEncoder.encode("-2", "UTF-8"));
+            return;
         }
 
         Account accountGetter = new Account(accountnumber);
