@@ -271,7 +271,7 @@
                             </div>
                         </div>
                         <div class ="wrapper">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="finishProduct()" id="back_button_product">Fertig</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="finishEditProduct()" id="back_button_product">Fertig</button>
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelProduct()" id="cancel_button_product">Abbrechen</button>
                         </div>
                     </div>
@@ -305,7 +305,7 @@
                             </div>
                         </div>
                         <div class="wrapper">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="back_button_addProduct" onclick="">Fertig</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="back_button_addProduct" onclick="finishAddProduct()">Fertig</button>
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelProduct()" id="cancel_button_addProduct">Abbrechen</button>
                         </div>
                     </div>
@@ -525,6 +525,8 @@
     var currentProductPosition;//globale Variable zum Speichern von der Position des Produktes, welches gerade bearbeitet wird
     var checkbox1 = document.getElementById("checkbox-1");//Checkbox ob ein Produkt "Selfbuy" ist
     var checkbox2 = document.getElementById("checkbox-2");//Checkbox ob ein Proddukt "Buyable" ist
+    var checkbox3 = document.getElementById("checkbox-3");
+    var checkbox4 = document.getElementById("checkbox-4");
     var snackbarContainer = document.querySelector('#example');
 
     //Mitarbeiter betreffend
@@ -775,31 +777,52 @@
         Products.style.display = "block";
     }
 
-    function finishProduct(){
+    function finishEditProduct(){
         cancelProduct();
         var theURL = "https://fingerhut388.appspot.com/updateproduct?" + "code=" + productarray[currentProductPosition].code + "&companynumber=" + companynumber;
         if (typeof document.getElementById("textfield1").value === "string"){
-            console.log("Erfolg");
             theURL += "&name=" + document.getElementById("textfield1").value;
         }
         if (typeof parseFloat(document.getElementById("textfield2").value) === "number"){
             theURL += "&price=" + parseFloat(document.getElementById("textfield2").value);
         }
         if(checkbox1.checked == true){
-            theURL += "&selfbuy=" + "true";
+            theURL += "&selfbuy=true";
         }
         else{
-            theURL+= "&selfbuy=" + "false";
+            theURL+= "&selfbuy=false";
         }
         if(checkbox2.checked == true){
-            theURL += "&buyable=" + "true";
+            theURL += "&buyable=true";
         }
         else{
-            theURL+= "&buyable=" + "false";
+            theURL+= "&buyable=false";
         }
         theURL = encodeURI(theURL);
         console.log(theURL);
         httpAsync(theURL,"POST",3);
+    }
+
+    function finishAddProduct(){
+        cancelProduct();
+        var usedURL = "https://fingerhut388.appspot.com/getproduct?";
+        if (typeof document.getElementById("textfield3").value === "string"){
+            usedURL += "code=" + document.getElementById("textfield3").value;
+        }
+        usedURL += "&accountnumber=" + companynumber;
+        if (typeof document.getElementById("textfield4").value === "string"){
+            usedURL += "&name=" + document.getElementById("textfield4").value;
+        }
+        if (typeof parseFloat(document.getElementById("textfield5").value) === "number"){
+            usedURL += "&price=" + parseFloat(document.getElementById("textfield5").value);
+        }
+        if (checkbox3.checked = true){usedURL += "&selfbuy=true";}
+        else {usedURL += "&selfbuy=false";}
+        if (checkbox4.checked = true){usedURL += "&buyable=true";}
+        else {usedURL += "&buyable=false";}
+        usedURL = encodeURI(usedURL);
+        console.log(usedURL);
+        httpAsync(usedURL,"GET",5);
     }
 
     function addPurchaseOrderItem(position) {
@@ -858,22 +881,7 @@
         ShortPurchaseOrders.style.display = "none";
         Employees.style.display = "none";
         Statistics.style.display = "none";
-        document.getElementById("table_div3").innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"product_add_table\">\n" +
-            "                                <thead>\n" +
-            "                                    <tr>\n" +
-            "                                        <th>Name</th>\n" +
-            "                                        <th>Preis</th>\n" +
-            "                                    </tr>\n" +
-            "                                </thead>\n" +
-            "                                <tbody>\n" +
-            "                                </tbody>\n" +
-            "                            </table>";
-        var productAddTable = document.getElementById("product_add_table");
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        cell1.innerHTML = "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\"><input id=\"textfield3\" class=\"mdl-textfield__input\" type=\"text\" pattern=\"-?[0-9]*(\.[0-9]+)?\"><label class=\"mdl-textfield__label\" ></label><span class=\"mdl-textfield__error\">Eingabe muss eine Zahl sein!</span></div>";
-        cell2.innerHTML = "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\"><input id=\"textfield4\" class=\"mdl-textfield__input\" type=\"number\"><label  class=\"mdl-textfield__label\" ></label><span class=\"mdl-textfield__error\">Eingabe muss eine Zahl sein!</span></div>";
-    }
+        }
 
     function addProductToPurchase() {
         AddPurchase.style.display = "none";
@@ -1131,6 +1139,14 @@
             case 4:
                 window.location.replace("https://fingerhut388.appspot.com");
                 break;
+            case 5 : switch(parseInt(responseText)) {
+                case 2:
+                    console.log("Gibt's schon");
+                    break;
+                case 1:
+                    console.log("Erfolg");
+                    break;
+            }
         }
     }
 
