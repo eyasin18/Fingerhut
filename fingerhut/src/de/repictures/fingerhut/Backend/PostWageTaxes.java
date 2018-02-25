@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class PostSellingProducts extends HttpServlet {
+public class PostWageTaxes extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,11 +29,12 @@ public class PostSellingProducts extends HttpServlet {
             return;
         }
 
-        Company companyGetter = new Company(companynumber);
-        Product[] products = companyGetter.getSellingProducts();
 
         JsonObject jsonObject = new JsonObject();
 
+        /*
+        Company companyGetter = new Company(companynumber);
+        Product[] products = companyGetter.getSellingProducts();
         JsonArray productsArray = new JsonArray();
         for (Product product : products){
             JsonArray productJson = new JsonArray();
@@ -43,7 +44,7 @@ public class PostSellingProducts extends HttpServlet {
             productJson.add(product.getSelfBuy());
             productsArray.add(productJson);
         }
-        jsonObject.add("products", productsArray);
+        jsonObject.add("products", productsArray);*/
 
         JsonArray taxArray = new JsonArray();
         for (long tax : Tax.getWageTax()){

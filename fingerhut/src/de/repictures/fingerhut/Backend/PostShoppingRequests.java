@@ -111,6 +111,18 @@ public class PostShoppingRequests extends HttpServlet{
             madeByUserArray.add(purchaseOrdersGetter.getMadeByUser(purchaseOrderEntity));
         }
 
+        List<Entity> productEntities = Product.getProductsByCompany(companyNumber, false);
+        JsonArray sellingProductsArray = new JsonArray();
+        for (Entity productEntity : productEntities){
+            Product product = new Product(productEntity);
+            JsonObject productObject = new JsonObject();
+            productObject.addProperty("code", product.getCode());
+            productObject.addProperty("name", product.getName());
+            productObject.addProperty("price", product.getPrice());
+            productObject.addProperty("is_self_buy", product.getSelfBuy());
+            sellingProductsArray.add(productObject);
+        }
+
         object.add("amounts", amountsArray);
         object.add("buyerAccountnumbers", buyerAccountnumbersArray);
         object.add("dateTimes", dateTimesArray);
@@ -121,6 +133,7 @@ public class PostShoppingRequests extends HttpServlet{
         object.add("productCodes", productCodesArray);
         object.add("completed", completedArray);
         object.add("madeByUser", madeByUserArray);
+        object.add("selling_products", sellingProductsArray);
 
         multi.startResponse("text/plain");
         resp.getOutputStream().println(1);

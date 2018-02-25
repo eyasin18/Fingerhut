@@ -185,12 +185,12 @@
         <url-pattern>/company</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>PostSellingProducts</servlet-name>
-        <servlet-class>de.repictures.fingerhut.Backend.PostSellingProducts</servlet-class>
+        <servlet-name>PostWageTaxes</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Backend.PostWageTaxes</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>PostSellingProducts</servlet-name>
-        <url-pattern>/postsellingproducts</url-pattern>
+        <servlet-name>PostWageTaxes</servlet-name>
+        <url-pattern>/postwagetaxes</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>PostEmployees</servlet-name>
