@@ -22,10 +22,13 @@ public class EditData extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
-        Query query = new Query("Transfer");
-        List<Entity> transferEntities = datastoreService.prepare(query).asList(FetchOptions.Builder.withDefaults());
-        for (Entity transferEntity : transferEntities){
-            datastoreService.delete(transferEntity.getKey());
+        Query query = new Query("Account");
+        List<Entity> accountEntities = datastoreService.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        for (Entity accountEntity : accountEntities){
+            Account account = new Account(accountEntity);
+            account.setBalance(0);
+            account.setTransfers(new ArrayList<>());
+            account.saveAll();
         }
     }
 
