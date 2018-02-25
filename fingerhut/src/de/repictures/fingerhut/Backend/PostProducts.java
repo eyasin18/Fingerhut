@@ -40,10 +40,8 @@ public class PostProducts extends HttpServlet{
             return;
         }
 
-        if (products.size() < 1){
-            responseObject.addProperty("response_code", 0);
-        } else {
-            JsonArray productArray = new JsonArray();
+        JsonArray productArray = new JsonArray();
+        if (products.size() > 0) {
             for(Entity productEntity : products) {
                 Product product = new Product(productEntity);
                 Company companyGetter = new Company(product.getSellingCompany());
@@ -60,9 +58,9 @@ public class PostProducts extends HttpServlet{
 
                 productArray.add(productObject);
             }
-            responseObject.add("products", productArray);
-            responseObject.addProperty("response_code", 1);
         }
+        responseObject.add("products", productArray);
+        responseObject.addProperty("response_code", 1);
         resp.getWriter().println(URLEncoder.encode(responseObject.toString(), "UTF-8"));
     }
 }
