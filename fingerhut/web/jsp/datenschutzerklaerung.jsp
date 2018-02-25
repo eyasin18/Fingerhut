@@ -44,7 +44,7 @@
             <div class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
                 <h3 id="heading">Datenschutzerklärung</h3>
                 <p>
-                    Das Bezahlsystem Fingerhut wurde durch Yasin Ekinci, Max Buchholz und Fabian Schmid erstellt. Bei der Nutzung der Fingerhut App und Webapp werden keine Personenbezogenen Daten gespeichert. Der Zugriff auf das Konto erfolgt einzig und allein über eine vierstellige Kontonummer sowie einer vierstelligen Pin, diese stehen in keinem Zusammenhang.
+                    Das Bezahlsystem Fingerhut wurde durch Yasin Ekinci, Max Buchholz und Fabian Schmid erstellt. Bei der Nutzung der Fingerhut App und Webapp werden keine personenbezogenen Daten gespeichert. Der Zugriff auf das Konto erfolgt einzig und allein über eine vierstellige Kontonummer sowie einer vierstelligen Pin. Das Konto auf dem Server und der Bürger dem das Konto gehört stehen in keinem direkten Zusammenhang.
                 </p>
                 <p>
                     Zur Nutzung benötigt die Android App folgende Zugriffsrechte:
@@ -70,13 +70,13 @@
                         <ul>
                             <li>Kontonummer</li>
                             <li>Kontostand</li>
-                            <li>Unternehmen</li>
-                            <li>Berechtigungen im Unternehmen</li>
-                            <li>Ob das Konto Grundeinkommen erhält</li>
+                            <li>Unternehmen in denen der Besitzer arbeitet</li>
+                            <li>Berechtigungen in diesen Unternehmen</li>
+                            <li>Ob das Konto Grundeinkommen erhalten hat</li>
                             <li>Kontotyp</li>
                             <li>Anwesenheit und Anwesenheitszeit</li>
                             <li>Fehlgeschlagene Login Versuche</li>
-                            <li>Das gehashte Passwort, also absolut unkenntlich gemacht</li>
+                            <li>Das gehashte, also absolut unkenntlich gemachte, Passwort</li>
                             <li>Eine Liste der durchgeführten Transaktionen</li>
                             <li>Einkommen</li>
                             <li>Arbeitszeiten</li>
@@ -87,7 +87,7 @@
                             <li>Kontostand</li>
                             <li>Listen der vergangenen Kontostände sowie die Zeitpunkte an denen sie gespeichert wurden</li>
                             <li>Kontonummer des Unternehmensleiters</li>
-                            <li>Das gehashte Passwort, also absolut unkenntlich gemacht</li>
+                            <li>Das gehashte Passwort, also absolut unkenntlich gemachte, Psaswort</li>
                             <li>Die Produkte des Unternehmens</li>
                             <li>Die Branche des Unternehmens</li>
                             <li>Eine Liste aller Überweisungen des Unternehmens</li>
@@ -111,7 +111,7 @@
                         </ul>
                 </ul>
                 <p>
-                    Alle Eingaben die der Nutzer in der  Android App sowie Webapp selbst macht, also z.B. Verwendungszwecke werden auf unbestimmte Zeit gespeichert. Kann über diese Eingaben ein Personenbezug hergestellt werden liegt dies in der Verantwortung des Nutzers und wir übernehmen keine Haftung.
+                    Alle Eingaben die der Nutzer in der  Android App sowie Web-app selbst macht, also z.B. Verwendungszwecke werden auf unbestimmte Zeit gespeichert. Kann über diese Eingaben ein Personenbezug hergestellt werden liegt dies in der Verantwortung des Nutzers und wir übernehmen keine Haftung.
                 </p>
                 <p>
                     In der Android App wird der Firebase Service verwendet, dessen Datenschutzerklärung ist unter folgendem Link erreichbar:
