@@ -44,7 +44,7 @@
             <div class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
                 <h3 id="heading">Datenschutzerklärung</h3>
                 <p>
-                    Das Bezahlsystem Fingerhut wurde durch Yasin Ekinci, Max Buchholz und Fabian Schmid erstellt. Bei der Nutzung der Fingerhut App und Webapp werden keine Personenbezogenen Daten gespeichert. Der Zugriff auf das Konto erfolgt einzig und allein über eine vierstellige Kontonummer sowie einer vierstelligen Pin, welche in keinster Weise mit dem Kontoinhaber in Verbindung zu bringen sind.
+                    Das Bezahlsystem Fingerhut wurde durch Yasin Ekinci, Max Buchholz und Fabian Schmid erstellt. Bei der Nutzung der Fingerhut App und Webapp werden keine Personenbezogenen Daten gespeichert. Der Zugriff auf das Konto erfolgt einzig und allein über eine vierstellige Kontonummer sowie einer vierstelligen Pin, diese stehen in keinem Zusammenhang.
                 </p>
                 <p>
                     Zur Nutzung benötigt die Android App folgende Zugriffsrechte:
@@ -54,6 +54,63 @@
                     <li>Kamera: Um QR- und Barcodes zur Authentifizierung und zum Produkte kaufen nutzen zu können benötigt die App Zugriff auf die Kamera des Gerätes.</li>
                 </ul>
                 <p>
+                    Es werden folgende Daten gespeichert:
+                </p>
+                <ul>
+                    <li>Bei Überweisungen:</li>
+                        <ul>
+                            <li>Betrag</li>
+                            <li>Zeitpunkt</li>
+                            <li>Verschlüsselte Eingabe des Empfängers sowie Sender Felds</li>
+                            <li>Der Verschlüsselte Verwendungszweck</li>
+                            <li>Der Typ der Überweisung</li>
+                            <li>Kontonummern des Empfängers und Senders</li>
+                        </ul>
+                    <li>Bei Konten:</li>
+                        <ul>
+                            <li>Kontonummer</li>
+                            <li>Kontostand</li>
+                            <li>Unternehmen</li>
+                            <li>Berechtigungen im Unternehmen</li>
+                            <li>Ob das Konto Grundeinkommen erhält</li>
+                            <li>Kontotyp</li>
+                            <li>Anwesenheit und Anwesenheitszeit</li>
+                            <li>Fehlgeschlagene Login Versuche</li>
+                            <li>Das gehashte Passwort, also absolut unkenntlich gemacht</li>
+                            <li>Eine Liste der durchgeführten Transaktionen</li>
+                            <li>Einkommen</li>
+                            <li>Arbeitszeiten</li>
+                        </ul>
+                    <li>Bei Unternehmenskonten:</li>
+                        <ul>
+                            <li>Kontonummer</li>
+                            <li>Kontostand</li>
+                            <li>Listen der vergangenen Kontostände sowie die Zeitpunkte an denen sie gespeichert wurden</li>
+                            <li>Kontonummer des Unternehmensleiters</li>
+                            <li>Das gehashte Passwort, also absolut unkenntlich gemacht</li>
+                            <li>Die Produkte des Unternehmens</li>
+                            <li>Die Branche des Unternehmens</li>
+                            <li>Eine Liste aller Überweisungen des Unternehmens</li>
+                        </ul>
+                    <li>Bei Kaufaufträgen:</li>
+                        <ul>
+                            <li>Eine Liste mit den Anzahlen der Produkte im Kaufauftrag</li>
+                            <li>Die Kontonummer des Käufers</li>
+                            <li>Ob der Kaufauftrag abgeschlossen ist</li>
+                            <li>Der Zeitpunkt des Kaufauftrags</li>
+                            <li>Eine Liste der Produktbarcodes</li>
+                        </ul>
+                    <li>Bei Produkten:</li>
+                        <ul>
+                            <li>Ob das Produkt kaufbar ist</li>
+                            <li>Der Barcode des Produkts</li>
+                            <li>Der Name des Produkts</li>
+                            <li>Der Preis des Produkts</li>
+                            <li>Ob der Kunde sich das Produkt selbst kaufen kann</li>
+                            <li>Das Unternehmen welches das Produkt verlauft</li>
+                        </ul>
+                </ul>
+                <p>
                     Alle Eingaben die der Nutzer in der  Android App sowie Webapp selbst macht, also z.B. Verwendungszwecke werden auf unbestimmte Zeit gespeichert. Kann über diese Eingaben ein Personenbezug hergestellt werden liegt dies in der Verantwortung des Nutzers und wir übernehmen keine Haftung.
                 </p>
                 <p>
@@ -61,7 +118,7 @@
                 </p>
                 <p><a href="https://www.google.com/policies/privacy/" style="color: blue">https://www.google.com/policies/privacy/</a></p>
                 <p>
-                    Die einzige Möglichkeit dieser Datenschutzerklärung zu wiedersprechen ist diese Applikation nicht zu nutzen. Die vom Nutzer angegebenen Daten können im Nachhinein mindestens bis zum 03.03.2018 nicht gelöscht werden. Jegliche Anfragen der Nutzer zum Löschen ihrer Daten werden bis dahin also ignoriert.
+                    Die einzige Möglichkeit dieser Datenschutzerklärung zu widersprechen ist diese Applikation nicht zu nutzen. Die vom Nutzer angegebenen Daten können im Nachhinein mindestens bis zum 03.03.2018 nicht gelöscht werden. Jegliche Anfragen der Nutzer zum Löschen ihrer Daten werden bis dahin also ignoriert.
                 </p>
                 <p>
                     Kontaktdaten: support@stromberg-gymnasium-saz.de
