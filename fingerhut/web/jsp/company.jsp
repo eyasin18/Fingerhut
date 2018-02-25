@@ -776,34 +776,30 @@
     }
 
     function finishProduct(){
-        Products.style.display = "flex";
-        Product.style.display = "none";
-        ShortPurchaseOrders.style.display = "block";
-        Employees.style.display = "block";
-        Statistics.style.display = "block";
-
+        cancelProduct();
         var theURL = "https://fingerhut388.appspot.com/updateproduct?" + "code=" + productarray[currentProductPosition].code + "&companynumber=" + companynumber;
         if (typeof document.getElementById("textfield1").value === "string"){
             console.log("Erfolg");
-            theURL += "&name=" + encodeURIComponent(document.getElementById("textfield1").value);
+            theURL += "&name=" + document.getElementById("textfield1").value;
         }
         if (typeof parseFloat(document.getElementById("textfield2").value) === "number"){
             theURL += "&price=" + parseFloat(document.getElementById("textfield2").value);
         }
         if(checkbox1.checked == true){
-            theURL += "&selfbuy=" + checkbox1.value;
+            theURL += "&selfbuy=" + "true";
         }
         else{
             theURL+= "&selfbuy=" + "false";
         }
         if(checkbox2.checked == true){
-            theURL += "&buyable=" + checkbox2.value;
+            theURL += "&buyable=" + "true";
         }
         else{
             theURL+= "&buyable=" + "false";
         }
+        theURL = encodeURI(theURL);
+        console.log(theURL);
         httpAsync(theURL,"POST",3);
-        location.reload(true);
     }
 
     function addPurchaseOrderItem(position) {
