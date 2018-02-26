@@ -17,7 +17,7 @@
     <cron>
         <url>/admin/setaccounttimes</url>
         <description>Accountzeiten zuruecksetzen</description>
-        <schedule>every day 00:00</schedule>
+        <schedule>every day 21:00</schedule>
         <timezone>Europe/Berlin</timezone>
     </cron>
 </cronentries>

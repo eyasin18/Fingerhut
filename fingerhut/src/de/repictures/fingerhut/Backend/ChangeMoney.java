@@ -87,6 +87,7 @@ public class ChangeMoney extends HttpServlet {
             new Company("0002").setEuroValue(amount*(-1));
         }
         account.setBalance(accountBalance);
+        account.saveAll();
 
         resp.getWriter().println(1);
     }

@@ -66,11 +66,17 @@ public class Login extends HttpServlet{
         String savedPasswordHash = accountGetter.getHashedPassword();
 
         if (Objects.equals(savedPasswordHash, passwordHash)){
+            if (!accountGetter.getIsPrepaid() && !accountGetter.gotBasicIncome() && Account.getDaysFromMinutes(Account.getCurrentMinutes()) != 6){
+                accountGetter.transferBasicIncome();
+                accountGetter.setGotBasicIncome(true);
+            }
+
             accountGetter.updateRandomWebString();
             if (!accountGetter.getIsPrepaid() && !accountGetter.gotBasicIncome()){
                 accountGetter.transferBasicIncome();
                 accountGetter.setGotBasicIncome(true);
             }
+            accountGetter.setLoginAttempts(0);
             accountGetter.saveAll();
             resp.getWriter().println(URLEncoder.encode("1ò" + accountGetter.getRandomWebString(), "UTF-8"));
         } else {
