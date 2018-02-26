@@ -27,7 +27,7 @@
         response.sendRedirect("https://fingerhut388.appspot.com/");
     }
     CompanyTools companyTools = new CompanyTools(accountnumber);
-    List<PurchaseOrder> purchaseOrders = companyTools.queryPurchasOrders(companynumber, request);
+    PurchaseOrder[] purchaseOrders = companyTools.queryPurchasOrders(companynumber, request);
 
     double balance = companyTools.getBalance(companynumber);
     String balancestring = String.format("%.2f", balance);
@@ -211,7 +211,7 @@
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="statistics">
                         <h4 class="mdl-typography--headline" id="statistics_heading">Statistiken</h4>
                         <div class="mdl-card__supporting-text">
-                           <h3 id="company_balance">Kontostand ihres Unternehmens: <%= balancestring %> S</h3>
+                           <h3>Kontostand ihres Unternehmens: <%= balancestring %> S</h3>
                         </div>
                     </div>
 
@@ -251,12 +251,12 @@
                         <div class="wrapper">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="textfield1" class="mdl-textfield__input" type="text">
-                                <label class="mdl-textfield__label" for="textfield1" id="label1">Name</label>
+                                <label class="mdl-textfield__label" for="textfield1" id="label1"></label>
                                 <span class="mdl-textfield__error"></span>
                             </div>
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="textfield2" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]">
-                                <label class="mdl-textfield__label" for="textfield2" id="label2">Preis</label>
+                                <label class="mdl-textfield__label" for="textfield2" id="label2"></label>
                                 <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
                             </div>
                             <div>
@@ -271,42 +271,16 @@
                             </div>
                         </div>
                         <div class ="wrapper">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="finishEditProduct()" id="back_button_product">Fertig</button>
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelProduct()" id="cancel_button_product">Abbrechen</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="backProduct()" id="back_button_product">Fertig</button>
                         </div>
                     </div>
                     <!-- Karte zum hinzufügen eines Produktes-->
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="addProduct">
+                        <div id="table_div3"></div>
                         <div class="wrapper">
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input id="textfield3" class="mdl-textfield__input" type="text">
-                                <label class="mdl-textfield__label" for="textfield3" id="label3">7 - 13 Stelliger Code</label>
-                                <span class="mdl-textfield__error"></span>
-                            </div>
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input id="textfield4" class="mdl-textfield__input" type="text">
-                                <label class="mdl-textfield__label" for="textfield4" id="label4">Name</label>
-                                <span class="mdl-textfield__error"></span>
-                            </div>
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input id="textfield5" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]">
-                                <label class="mdl-textfield__label" for="textfield5" id="label5">Preis</label>
-                                <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
-                            </div>
-                            <div>
-                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-3">
-                                    <input type="checkbox" id="checkbox-3" class="mdl-checkbox__input" value="true">
-                                    <span class="mdl-checkbox__label">Kunden können dieses Produkt selbst kaufen</span>
-                                </label>
-                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-4">
-                                    <input type="checkbox" id="checkbox-4" class="mdl-checkbox__input" value="true">
-                                    <span class="mdl-checkbox__label">Kunden können dieses Produkt kaufen</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="wrapper">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="back_button_addProduct" onclick="finishAddProduct()">Fertig</button>
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelProduct()" id="cancel_button_addProduct">Abbrechen</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="back_button_addProduct" onclick="backAddProduct()">
+                                Fertig
+                            </button>
                         </div>
                     </div>
                 <!-- Mitarbeiter Karte -->
@@ -499,8 +473,8 @@
 </body>
 <script src="${pageContext.request.contextPath}../js/pojo.js" ></script>
     <script>
-    var accountnumber = "<%=accountnumber%>";
-    var companynumber = "<%= companynumber %>";
+
+    var Accountnumber = "<%=accountnumber%>";
 
     //Kaufaufträge betreffend
     var PurchaseOrder = document.getElementById("purchase_order");
@@ -520,13 +494,11 @@
 
     //Produkte betreffend
     var Products = document.getElementById("products");//Produkte Karte
-    var Product = document.getElementById("product");//Produkte bearbeiten Karte
+    var Product = document.getElementById("product");
     var addProductCard = document.getElementById("addProduct");//Karte zum Hinzufügen von Produkten
     var currentProductPosition;//globale Variable zum Speichern von der Position des Produktes, welches gerade bearbeitet wird
     var checkbox1 = document.getElementById("checkbox-1");//Checkbox ob ein Produkt "Selfbuy" ist
     var checkbox2 = document.getElementById("checkbox-2");//Checkbox ob ein Proddukt "Buyable" ist
-    var checkbox3 = document.getElementById("checkbox-3");
-    var checkbox4 = document.getElementById("checkbox-4");
     var snackbarContainer = document.querySelector('#example');
 
     //Mitarbeiter betreffend
@@ -538,86 +510,91 @@
     var TimePosition;
     var EmployeeError = document.getElementById("save_employee_changes_error");
 
-    cancelProduct();
+    addProductCard.style.display = "none"; //lässt die Karte zum Hinzufügen von Produkten beim Laden der Seite verschwinden
     PurchaseOrder.style.display = "none";
     PurchaseOrders.style.display = "none";
+    ShortPurchaseOrders.style.display = "block";
     AddPurchase.style.display = "none";
     AddProductToPurchase.style.display = "none";
+    Product.style.display = "none";
+    Employees.style.display = "block";
+    Statistics.style.display = "block";
     Employee.style.display = "none";
     WorkTimes.style.display = "none";
     EditWorkTimes.style.display = "none";
+
 
     //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
     var product = pojo('name', 'price', 'code', 'amount' , 'selfBuy', 'buyable');
     var productarray = [];
     var iterate = 0;
-    <%
-        for(int i = 0; i < products.size(); i++){
-            %>
-            var getName = '<%= products.get(i).getName() %>';
-            var getPrice = <%= products.get(i).getPrice() %>;
-            var getCode = <%= products.get(i).getCode() %>;
-            var getSelfBuy = <%= products.get(i).getSelfBuy() %>;
-            var getBuyable = <%= products.get(i).getBuyable()%>;
-            productarray[iterate] = product(
-                getName,
-                getPrice,
-                getCode,
-                getSelfBuy,
-                getBuyable
-            );
-            iterate++;
-            <%
-        }
+        <%
+            for(int i = 0; i < products.size(); i++){
+                %>
+        var getName = '<%= products.get(i).getName() %>';
+        var getPrice = <%= products.get(i).getPrice() %>;
+        var getCode = <%= products.get(i).getCode() %>;
+        var getSelfBuy = <%= products.get(i).getSelfBuy() %>;
+        var getBuyable = <%= products.get(i).getBuyable()%>;
+        productarray[iterate] = product(
+            getName,
+            getPrice,
+            getCode,
+            getSelfBuy,
+            getBuyable
+        );
+        iterate++;
+        <%
+    }
     %>
 
     //füllt den purchase_order_array mit Purchase Order Objekten die über die unten stehenden Attribute verfügen (fast alle properties der PurchaseOrder Entitäten)
     var purchase_order = pojo('buyer_accountnumber', 'completed', 'date_time', 'is_self_buy_list', 'number', 'product_codes_list');
     var purchase_order_array = [];
     var iterate1 = 0;
+
     <%
-        for(int i = 0; i < purchaseOrders.size(); i++){
+        for(int iterator = 0; iterator < purchaseOrders.length; iterator++){
             %>
-        var getBuyerAccountnumber = "<%= purchaseOrders.get(i).getBuyerAccountnumber() %>";
-        var getCompleted = <%= purchaseOrders.get(i).getCompleted() %>;
+            var iterator = <%= iterator%>;
+            purchase_order_array[iterator].prices_list = <%= purchaseOrders[iterator].getPricesList() %>;
+            purchase_order_array[iterator].amounts_list = <%= purchaseOrders[iterator].getAmountsList() %>;
         <%
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", request.getLocale());
-            Calendar calendar = Calendar.getInstance();
-            try {
-                calendar.setTime(sdf.parse(purchaseOrders.get(i).getDateTime()));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            sdf = new SimpleDateFormat("E HH:mm", request.getLocale());
-            String dateTimeStr = sdf.format(calendar.getTime()) + " Uhr";
-        %>
-        var getDateTime = '<%= dateTimeStr %>';
-        var getIsSelfBuyList = <%= purchaseOrders.get(i).getIsSelfBuyList() %>;
-        var getNumber = <%= purchaseOrders.get(i).getNumber() %>;
-        var getPricesList = <%= purchaseOrders.get(i).getPricesList() %>;
-        var getProductCodesList = <%= purchaseOrders.get(i).getProductCodesList() %>;
-        purchase_order_array[iterate1] = purchase_order(
-            getBuyerAccountnumber,
-            getCompleted,
-            getDateTime,
-            getIsSelfBuyList,
-            getNumber,
-            getProductCodesList
-        );
+        }
+    %>
+    <%
+        for(int i = 0; i < purchaseOrders.length; i++){
+            %>
+    var getBuyerAccountnumber = "<%= purchaseOrders[i].getBuyerAccountnumber() %>";
+    var getCompleted = <%= purchaseOrders[i].getCompleted() %>;
+    <%
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSSS z", request.getLocale());
+        Calendar calendar = Calendar.getInstance();
+        try {
+            calendar.setTime(sdf.parse(purchaseOrders[i].getDateTime()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        sdf = new SimpleDateFormat("E HH:mm", request.getLocale());
+        String dateTimeStr = sdf.format(calendar.getTime()) + " Uhr";
+    %>
+    var getDateTime = '<%= dateTimeStr %>';
+    var getIsSelfBuyList = <%= purchaseOrders[i].getIsSelfBuyList() %>;
+    var getNumber = <%= purchaseOrders[i].getNumber() %>;
+    var getPricesList = <%= purchaseOrders[i].getPricesList() %>;
+    var getProductCodesList = <%= purchaseOrders[i].getProductCodesList() %>;
+    purchase_order_array[iterate1] = purchase_order(
+        getBuyerAccountnumber,
+        getCompleted,
+        getDateTime,
+        getIsSelfBuyList,
+        getNumber,
+        getProductCodesList
+    );
     iterate1++;
     <%
 }
 %>
-    <%
-        for(int iterator = 0; iterator < purchaseOrders.size(); iterator++){
-            %>
-            var iterator = <%= iterator%>;
-            purchase_order_array[iterator].prices_list = <%= purchaseOrders.get(iterator).getPricesList() %>;
-            purchase_order_array[iterator].amounts_list = <%= purchaseOrders.get(iterator).getAmountsList() %>;
-        <%
-        }
-    %>
-
     //Füllt einen array für die Lohnsteuer
     var wageTaxes = [];
     <%
@@ -631,14 +608,87 @@
     var employeesJsonStr = '<%= companyTools.getEmployeesJsonStr(companynumber) %>';
     var employeesObject = JSON.parse(employeesJsonStr);
 
-    <%List<Double> pricesList = new ArrayList<>();
-    if (purchaseOrders.size() > 0) pricesList = purchaseOrders.get(0).getPricesList();%>
+    purchase_order_array[0].prices_list = <%= purchaseOrders[0].getPricesList() %>;
+    //fillDropdown();
+    //fillShortPurchaseTable();
+    //fillPurchaseTable();
+    //fillEmployees();
 
-    if (purchase_order_array.length > 0) purchase_order_array[0].prices_list =  <%=pricesList %>;
-    fillDropdown();
-    fillShortPurchaseTable();
-    fillPurchaseTable();
-    fillEmployees();
+    /*if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('../js/firebase-messaging-sw.js', { scope: '/js/' }).then(function(reg) {
+
+            if(reg.installing) {
+                console.log('Service worker installing');
+            } else if(reg.waiting) {
+                console.log('Service worker installed');
+            } else if(reg.active) {
+                console.log('Service worker active');
+            }
+
+        }).catch(function(error) {
+            // registration failed
+            console.log('Registration failed with ' + error);
+        });
+
+    var config = {
+        apiKey: "AIzaSyCDc9cZesVuUdSgb1eJiTv1Pj_Rq3BzFTA",
+        authDomain: "fingerhut388.firebaseapp.com",
+        databaseURL: "https://fingerhut388.firebaseio.com",
+        projectId: "fingerhut388",
+        storageBucket: "fingerhut388.appspot.com",
+        messagingSenderId: "337864032929"
+    };
+
+    firebase.initializeApp(config);
+    var messaging = firebase.messaging();
+    var registrationToken;
+
+    messaging.getToken()
+        .then(function(currentToken) {
+            if (currentToken) {
+                console.log("Token received: " + currentToken);
+                registrationToken = currentToken;
+            } else {
+                // Show permission request.
+                console.log('No Instance ID token available. Request permission to generate one.');
+                messaging.requestPermission()
+                    .then(function() {
+                        console.log('Notification permission granted.');
+                        console.log("Token: " + messaging.getToken());
+                        // TODO(developer): Retrieve an Instance ID token for use with FCM.
+                        // [START_EXCLUDE]
+                        // In many cases once an app has been granted notification permission, it
+                        // should update its UI reflecting this.
+                        resetUI();
+                        // [END_EXCLUDE]
+                    })
+                    .catch(function(err) {
+                        console.log('Unable to get permission to notify.', err);
+                    });
+                //messaging.refreshAuthToken();
+                console.log("Token received: " + currentToken);
+            }
+        })
+        .catch(function(err) {
+            console.log('An error occurred while retrieving token. ', err);
+        });
+
+    // Callback fired if Instance ID token is updated.
+    messaging.onTokenRefresh(function() {
+        messaging.getToken()
+            .then(function(refreshedToken) {
+                console.log('Token refreshed.');
+                console.log("Refreshed token: " + refreshedToken);
+            })
+            .catch(function(err) {
+                console.log('Unable to retrieve refreshed token ', err);
+            });
+    });
+
+    messaging.onMessage(function (payload) {
+        console.log("Message received", payload);
+    });
+    }*/
 
     //Funktion zum hinzufügen eines neuen Kaufauftrags
     function newTableEntryOrder(date,account,amount){
@@ -760,15 +810,6 @@
         textfield2.value = productarray[(position - 1)].price;
     }
 
-    function cancelProduct(){// Funktion die beim Aufrufen der Abbrechenbuttons der Produkte-Karten ausgeführt wird
-        Products.style.display = "flex";
-        Product.style.display = "none";
-        addProductCard.style.display = "none";
-        ShortPurchaseOrders.style.display = "block";
-        Employees.style.display = "block";
-        Statistics.style.display = "block";
-    }
-
     function backOrder() {
         PurchaseOrder.style.display = "none";
         ShortPurchaseOrders.style.display = "block";
@@ -777,52 +818,45 @@
         Products.style.display = "block";
     }
 
-    function finishEditProduct(){
-        cancelProduct();
+    function backProduct(){
+        Products.style.display = "flex";
+        Product.style.display = "none";
+        ShortPurchaseOrders.style.display = "block";
+        Employees.style.display = "block";
+        Statistics.style.display = "block";
+        var companynumber = '<%= companynumber %>';
         var theURL = "https://fingerhut388.appspot.com/updateproduct?" + "code=" + productarray[currentProductPosition].code + "&companynumber=" + companynumber;
         if (typeof document.getElementById("textfield1").value === "string"){
-            theURL += "&name=" + document.getElementById("textfield1").value;
+            console.log("Erfolg");
+            theURL += "&name=" + encodeURIComponent(document.getElementById("textfield1").value);
         }
         if (typeof parseFloat(document.getElementById("textfield2").value) === "number"){
             theURL += "&price=" + parseFloat(document.getElementById("textfield2").value);
         }
         if(checkbox1.checked == true){
-            theURL += "&selfbuy=true";
+            theURL += "&selfbuy=" + checkbox1.value;
         }
         else{
-            theURL+= "&selfbuy=false";
+            theURL+= "&selfbuy=" + "false";
         }
         if(checkbox2.checked == true){
-            theURL += "&buyable=true";
+            theURL += "&buyable=" + checkbox2.value;
         }
         else{
-            theURL+= "&buyable=false";
+            theURL+= "&buyable=" + "false";
         }
-        theURL = encodeURI(theURL);
-        console.log(theURL);
         httpAsync(theURL,"POST",3);
+        location.reload(true);
     }
 
-    function finishAddProduct(){
-        cancelProduct();
-        var usedURL = "https://fingerhut388.appspot.com/getproduct?";
-        if (typeof document.getElementById("textfield3").value === "string"){
-            usedURL += "code=" + document.getElementById("textfield3").value;
-        }
-        usedURL += "&accountnumber=" + companynumber;
-        if (typeof document.getElementById("textfield4").value === "string"){
-            usedURL += "&name=" + document.getElementById("textfield4").value;
-        }
-        if (typeof parseFloat(document.getElementById("textfield5").value) === "number"){
-            usedURL += "&price=" + parseFloat(document.getElementById("textfield5").value);
-        }
-        if (checkbox3.checked = true){usedURL += "&selfbuy=true";}
-        else {usedURL += "&selfbuy=false";}
-        if (checkbox4.checked = true){usedURL += "&buyable=true";}
-        else {usedURL += "&buyable=false";}
-        usedURL = encodeURI(usedURL);
-        console.log(usedURL);
-        httpAsync(usedURL,"GET",5);
+    function backAddProduct(){
+        //TODO: Funktion schreiben um von der Produkt hinzufügen Karte zurückzukommen
+        Products.style.display = "flex";
+        addProductCard.style.display = "none";
+        ShortPurchaseOrders.style.display = "block";
+        Employees.style.display = "block";
+        Statistics.style.display = "block";
+
     }
 
     function addPurchaseOrderItem(position) {
@@ -881,7 +915,22 @@
         ShortPurchaseOrders.style.display = "none";
         Employees.style.display = "none";
         Statistics.style.display = "none";
-        }
+        document.getElementById("table_div3").innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"product_add_table\">\n" +
+            "                                <thead>\n" +
+            "                                    <tr>\n" +
+            "                                        <th>Name</th>\n" +
+            "                                        <th>Preis</th>\n" +
+            "                                    </tr>\n" +
+            "                                </thead>\n" +
+            "                                <tbody>\n" +
+            "                                </tbody>\n" +
+            "                            </table>";
+        var productAddTable = document.getElementById("product_add_table");
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        cell1.innerHTML = "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\"><input id=\"textfield3\" class=\"mdl-textfield__input\" type=\"text\" pattern=\"-?[0-9]*(\.[0-9]+)?\"><label class=\"mdl-textfield__label\" ></label><span class=\"mdl-textfield__error\">Eingabe muss eine Zahl sein!</span></div>";
+        cell2.innerHTML = "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\"><input id=\"textfield4\" class=\"mdl-textfield__input\" type=\"number\"><label  class=\"mdl-textfield__label\" ></label><span class=\"mdl-textfield__error\">Eingabe muss eine Zahl sein!</span></div>";
+    }
 
     function addProductToPurchase() {
         AddPurchase.style.display = "none";
@@ -1139,14 +1188,6 @@
             case 4:
                 window.location.replace("https://fingerhut388.appspot.com");
                 break;
-            case 5 : switch(parseInt(responseText)) {
-                case 2:
-                    console.log("Gibt's schon");
-                    break;
-                case 1:
-                    console.log("Erfolg");
-                    break;
-            }
         }
     }
 
@@ -1271,7 +1312,7 @@
     }
     function fillPurchaseTable() {
         var table = document.getElementById("purchase_table");
-        if(purchase_order_array.length > 0 && purchase_order_array[0].prices_list != null){
+        if(purchase_order_array[0].prices_list != null){
             for(var i = 0; i<purchase_order_array.length; i++) {
                 var row = table.insertRow(document.getElementById("purchase_table").rows.length);
                 var cell1 = row.insertCell(0);
@@ -1339,7 +1380,7 @@
             cell2.innerHTML = employeesObject.end_times[position][i];
             row.onclick = function(){editWorkTime(this.rowIndex)};
         }
-        var index = employeesObject.accountnumbers.indexOf(accountnumber);
+        var index = employeesObject.accountnumbers.indexOf(Accountnumber);
         var wrapper = document.getElementById("checkbox_wrapper");
         wrapper.innerHTML = "";
         for(var j = 0; j < employeesObject.features[index].length; j++){
@@ -1626,7 +1667,7 @@
                 });
                 var url = "https://fingerhut388.appspot.com/getemployee?companynumber=" + "<%=companynumber%>"
                 + "&body=" + encodeURIComponent(jsonObject)
-                + "&editoraccoutnumber=" + accountnumber
+                + "&editoraccoutnumber=" + Accountnumber
                 + "&authstring=" + "<%=code%>";
                 httpAsync(url, "POST", 3);
             }
