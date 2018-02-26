@@ -556,7 +556,7 @@
             %>
             var getName = '<%= products.get(i).getName() %>';
             var getPrice = <%= products.get(i).getPrice() %>;
-            var getCode = <%= products.get(i).getCode() %>;
+            var getCode = '<%= products.get(i).getCode() %>';
             var getSelfBuy = <%= products.get(i).getSelfBuy() %>;
             var getBuyable = <%= products.get(i).getBuyable()%>;
             productarray[iterate] = product(
