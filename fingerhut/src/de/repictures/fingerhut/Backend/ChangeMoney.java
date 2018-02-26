@@ -82,6 +82,10 @@ public class ChangeMoney extends HttpServlet {
             Transfer.payInOff(amount, true, account);
             new Company("0002").setEuroValue(amount);
         } else {
+            if ((isCompany && companyHasNotEnoughMoney(accountBalance, amount)) || (!isCompany && accountBalance < amount)){
+                resp.getWriter().println(4);
+                return;
+            }
             accountBalance -= amount;
             Transfer.payInOff(amount, false, account);
             new Company("0002").setEuroValue(amount*(-1));
@@ -90,5 +94,12 @@ public class ChangeMoney extends HttpServlet {
         account.saveAll();
 
         resp.getWriter().println(1);
+    }
+
+    private boolean companyHasNotEnoughMoney(double companyBalance, double amountToBeSubtracted) {
+        return Account.getCurrentMinutes() < Account.getMinutesFromValues(4, 12, 0)
+                && (companyBalance - amountToBeSubtracted) < -31.00
+
+                || (companyBalance - amountToBeSubtracted) < 0.00;
     }
 }

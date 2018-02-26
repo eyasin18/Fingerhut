@@ -73,7 +73,7 @@ public class SquareCustoms extends HttpServlet {
             customsSum += (price*bioMeatCustom);
         }
         double companyBalance = company.getBalanceDouble();
-        if (customsSum > companyBalance + 30){
+        if (companyHasNotEnoughMoney(companyBalance, customsSum)){
             responseObject.addProperty("response_code", 2);
             resp.getWriter().println(URLEncoder.encode(responseObject.toString(), "UTF-8"));
             return;
@@ -85,5 +85,12 @@ public class SquareCustoms extends HttpServlet {
         responseObject.addProperty("response_code", 3);
         responseObject.addProperty("amount", customsSum);
         resp.getWriter().println(URLEncoder.encode(responseObject.toString(), "UTF-8"));
+    }
+
+    private boolean companyHasNotEnoughMoney(double companyBalance, double amountToBeSubtracted) {
+        return Account.getCurrentMinutes() < Account.getMinutesFromValues(4, 12, 0)
+                && (companyBalance - amountToBeSubtracted) < -31.00
+
+                || (companyBalance - amountToBeSubtracted) < 0.00;
     }
 }

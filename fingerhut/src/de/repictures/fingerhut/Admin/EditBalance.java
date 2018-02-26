@@ -15,7 +15,8 @@ public class EditBalance extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String accountnumber = req.getParameter("accountnumber");
         String amountStr = req.getParameter("amount");
-        if (amountStr == null || accountnumber == null || accountnumber.length() < 4 || amountStr.length() == 0){
+        String diffStr = req.getParameter("diff");
+        if (accountnumber == null || accountnumber.length() < 4){
             resp.getWriter().println("Da hasch du was ned ausgefüllt");
             return;
         }
@@ -29,9 +30,21 @@ public class EditBalance extends HttpServlet {
             return;
         }
 
-        double amount = Double.valueOf(amountStr);
-        accountGetter.setBalance(amount);
-        accountGetter.saveAll();
-        resp.getWriter().println("Isch alles ogee");
+        if (amountStr != null) {
+            double amount = Double.valueOf(amountStr);
+            double oldValue = accountGetter.getBalanceDouble();
+            accountGetter.setBalance(amount);
+            accountGetter.saveAll();
+            resp.getWriter().println("Isch alles ogee\nAlter Kontostand: " + oldValue + "S\nNeuer Kontostand: " + accountGetter.getBalanceDouble());
+        } else if (diffStr != null){
+            double diff = Double.valueOf(diffStr);
+            double oldValue = accountGetter.getBalanceDouble();
+            double newBalance = accountGetter.getBalanceDouble() + diff;
+            accountGetter.setBalance(newBalance);
+            accountGetter.saveAll();
+            resp.getWriter().println("Isch alles ogee\nAlter Kontostand: " + oldValue + "S\nNeuer Kontostand: " + accountGetter.getBalanceDouble());
+        } else {
+            resp.getWriter().println("Du musch entweder eine Differenz oder einen Betrag angeben");
+        }
     }
 }
