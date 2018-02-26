@@ -223,6 +223,7 @@
                             <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>Produktcode</th>
                                 <th>Preis</th>
                             </tr>
                             </thead>
@@ -232,9 +233,11 @@
                                     for(Product product : products){
                                         String nameStr = product.getName();
                                         double priceStr = product.getPrice();
+                                        String codeStr = product.getCode();
                                 %>
                                 <tr onclick="editProducts(this.rowIndex)">
                                     <th><%= nameStr %></th>
+                                    <th><%= codeStr %></th>
                                     <th><%= priceStr + " S"%></th>
                                 </tr>
                                 <%
@@ -799,18 +802,17 @@
             theURL+= "&buyable=false";
         }
         theURL = encodeURI(theURL);
-        console.log(theURL);
         httpAsync(theURL,"POST",3);
     }
 
     function finishAddProduct(){
         cancelProduct();
         var usedURL = "https://fingerhut388.appspot.com/getproduct?";
-        if (typeof document.getElementById("textfield3").value === "string"){
+        if (typeof document.getElementById("textfield3").value === "string" && document.getElementById("textfield3").value != ""){
             usedURL += "code=" + document.getElementById("textfield3").value;
         }
         usedURL += "&accountnumber=" + companynumber;
-        if (typeof document.getElementById("textfield4").value === "string"){
+        if (typeof document.getElementById("textfield4").value === "string" && document.getElementById("textfield4").value != ""){
             usedURL += "&name=" + document.getElementById("textfield4").value;
         }
         if (typeof parseFloat(document.getElementById("textfield5").value) === "number"){
@@ -821,7 +823,6 @@
         if (checkbox4.checked = true){usedURL += "&buyable=true";}
         else {usedURL += "&buyable=false";}
         usedURL = encodeURI(usedURL);
-        console.log(usedURL);
         httpAsync(usedURL,"GET",5);
     }
 
@@ -1144,7 +1145,7 @@
                     console.log("Gibt's schon");
                     break;
                 case 1:
-                    console.log("Erfolg");
+                    location.reload(true);
                     break;
             }
         }
@@ -1221,6 +1222,9 @@
                     document.getElementById("save_employee_changes").disabled = false;
                     break;
             }
+            case 4:
+                location.reload(true);
+                break;
         }
     }
 
