@@ -73,7 +73,7 @@ public class SquareCustoms extends HttpServlet {
             customsSum += (price*bioMeatCustom);
         }
         double companyBalance = company.getBalanceDouble();
-        if (customsSum > companyBalance){
+        if (customsSum > companyBalance + 30){
             responseObject.addProperty("response_code", 2);
             resp.getWriter().println(URLEncoder.encode(responseObject.toString(), "UTF-8"));
             return;
