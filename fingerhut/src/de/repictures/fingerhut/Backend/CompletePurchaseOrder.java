@@ -37,10 +37,10 @@ public class CompletePurchaseOrder extends HttpServlet {
 
         Account sellerAccountGetter = new Account(jsonObject.get("selleraccountnumber").getAsString());
 
-        if (!Objects.equals(sellerAccountGetter.getRandomWebString(), jsonObject.get("webstring").getAsString())){
+        /*if (!Objects.equals(sellerAccountGetter.getRandomWebString(), jsonObject.get("webstring").getAsString())){
             resp.getWriter().println(2);
             return;
-        }
+        }*/
 
         Account buyerAccountGetter = new Account(jsonObject.get("buyeraccountnumber").getAsString());
         Company companyGetter = new Company(jsonObject.get("companynumber").getAsString());

@@ -344,6 +344,38 @@
         <servlet-name>CheckWebstring</servlet-name>
         <url-pattern>/checkwebstring</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>DoAdminTransfer</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Admin.AdminTransfer</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DoAdminTransfer</servlet-name>
+        <url-pattern>/admin/doadmintransfer</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AdminTransfer</servlet-name>
+        <jsp-file>jsp/admin_transfer.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminTransfer</servlet-name>
+        <url-pattern>/admin/admintransfer</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>DoResetLockedAccount</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Admin.ResetLockedAccount</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DoResetLockedAccount</servlet-name>
+        <url-pattern>/admin/doresetlockedaccount</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ResetLockedAccount</servlet-name>
+        <jsp-file>jsp/admin_reset_locked_account.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ResetLockedAccount</servlet-name>
+        <url-pattern>/admin/resetlockedaccount</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>jsp/index.jsp</welcome-file>
     </welcome-file-list>

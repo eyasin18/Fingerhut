@@ -41,12 +41,12 @@ public class PostShoppingRequests extends HttpServlet{
             return;
         }
 
-        if (!Objects.equals(webString, accountGetter.getRandomWebString())){
+        /*if (!Objects.equals(webString, accountGetter.getRandomWebString())){
             multi.startResponse("text/plain");
             resp.getOutputStream().println(2);
             multi.endResponse();
             return;
-        }
+        }*/
 
         Company companyGetter = new Company(companyNumber);
 

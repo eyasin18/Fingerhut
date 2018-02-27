@@ -103,11 +103,11 @@ public class PrivateLogin extends HttpServlet {
                     return;
                 }
 
-                if (failedAttempts > 9){
+                /*if (failedAttempts > 9){
                     object.addProperty("response_code", 5);
                     resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
                     return;
-                }
+                }*/
             }
 
             //Vergleiche salte das gespeicherte Passwort und vergleiche es mit dem empfangenem Passwort
@@ -162,13 +162,13 @@ public class PrivateLogin extends HttpServlet {
                     Calendar cooldownTime = Calendar.getInstance(Locale.getDefault());
                     cooldownTime.add(Calendar.SECOND, (int) cooldownSeconds);
                     account.setCooldownTime(queriedAccounts.get(0), cooldownTime.getTime());
-                    account.countUpLoginAttempts();
+                    //account.countUpLoginAttempts();
                     account.saveAll(queriedAccounts.get(0));
                     object.addProperty("response_code", 1);
                     object.addProperty("failed_attempts", failedAttempts);
                     resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
                 } else {
-                    account.countUpLoginAttempts(queriedAccounts.get(0));
+                    //account.countUpLoginAttempts(queriedAccounts.get(0));
                     account.saveAll(queriedAccounts.get(0));
                     object.addProperty("response_code", 1);
                     object.addProperty("failed_attempts", failedAttempts);

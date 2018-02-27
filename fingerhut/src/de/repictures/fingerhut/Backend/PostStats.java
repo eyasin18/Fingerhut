@@ -52,11 +52,11 @@ public class PostStats extends HttpServlet {
             return;
         }
 
-        if (!Objects.equals(authString, accountGetter.getRandomWebString())){
+        /*if (!Objects.equals(authString, accountGetter.getRandomWebString())){
             object.addProperty("response", 3);
             resp.getWriter().println(URLEncoder.encode(object.toString(), "UTF-8"));
             return;
-        }
+        }*/
 
         List<Number> balanceDevelopment = companyGetter.getBalanceDevelopment();
         List<Number> balanceDevelopmentDates = companyGetter.getBalanceDevelopmentTimes();

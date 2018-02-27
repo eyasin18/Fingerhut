@@ -33,10 +33,10 @@ public class PostTransfers extends HttpServlet {
         Account accountGetter = new Account();
         Entity account = accountGetter.getAccount(accountnumber);
 
-        if (!Objects.equals(accountGetter.getRandomWebString(account), webstring)){
+        /*if (!Objects.equals(accountGetter.getRandomWebString(account), webstring)){
             responseObject.addProperty("response_code", 0);
             resp.getWriter().println(URLEncoder.encode(responseObject.toString(), "UTF-8"));
-        }
+        }*/
 
         //Überprüfe ob wir eine Valide Kontonummer bekommen haben
         if (account != null){

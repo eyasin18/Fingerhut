@@ -35,11 +35,11 @@ public class PostEmployees extends HttpServlet {
             return;
         }
 
-        if (!Objects.equals(code, authAccount.getRandomWebString())){
+        /*if (!Objects.equals(code, authAccount.getRandomWebString())){
             object.addProperty("responseCode", 3);
             resp.getWriter().println(object.toString());
             return;
-        }
+        }*/
 
         Company company = new Company(companyNumber);
         Query accountQuery = new Query("Account");

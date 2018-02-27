@@ -29,10 +29,10 @@ public class PostFinancialStatus extends HttpServlet {
 
             String savedWebString = account.getRandomWebString();
             log.info("Saved Web String: " + savedWebString + "\nPassed Web String: " + webstring);
-            if (!Objects.equals(webstring, savedWebString)){
+            /*if (!Objects.equals(webstring, savedWebString)){
                 resp.getWriter().println("2");
                 return;
-            }
+            }*/
 
             String output = "1ò" +
                     account.getAccountnumber() +

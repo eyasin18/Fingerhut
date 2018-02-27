@@ -92,10 +92,10 @@ public class GetTransfer extends HttpServlet {
         }
 
         String savedWebString = senderBuilder.getRandomWebString();
-        if (!Objects.equals(webString, savedWebString)){
+        /*if (!Objects.equals(webString, savedWebString)){
             resp.getWriter().println("5");
             return;
-        }
+        }*/
 
         if (senderPurposeStr == null || receiverPurposeStr == null || receiverName == null || senderName == null){
             Cryptor cryptor = new Cryptor();

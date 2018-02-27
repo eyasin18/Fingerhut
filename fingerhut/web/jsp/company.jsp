@@ -307,6 +307,7 @@
                                 </label>
                             </div>
                         </div>
+                        <h6 id="add_product_error"></h6>
                         <div class="wrapper">
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="back_button_addProduct" onclick="finishAddProduct()">Fertig</button>
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelProduct()" id="cancel_button_addProduct">Abbrechen</button>
@@ -807,23 +808,45 @@
 
     function finishAddProduct(){
         cancelProduct();
-        var usedURL = "https://fingerhut388.appspot.com/getproduct?";
-        if (typeof document.getElementById("textfield3").value === "string" && document.getElementById("textfield3").value != ""){
-            usedURL += "code=" + document.getElementById("textfield3").value;
+        var error = document.getElementById("add_product_error");
+        var barcode = document.getElementById("textfield3").value;
+        var price = parseFloat(document.getElementById("textfield5").value);
+        var name = document.getElementById("textfield4").value;
+        if(barcode.length > 7 && barcode.length < 13) {
+            var usedURL = "https://fingerhut388.appspot.com/getproduct?";
+            if (typeof barcode === "string") {
+                usedURL += "code=" + document.getElementById("textfield3").value;
+            }
+            usedURL += "&accountnumber=" + companynumber;
+            if (typeof name === "string") {
+                usedURL += "&name=" + document.getElementById("textfield4").value;
+            }
+            if (typeof price === "number" &&  !isNaN(price)){
+                usedURL += "&price=" + price;
+            }
+            if (checkbox3.checked = true) {
+                usedURL += "&selfbuy=true";
+            }
+            else {
+                usedURL += "&selfbuy=false";
+            }
+            if (checkbox4.checked = true) {
+                usedURL += "&buyable=true";
+            }
+            else {
+                usedURL += "&buyable=false";
+            }
+            usedURL = encodeURI(usedURL);
+            if (barcode !== "" && price !== undefined && name !== "") {
+                httpAsync(usedURL, "GET", 5);
+            }
+            else{
+                error.innerText = "Es hat nicht funktioniert, versuche es bitte erneut";
+            }
         }
-        usedURL += "&accountnumber=" + companynumber;
-        if (typeof document.getElementById("textfield4").value === "string" && document.getElementById("textfield4").value != ""){
-            usedURL += "&name=" + document.getElementById("textfield4").value;
+        else{
+            error.innerText = "Der Barcode muss zwichen 7 und 13 Zeichen lang sein";
         }
-        if (typeof parseFloat(document.getElementById("textfield5").value) === "number"){
-            usedURL += "&price=" + parseFloat(document.getElementById("textfield5").value);
-        }
-        if (checkbox3.checked = true){usedURL += "&selfbuy=true";}
-        else {usedURL += "&selfbuy=false";}
-        if (checkbox4.checked = true){usedURL += "&buyable=true";}
-        else {usedURL += "&buyable=false";}
-        usedURL = encodeURI(usedURL);
-        httpAsync(usedURL,"GET",5);
     }
 
     function addPurchaseOrderItem(position) {
@@ -1438,6 +1461,8 @@
         ShortPurchaseOrders.style.display = "block";
         Statistics.style.display = "block";
         Products.style.display = "block";
+        document.getElementById("save_employee_changes").disabled = false;
+        document.getElementById("save_employee_changes_error").innerText = "";
     }
     function addNewWorkTime() {
         WorkTimes.style.display = "block";
