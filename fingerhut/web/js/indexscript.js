@@ -23,47 +23,53 @@ var accountnumber;
 window.addEventListener('popstate', function() {checkWebstring()});
 
 function onButtonClick() {
-    buttonWidth = window.getComputedStyle(submitButton, null).width;
-    buttonHeight = window.getComputedStyle(submitButton, null).height;
-    submitButton.style.setProperty("width", buttonWidth, "");
-    spinnerHeight = parseInt(buttonHeight, 10) - 12;
-    rect = submitButton.getBoundingClientRect();
+    var IEVersion = getInternetExplorerVersion();
+    if(IEVersion === -1) {
+        buttonWidth = window.getComputedStyle(submitButton, null).width;
+        buttonHeight = window.getComputedStyle(submitButton, null).height;
+        submitButton.style.setProperty("width", buttonWidth, "");
+        spinnerHeight = parseInt(buttonHeight, 10) - 12;
+        rect = submitButton.getBoundingClientRect();
 
-    submitSpinner.style.height = spinnerHeight + "px";
-    submitSpinner.style.width = spinnerHeight + "px";
-    submitSpinner.style.top = (rect.top + 6) + "px";
-    var spinnerLeftInt = rect.left + parseInt(buttonWidth)/2 - spinnerHeight/2;
-    submitSpinner.style.left = spinnerLeftInt + "px";
+        submitSpinner.style.height = spinnerHeight + "px";
+        submitSpinner.style.width = spinnerHeight + "px";
+        submitSpinner.style.top = (rect.top + 6) + "px";
+        var spinnerLeftInt = rect.left + parseInt(buttonWidth) / 2 - spinnerHeight / 2;
+        submitSpinner.style.left = spinnerLeftInt + "px";
 
-    console.log("clicked");
-    var usernameInput = document.getElementById('username');
-    var passwordInput = document.getElementById('userpass');
+        console.log("clicked");
+        var usernameInput = document.getElementById('username');
+        var passwordInput = document.getElementById('userpass');
 
-    var usernameError = document.getElementById('username_error');
-    usernameError.parentElement.className = usernameError.parentElement.className.replace(" is-invalid", "");
-    usernameError.textContent = '';
+        var usernameError = document.getElementById('username_error');
+        usernameError.parentElement.className = usernameError.parentElement.className.replace(" is-invalid", "");
+        usernameError.textContent = '';
 
-    var userpassError = document.getElementById('userpass_error');
-    userpassError.parentElement.className = userpassError.parentElement.className.replace(" is-invalid", "");
-    userpassError.textContent = '';
+        var userpassError = document.getElementById('userpass_error');
+        userpassError.parentElement.className = userpassError.parentElement.className.replace(" is-invalid", "");
+        userpassError.textContent = '';
 
-    if(usernameInput.value === null || usernameInput.value.length < 1){
-        return;
+        if (usernameInput.value === null || usernameInput.value.length < 1) {
+            return;
+        }
+
+        if (passwordInput.value === null || passwordInput.value.length < 1) {
+            return;
+        }
+
+        var hash = sjcl.hash.sha256.hash(passwordInput.value);
+        var hashHex = sjcl.codec.hex.fromBits(hash);
+        accountnumber = usernameInput.value;
+
+        var urlStr = url + "/web/login?accountnumber=" + accountnumber + "&password=" + hashHex;
+
+        submitButton.textContent = '';
+        submitSpinner.style.visibility = 'hidden';
+        httpPostAsync(urlStr);
     }
-
-    if(passwordInput.value === null || passwordInput.value.length < 1){
-        return;
+    else{
+        alert("Internet Explorer wird nicht unterstützt, bitte benutze einen anderen Browser wie Chrome, Firefox, Opera, neuere Safari Versionen oder sogar Edge");
     }
-
-    var hash = sjcl.hash.sha256.hash(passwordInput.value);
-    var hashHex = sjcl.codec.hex.fromBits(hash);
-    accountnumber = usernameInput.value;
-
-    var urlStr = url + "/web/login?accountnumber=" + accountnumber + "&password=" + hashHex;
-
-    submitButton.textContent = '';
-    submitSpinner.style.visibility = 'hidden';
-    httpPostAsync(urlStr);
 }
 
 function httpPostAsync(theUrl) {
@@ -175,4 +181,22 @@ function processGetResponse(responseStr, callerid){
             }
             break;
     }
+}
+function getInternetExplorerVersion()
+{
+    var rV = -1; // Return value assumes failure.
+
+    if (navigator.appName === 'Microsoft Internet Explorer' || navigator.appName === 'Netscape') {
+        var uA = navigator.userAgent;
+        var rE = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+
+        if (rE.exec(uA) != null) {
+            rV = parseFloat(RegExp.$1);
+        }
+        /*check for IE 11*/
+        else if (!!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+            rV = 11;
+        }
+    }
+    return rV;
 }
