@@ -73,14 +73,19 @@ public class SquareCustoms extends HttpServlet {
             customsSum += (price*bioMeatCustom);
         }
         double companyBalance = company.getBalanceDouble();
-        if (companyHasNotEnoughMoney(companyBalance, customsSum)){
+        /*if (companyHasNotEnoughMoney(companyBalance, customsSum)){
             responseObject.addProperty("response_code", 2);
             resp.getWriter().println(URLEncoder.encode(responseObject.toString(), "UTF-8"));
             return;
-        }
+        }*/
         companyBalance -= customsSum;
         company.setBalance(companyBalance);
         company.saveAll();
+
+        Company finanzministerium = new Company("0098");
+        double finanzministeriumBalance = finanzministerium.getBalanceDouble();
+        finanzministerium.setBalance(finanzministeriumBalance + customsSum);
+        finanzministerium.saveAll();
 
         responseObject.addProperty("response_code", 3);
         responseObject.addProperty("amount", customsSum);

@@ -29,11 +29,11 @@ public class RegisterPerson extends HttpServlet {
         }
 
         Account userAccount = new Account(userAccountnumber);
-        if (!Objects.equals(webString, userAccount.getRandomWebString())){
+        /*if (!Objects.equals(webString, userAccount.getRandomWebString())){
             responseObject.addProperty("response_code", 0);
             resp.getWriter().println(URLEncoder.encode(responseObject.toString(), "UTF-8"));
             return;
-        }
+        }*/
 
         Account account = new Account(accountnumber);
         if (account.account == null){

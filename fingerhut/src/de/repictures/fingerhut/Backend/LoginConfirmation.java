@@ -30,12 +30,12 @@ public class LoginConfirmation extends HttpServlet {
         Account accountGetter = new Account(accountnumber);
 
         log.info("Passed Webstring: " + webString + "\nSaved Webstring: " + sessionAccountGetter.getRandomWebString());
-        if (!Objects.equals(webString, sessionAccountGetter.getRandomWebString())){
+        /*if (!Objects.equals(webString, sessionAccountGetter.getRandomWebString())){
             log.info("hoi");
             resp.getWriter().println("hoi");
             resp.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
             return;
-        }
+        }*/
         log.info("hoi2");
 
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -69,10 +69,10 @@ public class LoginConfirmation extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_OK);
         if (companynumber != null) companyGetter = new Company(companynumber);
 
-        if (!Objects.equals(webString, sessionAccountGetter.getRandomWebString())){
+        /*if (!Objects.equals(webString, sessionAccountGetter.getRandomWebString())){
             resp.getWriter().println("2");
             return;
-        }
+        }*/
 
         String hashedSaltedPassword = accountGetter.getSaltedPassword(serverTimeStamp);
         log(serverTimeStamp);

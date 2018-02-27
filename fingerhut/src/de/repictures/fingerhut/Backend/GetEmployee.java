@@ -31,10 +31,10 @@ public class GetEmployee extends HttpServlet {
         }
 
         Account authAccount = new Account(editorAccountnumber);
-        if (!Objects.equals(authAccount.getRandomWebString(), authCode)){
+        /*if (!Objects.equals(authAccount.getRandomWebString(), authCode)){
             resp.getWriter().println(1);
             return;
-        }
+        }*/
 
         if (!authAccount.getSpecificFeatures(companynumber).contains(3L)){
             resp.getWriter().println(3);

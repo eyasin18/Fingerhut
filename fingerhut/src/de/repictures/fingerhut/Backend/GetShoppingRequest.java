@@ -43,10 +43,10 @@ public class GetShoppingRequest extends HttpServlet{
             return;
         }
 
-        if (!Objects.equals(authAccountGetter.getRandomWebString(), webstring)){
+        /*if (!Objects.equals(authAccountGetter.getRandomWebString(), webstring)){
             resp.getWriter().println(-1);
             return;
-        }
+        }*/
 
         //Einkaufsauftragentität wird erstellt
         PurchaseOrder purchaseOrder;

@@ -82,10 +82,10 @@ public class ChangeMoney extends HttpServlet {
             Transfer.payInOff(amount, true, account);
             new Company("0002").setEuroValue(amount);
         } else {
-            if ((isCompany && companyHasNotEnoughMoney(accountBalance, amount)) || (!isCompany && accountBalance < amount)){
+            /*if ((isCompany && companyHasNotEnoughMoney(accountBalance, amount)) || (!isCompany && accountBalance < amount)){
                 resp.getWriter().println(4);
                 return;
-            }
+            }*/
             accountBalance -= amount;
             Transfer.payInOff(amount, false, account);
             new Company("0002").setEuroValue(amount*(-1));
