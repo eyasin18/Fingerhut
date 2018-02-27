@@ -376,6 +376,22 @@
         <servlet-name>ResetLockedAccount</servlet-name>
         <url-pattern>/admin/resetlockedaccount</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>DoAdminTransferWage</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Admin.AdminTransferWage</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DoAdminTransferWage</servlet-name>
+        <url-pattern>/admin/doadmintransferwage</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AdminTransferWage</servlet-name>
+        <jsp-file>jsp/admin_transfer_wage.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminTransferWage</servlet-name>
+        <url-pattern>/admin/admintransferwage</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>jsp/index.jsp</welcome-file>
     </welcome-file-list>

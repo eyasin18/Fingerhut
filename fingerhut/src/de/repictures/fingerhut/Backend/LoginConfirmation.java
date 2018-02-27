@@ -61,8 +61,11 @@ public class LoginConfirmation extends HttpServlet {
         Account accountGetter = new Account(accountnumber);
 
         if(accountGetter.account == null){
-            resp.getWriter().println("4");
-            return;
+            accountGetter = new Company(accountnumber);
+            if (accountGetter.account == null) {
+                resp.getWriter().println("4");
+                return;
+            }
         }
 
         Company companyGetter = null;

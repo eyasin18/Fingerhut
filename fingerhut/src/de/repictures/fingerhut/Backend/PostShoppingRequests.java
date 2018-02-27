@@ -97,7 +97,8 @@ public class PostShoppingRequests extends HttpServlet{
             JsonArray oProductNames = new JsonArray();
             for (String productCode : purchaseOrdersGetter.getProductCodesList(purchaseOrderEntity)){
                 Product productGetter = new Product(productCode, companyNumber);
-                oProductNames.add(productGetter.getName());
+                if (productGetter.product != null) oProductNames.add(productGetter.getName());
+                else oProductNames.add(productCode);
             }
             productNamesArray.add(oProductNames);
 

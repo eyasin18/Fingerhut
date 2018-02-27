@@ -43,6 +43,9 @@ public class CompletePurchaseOrder extends HttpServlet {
         }*/
 
         Account buyerAccountGetter = new Account(jsonObject.get("buyeraccountnumber").getAsString());
+        if (buyerAccountGetter.account == null){
+            buyerAccountGetter = new Company(jsonObject.get("buyeraccountnumber").getAsString());
+        }
         Company companyGetter = new Company(jsonObject.get("companynumber").getAsString());
         PurchaseOrder purchaseOrderSetter = new PurchaseOrder(companyGetter.account, jsonObject.get("purchaseOrderNumber").getAsInt(), req.getLocale());
 
