@@ -1461,6 +1461,8 @@
         ShortPurchaseOrders.style.display = "block";
         Statistics.style.display = "block";
         Products.style.display = "block";
+        document.getElementById("save_employee_changes").disabled = false;
+        document.getElementById("save_employee_changes_error").innerText = "";
     }
     function addNewWorkTime() {
         WorkTimes.style.display = "block";
