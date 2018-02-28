@@ -321,6 +321,14 @@
         <url-pattern>/admin/addcompany</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>ShowTransfers</servlet-name>
+        <jsp-file>jsp/show_transfer.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ShowTransfers</servlet-name>
+        <url-pattern>/showtransfers</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>ManageEmployees</servlet-name>
         <jsp-file>jsp/manage_employees.jsp</jsp-file>
     </servlet>

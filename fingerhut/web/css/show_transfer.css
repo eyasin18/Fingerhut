@@ -1,0 +1,14 @@
+#heading{
+    word-wrap: break-word;
+}
+#transfers td, th {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+}
+#back_button{
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
