@@ -93,6 +93,7 @@ public class TransferWage extends HttpServlet {
             y++;
             Tax.setWageStart(z);
             checkTimes();
+            log(z+"");
         }
     }
 
