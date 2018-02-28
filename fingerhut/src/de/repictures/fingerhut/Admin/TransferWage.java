@@ -87,13 +87,12 @@ public class TransferWage extends HttpServlet {
         try {
             loopPart();
         } catch (DatastoreTimeoutException e){
-            if (y > 10000){
-                return;
+            if (y < 650 && z < 650){
+                Tax.setWageStart(z);
+                checkTimes();
+                log(z+"");
+                y++;
             }
-            y++;
-            Tax.setWageStart(z);
-            checkTimes();
-            log(z+"");
         }
     }
 
