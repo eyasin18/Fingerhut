@@ -274,6 +274,11 @@ public class Transfer {
         datastore.put(passedEntity);
     }
 
+    public void saveAllAsync(){
+        AsyncDatastoreService datastore = DatastoreServiceFactory.getAsyncDatastoreService();
+        datastore.put(transfer);
+    }
+
     public static void buyItems(Account accountGetter, Company companyGetter, Locale locale, String purpose, double priceSum) {
 
         Cryptor cryptor = new Cryptor();
@@ -325,7 +330,7 @@ public class Transfer {
         companyGetter.saveAll();
     }
 
-    public static void transferWage(double netWage, double tax, boolean basicIncome, Company payingCompany, Account receivingAccount){
+    public static Entity transferWage(double netWage, double tax, boolean basicIncome, Company payingCompany, Account receivingAccount){
         Calendar currentTime = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("EEEE HH:mm", Locale.GERMANY);
         format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
@@ -377,11 +382,7 @@ public class Transfer {
         else transferBuilder.setType("Grundeinkommen");
         transferBuilder.saveAll();
 
-        Entity savedTransfer = transferBuilder.getTransfer(datetime);
-        receivingAccount.addTransfer(savedTransfer);
-        payingCompany.addTransfer(savedTransfer);
-        receivingAccount.saveAll();
-        payingCompany.saveAll();
+        return transferBuilder.getTransfer(datetime);
     }
 
     public static void payInOff(double amount, boolean payIn, Account receivingAccount){
