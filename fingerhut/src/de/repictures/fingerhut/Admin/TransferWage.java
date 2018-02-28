@@ -85,17 +85,18 @@ public class TransferWage extends HttpServlet {
     private void checkTimes() throws IOException {
         z = Tax.getWageStart().intValue();
         try {
-            loopPart(z);
+            loopPart();
         } catch (DatastoreTimeoutException e){
             if (y > 10000){
                 return;
             }
+            y++;
             Tax.setWageStart(z);
-            loopPart(z);
+            checkTimes();
         }
     }
 
-    private void loopPart(int z) throws IOException {
+    private void loopPart() throws IOException {
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
         Query purchaseOrderQuery = new Query("Account");
         List<Entity> accounts = datastoreService.prepare(purchaseOrderQuery).asList(FetchOptions.Builder.withDefaults());
