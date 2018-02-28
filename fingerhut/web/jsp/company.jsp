@@ -4,7 +4,7 @@
 <%@ page import="de.repictures.fingerhut.Web.CompanyTools" %>
 <%@ page import="de.repictures.fingerhut.Web.MainTools" %>
 <%@ page import="de.repictures.fingerhut.Datastore.Product" %>
-<%@ page import="de.repictures.fingerhut.Datastore.PurchaseOrder" %>
+<%@ page import="de.repictures.fingerhut.Datastore.PurchaseOrder"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.text.DecimalFormat"%>
@@ -504,7 +504,7 @@
 </body>
 <script src="${pageContext.request.contextPath}../js/pojo.js" ></script>
     <script>
-    var accountnumber = "<%=accountnumber%>";
+    var accountnumber = "<%= accountnumber %>";
     var companynumber = "<%= companynumber %>";
 
     //Kaufaufträge betreffend
@@ -648,7 +648,7 @@
     <%List<Double> pricesList = new ArrayList<>();
     if (purchaseOrders.size() > 0) pricesList = purchaseOrders.get(0).getPricesList();%>
 
-    if (purchase_order_array.length > 0) purchase_order_array[0].prices_list =  <%=pricesList %>;
+    if (purchase_order_array.length > 0) purchase_order_array[0].prices_list =  <%= pricesList %>;
     fillDropdown();
     fillShortPurchaseTable();
     fillPurchaseTable();
@@ -794,10 +794,10 @@
 
     function finishEditProduct(){
         var name = document.getElementById("textfield1").value;
-        var price = parseFloat(document.getElementById("texfield2").value);
+        var price = parseFloat(document.getElementById("textfield2").value);
         var theURL = "https://fingerhut388.appspot.com/updateproduct?" + "code=" + productarray[currentProductPosition].code + "&companynumber=" + companynumber;
         if (typeof name === "string" && name !== "") {
-            if (typeof price === "number" && !isNaN(price) && price !== undefined) {
+            if (typeof price === "number" && !isNaN(price) && price !== undefined){
                 theURL += "&name=" + name;
                 theURL += "&price=" + price;
                 if (checkbox1.checked == true) {
@@ -833,28 +833,20 @@
         var price = parseFloat(document.getElementById("textfield5").value);
         var name = document.getElementById("textfield4").value;
         if(barcode.length > 7 && barcode.length < 13) {
-            if (typeof barcode === "string" && barcode !== "") {
-                if(typeof name === "string" && name !== "") {
-                    if(typeof price === "number" && !isNaN(price) && price !== undefined) {
+            if (typeof barcode === "string" && barcode !== "" && barcode !== null && barcode !== undefined) {
+                if(typeof name === "string" && name !== "" && name !== null && name !== undefined && !isNaN(name)) {
+                    if(typeof price === "number" && !(isNaN(price)) && price !== undefined && price !== null){
                         var usedURL = "https://fingerhut388.appspot.com/getproduct?";
                         usedURL += "code=" + barcode;
                         usedURL += "&accountnumber=" + companynumber;
                         usedURL += "&name=" + name;
                         usedURL += "&price=" + price;
-                        if (checkbox3.checked = true){
-                            usedURL += "&selfbuy=true";
-                        }
-                        else {
-                            usedURL += "&selfbuy=false";
-                        }
-                        if (checkbox4.checked = true){
-                            usedURL += "&buyable=true";
-                        }
-                        else {
-                            usedURL += "&buyable=false";
-                        }
+                        if (checkbox3.checked = true){usedURL += "&selfbuy=true";}
+                        else {usedURL += "&selfbuy=false";}
+                        if (checkbox4.checked = true){usedURL += "&buyable=true";}
+                        else {usedURL += "&buyable=false";}
                         usedURL = encodeURI(usedURL);
-                            httpAsync(usedURL, "GET", 5);
+                        httpAsync(usedURL, "GET", 5);
                     }
                     else{
                         addError.style.display = "block";
@@ -877,10 +869,10 @@
         }
     }
 
-    function addPurchaseOrderItem(position) {}
+    //function addPurchaseOrderItem(position) {}
 
     function registerFCMTopicAsync() {
-        var url = "https://iid.googleapis.com/iid/v1/" + registrationToken + "/rel/topics/<%=companynumber%>-shoppingRequests";
+        var url = "https://iid.googleapis.com/iid/v1/" + registrationToken + "/rel/topics/<%= companynumber %>-shoppingRequests";
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.setRequestHeader("Content-Type", "application/json");
         xmlHttp.setRequestHeader("Authorization", "key=AAAATqpEAqE:APA91bHDNQ6rnzBLpMgpuM_FZyrArDP5Fdu8nYtlEwIJ6PIAKxzaaoEcp4X0NYMok3A-BCjbRrLoCMZWZauGjkZ1wyx7NuQxliu08cZUPz1CvK5JFp3U72IrBWWNqGNxJMljc6e6vlQD");
