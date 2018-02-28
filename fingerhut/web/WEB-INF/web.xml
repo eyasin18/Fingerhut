@@ -392,6 +392,14 @@
         <servlet-name>AdminTransferWage</servlet-name>
         <url-pattern>/admin/admintransferwage</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>TransferBasicIncome</servlet-name>
+        <servlet-class>de.repictures.fingerhut.Admin.PayBasicIncome</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TransferBasicIncome</servlet-name>
+        <url-pattern>/admin/paybasicincome</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>jsp/index.jsp</welcome-file>
     </welcome-file-list>
