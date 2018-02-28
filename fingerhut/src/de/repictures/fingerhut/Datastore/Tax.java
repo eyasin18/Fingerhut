@@ -200,4 +200,25 @@ public class Tax {
             return 0;
         }
     }
+
+    public static void setWageStart(Number wageStart){
+        Key incomeKey = KeyFactory.createKey("id", 9);
+        Entity incomeEntity = new Entity("Tax", incomeKey);
+        incomeEntity.setProperty("id", 9);
+        incomeEntity.setProperty("amount", wageStart);
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        datastoreService.put(incomeEntity);
+    }
+
+    public static Number getWageStart(){
+        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+        Key incomeKey = KeyFactory.createKey("id", 9);
+        Query taxQuery = new Query("Tax", incomeKey);
+        List<Entity> vatList = datastoreService.prepare(taxQuery).asList(FetchOptions.Builder.withDefaults());
+        if (vatList.size() > 0){
+            return (Number) vatList.get(0).getProperty("amount");
+        } else {
+            return 0;
+        }
+    }
 }

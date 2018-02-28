@@ -56,10 +56,10 @@ public class ShowTransferTools {
             }
             transferStr[0] = timeFormat.format(dateTime.getTime()) + " Uhr";
             if (Objects.equals(account.getAccountnumber(), account.getAccountnumber(sender))){
-                transferStr[1] = "+" + decimalFormat.format(transferGetter.getAmount());
+                transferStr[1] = "-" + decimalFormat.format(transferGetter.getAmount());
                 transferStr[2] = account.getAccountnumber(receiver);
             } else {
-                transferStr[1] = "-" + decimalFormat.format(transferGetter.getAmount());
+                transferStr[1] = "+" + decimalFormat.format(transferGetter.getAmount());
                 transferStr[2] = account.getAccountnumber(sender);
             }
             transferData.add(transferStr);
