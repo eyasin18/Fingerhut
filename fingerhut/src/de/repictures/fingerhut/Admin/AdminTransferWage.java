@@ -63,15 +63,15 @@ public class AdminTransferWage extends HttpServlet {
 
         for (int i = 0; i < hours; i++){
             company.setBalance(company.getBalanceDouble()-(amount));
-            company.saveAll();
 
             fm.setBalance(fm.getBalanceDouble() + (tax));
-            fm.saveAll();
 
             account.setBalance(account.getBalanceDouble() + (netWage));
-            account.saveAll();
 
             Transfer.transferWage(netWage, tax, false, company, account);
+            account.saveAll();
+            fm.saveAll();
+            company.saveAll();
         }
 
         resp.getWriter().println("Nettolohn pro Stunde: " + netWage + "S\nLohnsteuer pro Stunde: " + tax + "S\nNettolohn gesamt: " + netWage*hours + "S\nLohnsteuer gesamt: " + tax*hours + "S");

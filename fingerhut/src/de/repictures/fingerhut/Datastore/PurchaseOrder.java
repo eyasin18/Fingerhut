@@ -318,4 +318,9 @@ public class PurchaseOrder{
     public void saveAll(){
         datastore.put(purchaseOrder);
     }
+
+    public void saveAllAsync(){
+        AsyncDatastoreService datastore = DatastoreServiceFactory.getAsyncDatastoreService();
+        datastore.put(purchaseOrder);
+    }
 }

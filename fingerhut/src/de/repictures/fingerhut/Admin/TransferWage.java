@@ -1,6 +1,8 @@
 package de.repictures.fingerhut.Admin;
 
 import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.gson.JsonArray;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
@@ -84,16 +86,7 @@ public class TransferWage extends HttpServlet {
 
     private void checkTimes() throws IOException {
         z = Tax.getWageStart().intValue();
-        try {
-            loopPart();
-        } catch (DatastoreTimeoutException e){
-            if (y < 650 && z < 650){
-                Tax.setWageStart(z);
-                checkTimes();
-                log(z+"");
-                y++;
-            }
-        }
+        loopPart();
     }
 
     private void loopPart() throws IOException {
@@ -158,7 +151,10 @@ public class TransferWage extends HttpServlet {
         double tax = (((double) integralPart) * (double) (integralPercentage/100) + (fractionalPart * ((double) fractionPercentage/100)));
         double netWage = (wage - tax);
 
-        //Geld transferieren
+        QueueFactory.getDefaultQueue().add(TaskOptions.Builder.withPayload(new DefferedPayment(payingCompany.getAccountnumber(), accountGetter.getAccountnumber(), netWage, false)));
+        QueueFactory.getDefaultQueue().add(TaskOptions.Builder.withPayload(new DefferedPayment(payingCompany.getAccountnumber(), finanzministerium.getAccountnumber(), tax, false)));
+
+        /*//Geld transferieren
         Transfer.transferWage(netWage, tax, false, payingCompany, accountGetter);
         companyBalance = (companyBalance-wage);
         double receiverBalance = accountGetter.getBalanceDouble() + netWage;
@@ -166,10 +162,10 @@ public class TransferWage extends HttpServlet {
         payingCompany.setBalance(companyBalance);
         accountGetter.setBalance(receiverBalance);
         finanzministerium.setBalance(fmBalance);
-        payingCompany.saveAll();
-        accountGetter.saveAll();
-        finanzministerium.saveAll();
-        log("\nTax: " + tax + "\nNet wage: " + netWage + "\nFinanzministerium: " + finanzministerium.getBalanceDouble() + "\nKonto: " + accountGetter.getBalanceDouble());
+        payingCompany.saveAllAsync();
+        accountGetter.saveAllAsync();
+        finanzministerium.saveAllAsync();
+        log("\nTax: " + tax + "\nNet wage: " + netWage + "\nFinanzministerium: " + finanzministerium.getBalanceDouble() + "\nKonto: " + accountGetter.getBalanceDouble());*/
     }
 
     private boolean companyHasNotEnoughMoney(double companyBalance, double wage) {

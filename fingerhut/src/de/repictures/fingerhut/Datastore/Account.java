@@ -969,6 +969,8 @@ public class Account {
         finanzministerium.setBalance(finanzministeriumBalance);
         setBalance(userBalance);
         Transfer.transferWage(basicIncome, 0, true, finanzministerium, Account.this);
+        finanzministerium.saveAll();
+        saveAll();
     }
 
     public void transferBasicIncome(Entity passedEntity){
@@ -981,9 +983,16 @@ public class Account {
         finanzministerium.setBalance(finanzministeriumBalance);
         setBalance(passedEntity, userBalance);
         Transfer.transferWage(basicIncome, 0, true, finanzministerium, new Account(passedEntity));
+        finanzministerium.saveAll();
+        saveAll();
     }
 
     public void saveAll(){
+        datastore.put(account);
+    }
+
+    public void saveAllAsync(){
+        AsyncDatastoreService datastore = DatastoreServiceFactory.getAsyncDatastoreService();
         datastore.put(account);
     }
 

@@ -212,4 +212,9 @@ public class Product {
     public void saveAll(Entity passedEntity){
         datastore.put(passedEntity);
     }
+
+    public void saveAllAsync(){
+        AsyncDatastoreService datastore = DatastoreServiceFactory.getAsyncDatastoreService();
+        datastore.put(product);
+    }
 }
