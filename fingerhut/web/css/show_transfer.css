@@ -1,5 +1,6 @@
 #heading{
     word-wrap: break-word;
+    text-align: center;
 }
 #transfers td, th {
     width: 100%;
@@ -54,4 +55,11 @@
 
 .demo-footer .mdl-mini-footer--link-list a {
     font-size: 13px;
+}
+.mdl-data-table {
+    table-layout: fixed;
+    width: 100%;
+}
+.wrapper{
+    text-align: center;
 }

@@ -59,7 +59,9 @@
                         <tbody>
                         </tbody>
                     </table>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="back_button" onclick="backToMain()">Zurück</button>
+                    <div class="wrapper">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="back_button" onclick="backToMain()">Zurück</button>
+                    </div>
                 </div>
             </div>
             <footer class="demo-footer mdl-mini-footer">
