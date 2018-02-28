@@ -602,7 +602,14 @@
         var getIsSelfBuyList = <%= purchaseOrders.get(i).getIsSelfBuyList() %>;
         var getNumber = <%= purchaseOrders.get(i).getNumber() %>;
         var getPricesList = <%= purchaseOrders.get(i).getPricesList() %>;
-        var getProductCodesList = <%= purchaseOrders.get(i).getProductCodesList() %>;
+        var getProductCodesList = [];
+        <%
+        for (String barcode : purchaseOrders.get(i).getProductCodesList()){
+            %>
+            getProductCodesList.push("<%=barcode%>");
+            <%
+        }
+        %>
         purchase_order_array[iterate1] = purchase_order(
             getBuyerAccountnumber,
             getCompleted,
