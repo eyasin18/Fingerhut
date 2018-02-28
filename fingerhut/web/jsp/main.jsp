@@ -394,7 +394,7 @@
         document.getElementById("balance_field").innerText = "Kontostand: " + "<%=balancestring%>";
     }
     function showTransfers() {
-        window.location = "https://fingerhut388.appspot.com/showtransfers"
+        window.location = "https://fingerhut388.appspot.com/showtransfers?accountnumber=<%=accountnumber%>";
     }
 </script>
 </body>

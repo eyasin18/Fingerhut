@@ -12,10 +12,15 @@
 <%@ page import="de.repictures.fingerhut.Web.SignOff" %>
 <%@ page import="static de.repictures.fingerhut.Datastore.Tax.getVAT" %>
 <%@ page import="de.repictures.fingerhut.Datastore.Account" %>
+<%@ page import="de.repictures.fingerhut.Web.ShowTransferTools" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%@ page errorPage="errorpage.jsp" %> <!-- gibt die Seite an, die im Fehlerfall angezeigt werden soll -->
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%
+    ShowTransferTools transferTools = new ShowTransferTools(request.getParameter("accountnumber"), response);
+%>
 
 <html>
 <head>
@@ -47,8 +52,8 @@
                         <thead>
                         <tr>
                             <th>Zeitpunkt</th>
-                            <th>Sender</th>
                             <th>Betrag</th>
+                            <th>Sender/Empfänger</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -71,19 +76,26 @@
 </html>
 
 <script>
+    fillTable();
     function backToMain() {
         window.history.back();
     }
     function fillTable() {
         var table = document.getElementById("transfer_table");
-        for(var i; i < 0;i++){
+
+        <%
+        List<String[]> transfers = transferTools.getTransfers();
+        for(int i = 0; i < transfers.size(); i++) {
+            %>
             var row = table.insertRow(table.rows.length);
             var cell1 = row.insertCell(0);
             var cell2 = row.insertCell(1);
             var cell3 = row.insertCell(2);
-            cell1.innerHTML =
-            cell2.innerHTML =
-            cell3.innerHTML =
-        }
+            cell1.innerHTML = "<%=transfers.get(i)[0]%>";
+            cell2.innerHTML = "<%=transfers.get(i)[1]%>";
+            cell3.innerHTML = "<%=transfers.get(i)[2]%>";
+        <%
+        } %>
+
     }
 </script>
