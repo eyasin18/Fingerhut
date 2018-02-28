@@ -39,8 +39,11 @@ public class GetShoppingRequest extends HttpServlet{
         Company companyGetter = new Company(companyNumber);
 
         if (accountGetter.account == null){
-            resp.getWriter().println(3);
-            return;
+            accountGetter = new Company(accountnumber);
+            if (accountGetter.account == null) {
+                resp.getWriter().println(3);
+                return;
+            }
         }
 
         /*if (!Objects.equals(authAccountGetter.getRandomWebString(), webstring)){

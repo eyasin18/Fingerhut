@@ -87,6 +87,9 @@
                         <div class="mdl-card__title" id="transfer_heading">
                             <h3>Überweisen</h3>
                         </div>
+                        <div>
+                            <button onclick="showTransfers()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white" id="show_transfers">Überweisungen ansehen</button>
+                        </div>
                         <div id="cash_icon">
                             <img src="../res/images/cash.svg" alt="cash_icon" style="width:100px;height:100px;">
                         </div>
@@ -391,6 +394,9 @@
         balancestring = String.format("%.2f", balancenumber);
     %>
         document.getElementById("balance_field").innerText = "Kontostand: " + "<%=balancestring%>";
+    }
+    function showTransfers() {
+        window.location = "https://fingerhut388.appspot.com/showtransfers?accountnumber=<%=accountnumber%>";
     }
 </script>
 </body>

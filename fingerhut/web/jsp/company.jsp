@@ -273,6 +273,7 @@
                                 </label>
                             </div>
                         </div>
+                        <h6 id="edit_product_error"></h6>
                         <div class ="wrapper">
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="finishEditProduct()" id="back_button_product">Fertig</button>
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelProduct()" id="cancel_button_product">Abbrechen</button>
@@ -532,6 +533,8 @@
     var checkbox3 = document.getElementById("checkbox-3");
     var checkbox4 = document.getElementById("checkbox-4");
     var snackbarContainer = document.querySelector('#example');
+    var addError = document.getElementById("add_product_error");
+    var editError = document.getElementById("edit_product_error");
 
     //Mitarbeiter betreffend
     var Employees = document.getElementById("employees");
@@ -599,7 +602,14 @@
         var getIsSelfBuyList = <%= purchaseOrders.get(i).getIsSelfBuyList() %>;
         var getNumber = <%= purchaseOrders.get(i).getNumber() %>;
         var getPricesList = <%= purchaseOrders.get(i).getPricesList() %>;
-        var getProductCodesList = <%= purchaseOrders.get(i).getProductCodesList() %>;
+        var getProductCodesList = [];
+        <%
+        for (String barcode : purchaseOrders.get(i).getProductCodesList()){
+            %>
+            getProductCodesList.push("<%=barcode%>");
+            <%
+        }
+        %>
         purchase_order_array[iterate1] = purchase_order(
             getBuyerAccountnumber,
             getCompleted,
@@ -746,6 +756,7 @@
     }
 
     function editProducts(position){//Öffnet die Editieren-Karte mit den Werten der Ursprungskarte in Textfeldern
+        editError.style.display = "none";
         currentProductPosition = position - 1;
         Products.style.display = "none";
         Product.style.display = "block";
@@ -782,76 +793,91 @@
     }
 
     function finishEditProduct(){
-        cancelProduct();
+        var name = document.getElementById("textfield1").value;
+        var price = parseFloat(document.getElementById("texfield2").value);
         var theURL = "https://fingerhut388.appspot.com/updateproduct?" + "code=" + productarray[currentProductPosition].code + "&companynumber=" + companynumber;
-        if (typeof document.getElementById("textfield1").value === "string"){
-            theURL += "&name=" + document.getElementById("textfield1").value;
-        }
-        if (typeof parseFloat(document.getElementById("textfield2").value) === "number"){
-            theURL += "&price=" + parseFloat(document.getElementById("textfield2").value);
-        }
-        if(checkbox1.checked == true){
-            theURL += "&selfbuy=true";
+        if (typeof name === "string" && name !== "") {
+            if (typeof price === "number" && !isNaN(price) && price !== undefined) {
+                theURL += "&name=" + name;
+                theURL += "&price=" + price;
+                if (checkbox1.checked == true) {
+                    theURL += "&selfbuy=true";
+                }
+                else {
+                    theURL += "&selfbuy=false";
+                }
+                if (checkbox2.checked == true) {
+                    theURL += "&buyable=true";
+                }
+                else {
+                    theURL += "&buyable=false";
+                }
+                theURL = encodeURI(theURL);
+                httpAsync(theURL, "POST", 3);
+                editError.style.display = "none";
+                cancelProduct();
+            }
+            else{
+                editError.style.display = "block";
+                editError.innerText = "Das Nummernfeld muss ausgefüllt werden"
+            }
         }
         else{
-            theURL+= "&selfbuy=false";
+            editError.style.display = "block";
+            editError.innerText = "Das Namensfeld muss ausgefüllt werden"
         }
-        if(checkbox2.checked == true){
-            theURL += "&buyable=true";
-        }
-        else{
-            theURL+= "&buyable=false";
-        }
-        theURL = encodeURI(theURL);
-        httpAsync(theURL,"POST",3);
     }
 
     function finishAddProduct(){
-        cancelProduct();
-        var error = document.getElementById("add_product_error");
         var barcode = document.getElementById("textfield3").value;
         var price = parseFloat(document.getElementById("textfield5").value);
         var name = document.getElementById("textfield4").value;
         if(barcode.length > 7 && barcode.length < 13) {
-            var usedURL = "https://fingerhut388.appspot.com/getproduct?";
-            if (typeof barcode === "string") {
-                usedURL += "code=" + document.getElementById("textfield3").value;
-            }
-            usedURL += "&accountnumber=" + companynumber;
-            if (typeof name === "string") {
-                usedURL += "&name=" + document.getElementById("textfield4").value;
-            }
-            if (typeof price === "number" &&  !isNaN(price)){
-                usedURL += "&price=" + price;
-            }
-            if (checkbox3.checked = true) {
-                usedURL += "&selfbuy=true";
-            }
-            else {
-                usedURL += "&selfbuy=false";
-            }
-            if (checkbox4.checked = true) {
-                usedURL += "&buyable=true";
-            }
-            else {
-                usedURL += "&buyable=false";
-            }
-            usedURL = encodeURI(usedURL);
-            if (barcode !== "" && price !== undefined && name !== "") {
-                httpAsync(usedURL, "GET", 5);
+            if (typeof barcode === "string" && barcode !== "") {
+                if(typeof name === "string" && name !== "") {
+                    if(typeof price === "number" && !isNaN(price) && price !== undefined) {
+                        var usedURL = "https://fingerhut388.appspot.com/getproduct?";
+                        usedURL += "code=" + barcode;
+                        usedURL += "&accountnumber=" + companynumber;
+                        usedURL += "&name=" + name;
+                        usedURL += "&price=" + price;
+                        if (checkbox3.checked = true){
+                            usedURL += "&selfbuy=true";
+                        }
+                        else {
+                            usedURL += "&selfbuy=false";
+                        }
+                        if (checkbox4.checked = true){
+                            usedURL += "&buyable=true";
+                        }
+                        else {
+                            usedURL += "&buyable=false";
+                        }
+                        usedURL = encodeURI(usedURL);
+                            httpAsync(usedURL, "GET", 5);
+                    }
+                    else{
+                        addError.style.display = "block";
+                        addError.innerText = "Das Preis-Feld muss ausgefüllt werden";
+                    }
+                }
+                else{
+                    addError.style.display = "block";
+                    addError.innerText = "Das Namens-Feld muss ausgefüllt werden";
+                }
             }
             else{
-                error.innerText = "Es hat nicht funktioniert, versuche es bitte erneut";
+                addError.style.display = "block";
+                addError.innerText = "Das Barcode-Feld muss ausgefüllt werden";
             }
         }
         else{
-            error.innerText = "Der Barcode muss zwichen 7 und 13 Zeichen lang sein";
+            addError.style.display = "block";
+            addError.innerText = "Der Barcode muss zwichen 7 und 13 Zeichen lang sein";
         }
     }
 
-    function addPurchaseOrderItem(position) {
-
-    }
+    function addPurchaseOrderItem(position) {}
 
     function registerFCMTopicAsync() {
         var url = "https://iid.googleapis.com/iid/v1/" + registrationToken + "/rel/topics/<%=companynumber%>-shoppingRequests";
@@ -898,6 +924,7 @@
     }
 
     function addProduct(){
+        addError.style.display = "none";
         addProductCard.style.display = "block";
         Products.style.display = "none";
         AddPurchase.style.display = "none";
@@ -1146,18 +1173,8 @@
                 switch(responseText) {
                     case 0:
                         //TODO: vernünftige Fehlermeldung
-                        /*console.log("Fehler");
-                        window['counter'] = 0;
-                        var data1 = {message: 'Fehler' + ++counter};
-                        snackbarContainer.MaterialSnackbar.showSnackbar(data1);
-                        break;*/
                     case 1:
                         //TODO: vernünftige Erfolgsmeldung
-                        /*console.log("Erfolg");
-                        window['counter'] = 0;
-                        var data2 = {message: 'Erfolg' + ++counter};
-                        snackbarContainer.MaterialSnackbar.showSnackbar(data2);
-                        break;*/
                 }
                 break;
             case 4:
@@ -1168,6 +1185,8 @@
                     console.log("Gibt's schon");
                     break;
                 case 1:
+                    addError.style.display = "none";
+                    cancelProduct();
                     location.reload(true);
                     break;
             }

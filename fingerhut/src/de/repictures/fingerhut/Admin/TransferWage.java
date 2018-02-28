@@ -19,6 +19,8 @@ public class TransferWage extends HttpServlet {
 
     private int currentTime;
     private Company finanzministerium;
+    private int z = 0;
+    private int y = 0;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -81,12 +83,25 @@ public class TransferWage extends HttpServlet {
     }
 
     private void checkTimes() throws IOException {
+        z = Tax.getWageStart().intValue();
+        try {
+            loopPart();
+        } catch (DatastoreTimeoutException e){
+            if (y < 650 && z < 650){
+                Tax.setWageStart(z);
+                checkTimes();
+                log(z+"");
+                y++;
+            }
+        }
+    }
+
+    private void loopPart() throws IOException {
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
         Query purchaseOrderQuery = new Query("Account");
         List<Entity> accounts = datastoreService.prepare(purchaseOrderQuery).asList(FetchOptions.Builder.withDefaults());
-
-        for(Entity account : accounts){
-            Account accountGetter = new Account(account);
+        while(z < accounts.size()) {
+            Account accountGetter = new Account(accounts.get(z));
             if (accountGetter.account == null) continue;
             if (accountGetter.getCompanies().size() < 1) continue;
             List<Entity> companyEntities = accountGetter.getCompanies();
@@ -108,7 +123,9 @@ public class TransferWage extends HttpServlet {
                     }
                 }
             }
+            z++;
         }
+        Tax.setWageStart(0);
     }
 
     private void payWage(Account accountGetter, Company payingCompany) throws IOException {
@@ -116,11 +133,11 @@ public class TransferWage extends HttpServlet {
         double companyBalance = payingCompany.getBalanceDouble();
         double wage = accountGetter.getSpecificWage(payingCompany.getAccountnumber());
 
-        if (companyHasNotEnoughMoney(companyBalance, wage)){
+        /*if (companyHasNotEnoughMoney(companyBalance, wage)){
             log("Company " + payingCompany.getAccountnumber() + " has no money");
             payingCompany.setInsolvent(true);
             return;
-        }
+        }*/
 
         double fractionalPart = wage % 1;
         double integralPart = (double) (wage - fractionalPart);

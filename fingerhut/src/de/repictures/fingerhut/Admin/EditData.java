@@ -21,6 +21,38 @@ public class EditData extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        /*Query accountQuery = new Query("Account");
+        Query.Filter propertyFiler = new Query.FilterPredicate("accountnumber", Query.FilterOperator.NOT_EQUAL, "0447");
+        Query.Filter property2Filer = new Query.FilterPredicate("accountnumber", Query.FilterOperator.NOT_EQUAL, "0638");
+        Query.CompositeFilter compositeFilter = Query.CompositeFilterOperator.and(propertyFiler, property2Filer);
+        accountQuery.setFilter(compositeFilter);
+        List<Entity> queryResults = datastore.prepare(accountQuery).asList(FetchOptions.Builder.withDefaults());
+        Query companyQuery = new Query("Company");
+        Query.Filter property3Filer = new Query.FilterPredicate("accountnumber", Query.FilterOperator.NOT_EQUAL, "0098");
+        companyQuery.setFilter(property3Filer);
+        queryResults.addAll(datastore.prepare(companyQuery).asList(FetchOptions.Builder.withDefaults()));
+
+        double balanceSum = 0;
+        for (Entity accountEntity : queryResults){
+            double balance = (double) accountEntity.getProperty("balance");
+            balanceSum += balance;
+        }
+
+        resp.getWriter().println(balanceSum);*/
+        /*Account account = new Account("0638");
+        Query transferQuery = new Query("Transfer");
+        Query.Filter propertyFiler = new Query.FilterPredicate("sender", Query.FilterOperator.EQUAL, account.account.getKey());
+        Query.Filter property1Filer = new Query.FilterPredicate("receiver", Query.FilterOperator.EQUAL, account.account.getKey());
+        Query.CompositeFilter compositeFilter = Query.CompositeFilterOperator.or(propertyFiler, property1Filer);
+        transferQuery.setFilter(compositeFilter);
+        List<Entity> queryResults = datastore.prepare(transferQuery).asList(FetchOptions.Builder.withDefaults());
+
+        double balanceSum = 0;
+        for (Entity accountEntity : queryResults){
+            double balance = (double) accountEntity.getProperty("amount");
+            resp.getWriter().println(balance);
+        }*/
 
     }
 
