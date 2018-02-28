@@ -100,7 +100,6 @@ public class TransferWage extends HttpServlet {
         Query purchaseOrderQuery = new Query("Account");
         List<Entity> accounts = datastoreService.prepare(purchaseOrderQuery).asList(FetchOptions.Builder.withDefaults());
         while(z < accounts.size()) {
-            z++;
             Account accountGetter = new Account(accounts.get(z));
             if (accountGetter.account == null) continue;
             if (accountGetter.getCompanies().size() < 1) continue;
@@ -123,6 +122,7 @@ public class TransferWage extends HttpServlet {
                     }
                 }
             }
+            z++;
         }
         Tax.setWageStart(0);
     }
