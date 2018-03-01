@@ -24,6 +24,7 @@ public class SetAccountTimes extends HttpServlet{
             account.account.setProperty("is_present", false);
             account.account.setProperty("presence_time", 0);
             account.setGotBasicIncome(false);
+            account.setWorkedHours(0);
             account.saveAll();
         }
     }
