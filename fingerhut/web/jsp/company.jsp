@@ -332,23 +332,10 @@
                 <!-- Mitarbeiter bearbeiten und mehr Informationen Karte -->
 
                     <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="employee">
-                        <h6 class="mdl-typography--title" id="employee_accountnumber">0004</h6>
-                        <div class="wrapper">
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="bruttolohn" onchange="setNetWage()">
-                                <label class="mdl-textfield__label" for="bruttolohn">Bruttolohn</label>
-                                <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
-                            </div>
-                            <h6 id="nettolohn">Nettolohn: </h6>
+                        <h6 class="mdl-typography--title" id="employee_accountnumber"></h6>
+                        <div class ="wrapper">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="payWages()" id="new_work_time_button">Löhne auszahlen</button>
                         </div>
-                        <div class="wrapper">
-                            <h6 class="mdl-typography--title">Arbeitszeiten: </h6>
-                        </div>
-                        <div id="work_times_table_wrapper">
-                        </div>
-                            <div class ="wrapper">
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="addNewWorkTime()" id="new_work_time_button">Arbeitszeit hinzufügen</button>
-                            </div>
                         <div class="wrapper">
                             <h6 class="mdl-typography--title">Berechtigungen</h6>
                         </div>
@@ -363,167 +350,39 @@
                         </div>
                     </div>
 
-                    <!-- Arbeitszeiten hinzufügen Karte -->
-
-                    <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="work_times">
-                        <h4 class="mdl-typography--headline" id="work_time_heading">Arbeitszeiten hinzufügen</h4>
-                        <div class="wrapper">
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="days_wrapper">
-                                <input type="text" value="" class="mdl-textfield__input" id="days_input"
-                                       readonly>
-                                <input type="hidden" value="" name="days_dropdown">
-                                <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
-                                <label for="days_input" class="mdl-textfield__label">Tag</label>
-                                <ul for="days_dropdown" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                                    <li class="mdl-menu__item">Mo</li>
-                                    <li class="mdl-menu__item">Di</li>
-                                    <li class="mdl-menu__item">Mi</li>
-                                    <li class="mdl-menu__item">Do</li>
-                                    <li class="mdl-menu__item">Fr</li>
-                                    <li class="mdl-menu__item">Sa</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="wrapper">
-                            <table id="add_work_times_table">
-                                <tr>
-                                    <td>
-                                        <h6>Von</h6>
-                                    </td>
-                                    <td>
-                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="begin_hours_wrapper">
-                                            <input type="text" value="" class="mdl-textfield__input" id="begin_hours_input"
-                                                   readonly>
-                                            <input type="hidden" value="" name="begin_hours_dropdown">
-                                            <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
-                                            <label for="begin_hours_input" class="mdl-textfield__label">Stunde</label>
-                                            <ul for="begin_hours_dropdown" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                                                <li class="mdl-menu__item">08</li>
-                                                <li class="mdl-menu__item">09</li>
-                                                <li class="mdl-menu__item">10</li>
-                                                <li class="mdl-menu__item">11</li>
-                                                <li class="mdl-menu__item">12</li>
-                                                <li class="mdl-menu__item">13</li>
-                                                <li class="mdl-menu__item">14</li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <h6>:</h6>
-                                    </td>
-                                    <td>
-                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="begin_minutes_wrapper">
-                                            <input type="text" value="" class="mdl-textfield__input" id="begin_minutes_input"
-                                                   readonly>
-                                            <input type="hidden" value="" name="begin_minutes_dropdown">
-                                            <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
-                                            <label for="begin_minutes_input" class="mdl-textfield__label">Minuten</label>
-                                            <ul for="begin_minutes_dropdown" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                                                <li class="mdl-menu__item">00</li>
-                                                <li class="mdl-menu__item">30</li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <h6>Uhr</h6>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h6>Bis</h6>
-                                    </td>
-                                    <td>
-                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="end_hours_wrapper">
-                                            <input type="text" value="" class="mdl-textfield__input" id="end_hours_input"
-                                                   readonly>
-                                            <input type="hidden" value="" name="end_hours_dropdown">
-                                            <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
-                                            <label for="end_hours_input" class="mdl-textfield__label">Stunde</label>
-                                            <ul for="end_hours_dropdown" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                                                <li class="mdl-menu__item">09</li>
-                                                <li class="mdl-menu__item">10</li>
-                                                <li class="mdl-menu__item">11</li>
-                                                <li class="mdl-menu__item">12</li>
-                                                <li class="mdl-menu__item">13</li>
-                                                <li class="mdl-menu__item">14</li>
-                                                <li class="mdl-menu__item">15</li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <h6>:</h6>
-                                    </td>
-                                    <td>
-                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height" id="end_minutes_wrapper">
-                                            <input type="text" value="" class="mdl-textfield__input" id="end_minutes_input"
-                                                   readonly>
-                                            <input type="hidden" value="" name="end_minutes_dropdown">
-                                            <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
-                                            <label for="end_minutes_input" class="mdl-textfield__label">Minuten</label>
-                                            <ul for="end_minutes_dropdown" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                                                <li class="mdl-menu__item">00</li>
-                                                <li class="mdl-menu__item">30</li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <h6>Uhr</h6>
-                                    </td>
-                                </tr>
-                            </table>
-                            <h6 id="add_new_work_time_error" class="title"></h6>
-                            <div class="wrapper">
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="saveNewWorkTime()" id="save_new_work_time">Speichern</button>
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelNewWorkTime()" id="cancel_new_work_time">Abbrechen</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Arbeitszeiten bearbeiten Karte -->
-
-                    <div class="mdl-card mdl-shadow--3dp mdl-cell mdl-cell--12-col" id="edit_work_times">
-                        <h4 class="mdl-typography--headline" id="edit_work_time_heading">Arbeitszeiten löschen?</h4>
-                        <div class="wrapper">
-                            <h6 id="edit_start_time"></h6>
-                        </div>
-                        <div class="wrapper">
-                            <h6 id="edit_end_time"></h6>
-                        </div>
-                        <div class="wrapper">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelWorkTime()" id="cancel_work_time">Abbrechen</button>
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="deleteWorkTime()" id="delete_work_time">Löschen</button>
-                        </div>
-                    </div>
-
                     <!-- Lohn manuell auszahlen Karte -->
-                    <!--<div class="mdl-card mdl-shadow--3dp mdl-cell--12-col" id="wagemanual">
-                        <h4 class="mdl-typography--headline" id="worktimemanual">Arbeitszeiten manuell hinzufügen</h4>
+
+                    <div class="mdl-card mdl-shadow--3dp mdl-cell--12-col" id="wagemanual">
+                        <h4 class="mdl-typography--headline" id="worktimemanual">Arbeitszeiten manuell auszahlen</h4>
                         <div class="wrapper">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input id="textfieldemployee" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]" >
-                                <label class="mdl-textfield__label" for="textfieldemployee" id="labelemployee">Angestelltenkontonummer</label>
+                                <input id="textfieldemployee" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]">
+                                <label class="mdl-textfield__label" for="textfieldemployee" id="labelemployee">Angestellter</label>
                                 <span class="mdl-textfield__error"></span>
                             </div>
+                        </div>
+                        <div class="wrapper">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="textfieldamount" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]">
                                 <label class="mdl-textfield__label" for="textfieldamount" id="labelamount">Bruttolohn</label>
                                 <span class="mdl-textfield__error"></span>
                             </div>
+                        </div>
+                        <div class="wrapper">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="textfieldhours" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]">
                                 <label class="mdl-textfield__label" for="textfieldhours" id="labelhours">Stunden</label>
                                 <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
                             </div>
                         </div>
-                        <div class="wrapper">
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="distributewage()" id="distributewagebutton">Abrechnen</button>
-                        </div>
                         <h6 id="errorwagemanual" ></h6>
-                </div> -->
+                        <div class="wrapper">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="distributewage()" id="distributewagebutton">Auszahlen</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="cancelWage()" id="cancelwagebutton">Zurück</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            </div><!--<div id="example" class="mdl-js-snackbar mdl-snackbar">
-                <div class="mdl-snackbar__text"></div>
-            </div>-->
         </main>
     </div>
 </body>
@@ -538,6 +397,7 @@
     var ShortPurchaseOrders = document.getElementById("short_purchase_orders");
     var AddPurchase = document.getElementById("add_purchase");
     var AddProductToPurchase = document.getElementById("add_product_to_purchase");
+    var WageManual = document.getElementById("wagemanual");
     var decodedServerTime;
     var hashedSaltedPassword;
     var encodedServerTime;
@@ -560,16 +420,14 @@
     var snackbarContainer = document.querySelector('#example');
     var addError = document.getElementById("add_product_error");
     var editError = document.getElementById("edit_product_error");
-    var wageError = document.getElementById("errorwagemanual");
 
     //Mitarbeiter betreffend
     var Employees = document.getElementById("employees");
     var Employee = document.getElementById("employee");
-    var WorkTimes = document.getElementById("work_times");
-    var EditWorkTimes = document.getElementById("edit_work_times");
     var EmployeePosition;
     var TimePosition;
     var EmployeeError = document.getElementById("save_employee_changes_error");
+    var WageError = document.getElementById("errorwagemanual");
 
 
     cancelProduct();
@@ -578,8 +436,7 @@
     AddPurchase.style.display = "none";
     AddProductToPurchase.style.display = "none";
     Employee.style.display = "none";
-    WorkTimes.style.display = "none";
-    EditWorkTimes.style.display = "none";
+    WageManual.style.display = "none";
 
     //füllt den Productarray mit Produktobjekten die über die Attribute Name, Preis und Code verfügen
     var product = pojo('name', 'price', 'code', 'amount' , 'selfBuy', 'buyable');
@@ -856,27 +713,30 @@
     }
 
     function distributewage(){
+        document.getElementById("distributewagebutton").disabled = true;
         var employee = document.getElementById("textfieldemployee").value;
         var amount = parseFloat(document.getElementById("textfieldamount").value);
         var hours = parseInt(document.getElementById("textfieldhours").value);
-        var myURL = "https://fingerhut388.appspot.com/admintransferwage?" + "&company=" + companynumber;
-        if (typeof employee === "string" && employee !== "") {
+        var myURL = "https://fingerhut388.appspot.com/doadmintransferwage?" + "&company=" + companynumber;
+        if (typeof employee === "string" && employee !== "" && !isNaN(employee)) {
             if (typeof amount === "number" && !isNaN(amount) && amount !== undefined !== null && amount > 0){
-                if(typeof hours === "number" && isNaN(hours) && hours !== undefined !== null && hours > 0){
+                if(typeof hours === "number" && !isNaN(hours) && hours !== undefined !== null && hours > 0){
                     myURL += "&employee=" + employee;
                     myURL += "&amount=" + amount;
                     myURL += "&hours=" + hours;
                     myURL = encodeURI(myURL);
                     httpAsync(myURL, "GET", 6);
-                    wageError.style.display= "none";
                 }
-                else{console.log("hours kaputt");}
+                else{
+                    WageError.innerText = "Die Arbeitszeit hat das falsche Format!"
+                }
             }
             else{
-                console.log("amount kaputt");
+                WageError.innerText = "Der Lohn hat das falsche Format!"
             }
         }
         else{
+            WageError.innerText = "Die Kontonummer des Mitarbeiters hat das falsche Format!"
         }
     }
 
@@ -1224,32 +1084,47 @@
             case 4:
                 window.location.replace("https://fingerhut388.appspot.com");
                 break;
-            case 5 : switch(parseInt(responseText)) {
-                case 2:
-                    console.log("Gibt's schon");
-                    break;
-                case 1:
-                    addError.style.display = "none";
-                    cancelProduct();
-                    location.reload(true);
-                    break;
-            }
-            case 6:switch(parseInt(responseText)){
-                case 0:
-                    console.log("Fehler");
-                    break;
-                case 1:
-                    console.log("Empfängerkonto gibt's net");
-                    break;
-                case 3:
-                    console.log("Isch alles okee");
-                    break;
-                case 4:
-                    console.log("Angestellter nicht in diesem Unternehmen gelistet");
-                    break;
-            }
+            case 5 :
+                switch(parseInt(responseText)) {
+                    case 2:
+                        console.log("Gibt's schon");
+                        break;
+                    case 1:
+                        addError.style.display = "none";
+                        cancelProduct();
+                        location.reload(true);
+                        break;
+                }
                 break;
-        }
+            case 6:
+                switch(parseInt(responseText)){
+                    case 0:
+                        WageError.innerText = "Nicht alle Daten wurden übertragen!";
+                        document.getElementById("distributewagebutton").disabled = false;
+                        break;
+                    case 1:
+                        WageError.innerText = "Dieser Bürger existiert nicht!";
+                        document.getElementById("distributewagebutton").disabled = false;
+                        break;
+                    case 3:
+                        WageError.innerText = "Der Lohn wurde ausgezahlt!";
+                        document.getElementById("distributewagebutton").disabled = false;
+                        break;
+                    case 4:
+                        WageError.innerText = "Der Angestellte arbeitet nicht in diesem Unternehemen!";
+                        document.getElementById("distributewagebutton").disabled = false;
+                        break;
+                    case 5:
+                        WageError.innerText = "Du darfst nur für maximal 7 Stunden Lohn an ein Privatkonto überweisen!";
+                        document.getElementById("distributewagebutton").disabled = false;
+                        break;
+                    case 6:
+                        WageError.innerText = "Du kannst einem Prepaidkonto keinen Lohn überweisen!";
+                        document.getElementById("distributewagebutton").disabled = false;
+                        break;
+                }
+                break;
+            }
     }
 
     function processPostResponse(responseText, callerid) {
@@ -1417,33 +1292,8 @@
         PurchaseOrders.style.display = "none";
         Statistics.style.display = "none";
         Products.style.display = "none";
-        var div = document.getElementById("work_times_table_wrapper");
-        div.innerHTML = "<table class=\"mdl-data-table mdl-js-data-table\" id=\"work_times_table\">\n" +
-            "                                <thead>\n" +
-            "                                <tr>\n" +
-            "                                    <th>Von</th>\n" +
-            "                                    <th>Bis</th>\n" +
-            "                                </tr>\n" +
-            "                                </thead>\n" +
-            "                                <tbody>\n" +
-            "                                </tbody>\n" +
-            "                            </table>";
-        var table = document.getElementById("work_times_table");
-        var bruttolohn = document.getElementById("bruttolohn");
-        var nettolohn = document.getElementById("nettolohn");
         var employeeAccountnumber = document.getElementById("employee_accountnumber");
         employeeAccountnumber.innerText = employeesObject.accountnumbers[position];
-        bruttolohn.parentElement.classList.add("is-focused");
-        bruttolohn.value = employeesObject.wages[position];
-        nettolohn.innerText = "Nettolohn: " + getNetWage(employeesObject.wages[position]) + " S";
-        for(var i = 0; i < employeesObject.start_times[position].length; i++) {
-            var row = table.insertRow(document.getElementById("work_times_table").rows.length);
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-            cell1.innerHTML = employeesObject.start_times[position][i];
-            cell2.innerHTML = employeesObject.end_times[position][i];
-            row.onclick = function(){editWorkTime(this.rowIndex)};
-        }
         var index = employeesObject.accountnumbers.indexOf(accountnumber);
         var wrapper = document.getElementById("checkbox_wrapper");
         wrapper.innerHTML = "";
@@ -1772,6 +1622,14 @@
     function signoff(){
         var theurl =  "https://fingerhut388.appspot.com/signoff?accountnumber=<%= accountnumber %>&webstring=<%= code %>";
         httpAsync(theurl, "GET",4);
+    }
+    function payWages() {
+        WageManual.style.display = "block";
+        Employee.style.display = "none";
+    }
+    function cancelWage() {
+        WageManual.style.display = "none";
+        Employee.style.display = "block";
     }
     </script>
 </html>

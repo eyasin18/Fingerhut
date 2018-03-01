@@ -208,3 +208,19 @@
 #company_balance{
     text-align: center;
 }
+#distributewagebutton{
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+#cancelwagebutton{
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+#worktimemanual{
+    margin-bottom: 20px;
+    margin-top: 20px;
+    text-align: center;
+}
+#errorwagemanual{
+    text-align: center;
+}
