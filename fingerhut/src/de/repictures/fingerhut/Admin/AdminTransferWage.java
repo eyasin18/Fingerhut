@@ -21,8 +21,8 @@ public class AdminTransferWage extends HttpServlet {
         String amountStr = req.getParameter("amount");
         String hoursStr = req.getParameter("hours");
 
-        if (companyAccountnumber == null || employeeAccountnumber == null || amountStr == null){
-            resp.getWriter().println("Du hasch da oin Feld ned korregd oitrago");
+        if (companyAccountnumber == null || employeeAccountnumber == null || amountStr == null || hoursStr == null){
+            resp.getWriter().println(0);
             return;
         }
 
@@ -31,15 +31,21 @@ public class AdminTransferWage extends HttpServlet {
 
         Account account = new Account(employeeAccountnumber);
         if (account.account == null){
-            resp.getWriter().println("Den Angestellten gibts ed");
+            resp.getWriter().println(1);
             return;
         }
 
         Company company = new Company(companyAccountnumber);
         if (company.account == null){
-            resp.getWriter().println("Des Undernähmen gibts ed");
+            resp.getWriter().println(2);
             return;
         }
+
+        if (!account.getCompanies().contains(company.account)){
+            resp.getWriter().println(4);
+            return;
+        }
+
         Company fm = new Company("0098");
 
         double fractionalPart = amount % 1;
@@ -73,7 +79,8 @@ public class AdminTransferWage extends HttpServlet {
             fm.saveAll();
             company.saveAll();
         }
+        resp.getWriter().println(3);
 
-        resp.getWriter().println("Nettolohn pro Stunde: " + netWage + "S\nLohnsteuer pro Stunde: " + tax + "S\nNettolohn gesamt: " + netWage*hours + "S\nLohnsteuer gesamt: " + tax*hours + "S");
+        //resp.getWriter().println("Nettolohn pro Stunde: " + netWage + "S\nLohnsteuer pro Stunde: " + tax + "S\nNettolohn gesamt: " + netWage*hours + "S\nLohnsteuer gesamt: " + tax*hours + "S");
     }
 }
