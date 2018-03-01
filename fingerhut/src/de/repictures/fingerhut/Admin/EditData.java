@@ -22,7 +22,20 @@ public class EditData extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        Query accountQuery = new Query("Account");
+        List<Entity> accountList = DatastoreServiceFactory.getDatastoreService().prepare(accountQuery).asList(FetchOptions.Builder.withDefaults());
+        for (Entity accountEntity : accountList){
+            Account account = new Account(accountEntity);
+            for (Entity companyEntity : account.getCompanies()){
+                Company company = new Company(companyEntity);
+                ArrayList<Long> features = account.getSpecificFeatures(company.getAccountnumber());
+                if (features.contains(0L) && features.contains(2L) && features.contains(3L) && features.contains(4L) && !features.contains(10L)){
+                    features.add(10L);
+                    account.setFeatures(features, company.getAccountnumber());
+                }
+            }
+            account.saveAllAsync();
+        }
     }
 
     private void updateEntities(HttpServletRequest req, HttpServletResponse resp) throws IOException {
