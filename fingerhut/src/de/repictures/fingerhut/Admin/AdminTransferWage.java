@@ -47,6 +47,12 @@ public class AdminTransferWage extends HttpServlet {
             return;
         }
 
+        if (account.getWorkedHours().intValue() > 7 || account.getWorkedHours().intValue() + hours > 7){
+            resp.getWriter().println(5);
+            return;
+        }
+        account.setWorkedHours(account.getWorkedHours().intValue() + hours);
+
         Company fm = new Company("0098");
 
         double fractionalPart = amount % 1;

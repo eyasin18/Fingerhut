@@ -1053,4 +1053,16 @@ public class Account {
         int minutes = currentTime.get(Calendar.MINUTE);
         return days*1440 + hours*60 + minutes;
     }
+
+    public Number getWorkedHours() {
+        if (account.hasProperty("worked_hours")){
+            return (Number) account.getProperty("worked_hours");
+        } else {
+            return 0;
+        }
+    }
+
+    public void setWorkedHours(Number hours) {
+        account.setProperty("worked_hours", hours);
+    }
 }
