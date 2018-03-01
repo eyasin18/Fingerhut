@@ -47,6 +47,11 @@ public class AdminTransferWage extends HttpServlet {
             return;
         }
 
+        if (account.getIsPrepaid()){
+            resp.getWriter().println(6);
+            return;
+        }
+
         if (account.getWorkedHours().intValue() > 7 || account.getWorkedHours().intValue() + hours > 7){
             resp.getWriter().println(5);
             return;
