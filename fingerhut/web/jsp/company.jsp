@@ -494,9 +494,34 @@
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="deleteWorkTime()" id="delete_work_time">Löschen</button>
                         </div>
                     </div>
-                </div>
+
+                    <!-- Lohn manuell auszahlen Karte -->
+                    <!--<div class="mdl-card mdl-shadow--3dp mdl-cell--12-col" id="wagemanual">
+                        <h4 class="mdl-typography--headline" id="worktimemanual">Arbeitszeiten manuell hinzufügen</h4>
+                        <div class="wrapper">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input id="textfieldemployee" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]" >
+                                <label class="mdl-textfield__label" for="textfieldemployee" id="labelemployee">Angestelltenkontonummer</label>
+                                <span class="mdl-textfield__error"></span>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input id="textfieldamount" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]">
+                                <label class="mdl-textfield__label" for="textfieldamount" id="labelamount">Bruttolohn</label>
+                                <span class="mdl-textfield__error"></span>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input id="textfieldhours" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?[^-]">
+                                <label class="mdl-textfield__label" for="textfieldhours" id="labelhours">Stunden</label>
+                                <span class="mdl-textfield__error">Eingabe muss eine Zahl sein!</span>
+                            </div>
+                        </div>
+                        <div class="wrapper">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="distributewage()" id="distributewagebutton">Abrechnen</button>
+                        </div>
+                        <h6 id="errorwagemanual" ></h6>
+                </div> -->
             </div>
-            <!--<div id="example" class="mdl-js-snackbar mdl-snackbar">
+            </div><!--<div id="example" class="mdl-js-snackbar mdl-snackbar">
                 <div class="mdl-snackbar__text"></div>
             </div>-->
         </main>
@@ -535,6 +560,7 @@
     var snackbarContainer = document.querySelector('#example');
     var addError = document.getElementById("add_product_error");
     var editError = document.getElementById("edit_product_error");
+    var wageError = document.getElementById("errorwagemanual");
 
     //Mitarbeiter betreffend
     var Employees = document.getElementById("employees");
@@ -544,6 +570,7 @@
     var EmployeePosition;
     var TimePosition;
     var EmployeeError = document.getElementById("save_employee_changes_error");
+
 
     cancelProduct();
     PurchaseOrder.style.display = "none";
@@ -825,6 +852,31 @@
         else{
             editError.style.display = "block";
             editError.innerText = "Das Namensfeld muss ausgefüllt werden"
+        }
+    }
+
+    function distributewage(){
+        var employee = document.getElementById("textfieldemployee").value;
+        var amount = parseFloat(document.getElementById("textfieldamount").value);
+        var hours = parseInt(document.getElementById("textfieldhours").value);
+        var myURL = "https://fingerhut388.appspot.com/admintransferwage?" + "&company=" + companynumber;
+        if (typeof employee === "string" && employee !== "") {
+            if (typeof amount === "number" && !isNaN(amount) && amount !== undefined !== null && amount > 0){
+                if(typeof hours === "number" && isNaN(hours) && hours !== undefined !== null && hours > 0){
+                    myURL += "&employee=" + employee;
+                    myURL += "&amount=" + amount;
+                    myURL += "&hours=" + hours;
+                    myURL = encodeURI(myURL);
+                    httpAsync(myURL, "GET", 6);
+                    wageError.style.display= "none";
+                }
+                else{console.log("hours kaputt");}
+            }
+            else{
+                console.log("amount kaputt");
+            }
+        }
+        else{
         }
     }
 
@@ -1182,6 +1234,21 @@
                     location.reload(true);
                     break;
             }
+            case 6:switch(parseInt(responseText)){
+                case 0:
+                    console.log("Fehler");
+                    break;
+                case 1:
+                    console.log("Empfängerkonto gibt's net");
+                    break;
+                case 3:
+                    console.log("Isch alles okee");
+                    break;
+                case 4:
+                    console.log("Angestellter nicht in diesem Unternehmen gelistet");
+                    break;
+            }
+                break;
         }
     }
 
