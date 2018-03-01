@@ -873,7 +873,7 @@
                 else{console.log("hours kaputt");}
             }
             else{
-                console.log("amount kaputt")
+                console.log("amount kaputt");
             }
         }
         else{
