@@ -26,11 +26,11 @@ public class DefferedPayment implements DeferredTask {
     public void run() {
         Account receiverAccount = new Account(receiverAccountnumber);
         Company payingCompany = new Company(senderAccountnumber);
-        double finanzministeriumBalance = payingCompany.getBalanceDouble();
+        double payingCompanyBalance = payingCompany.getBalanceDouble();
         double userBalance = receiverAccount.getBalanceDouble();
         userBalance += amount;
-        finanzministeriumBalance -= amount;
-        payingCompany.setBalance(finanzministeriumBalance);
+        payingCompanyBalance -= amount;
+        payingCompany.setBalance(payingCompanyBalance);
         receiverAccount.setBalance(userBalance);
         Entity savedTransfer = Transfer.transferWage(amount, 0, isBasicIncome, payingCompany, receiverAccount);
         receiverAccount.addTransfer(savedTransfer);
@@ -40,4 +40,3 @@ public class DefferedPayment implements DeferredTask {
         receiverAccount.saveAll();
     }
 }
-

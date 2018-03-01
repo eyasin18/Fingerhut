@@ -1,6 +1,7 @@
 package de.repictures.fingerhut.Admin;
 
 import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.gson.JsonArray;
@@ -23,6 +24,7 @@ public class TransferWage extends HttpServlet {
     private Company finanzministerium;
     private int z = 0;
     private int y = 0;
+    private Queue queue = QueueFactory.getDefaultQueue();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -151,8 +153,8 @@ public class TransferWage extends HttpServlet {
         double tax = (((double) integralPart) * (double) (integralPercentage/100) + (fractionalPart * ((double) fractionPercentage/100)));
         double netWage = (wage - tax);
 
-        QueueFactory.getDefaultQueue().add(TaskOptions.Builder.withPayload(new DefferedPayment(payingCompany.getAccountnumber(), accountGetter.getAccountnumber(), netWage, false)));
-        QueueFactory.getDefaultQueue().add(TaskOptions.Builder.withPayload(new DefferedPayment(payingCompany.getAccountnumber(), finanzministerium.getAccountnumber(), tax, false)));
+        queue.add(TaskOptions.Builder.withPayload(new DefferedPayment(payingCompany.getAccountnumber(), accountGetter.getAccountnumber(), netWage, false)));
+        queue.add(TaskOptions.Builder.withPayload(new DefferedPayment(payingCompany.getAccountnumber(), finanzministerium.getAccountnumber(), tax, false)));
 
         /*//Geld transferieren
         Transfer.transferWage(netWage, tax, false, payingCompany, accountGetter);
