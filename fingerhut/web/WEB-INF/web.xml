@@ -390,7 +390,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>DoAdminTransferWage</servlet-name>
-        <url-pattern>/admin/doadmintransferwage</url-pattern>
+        <url-pattern>/doadmintransferwage</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>AdminTransferWage</servlet-name>
@@ -398,7 +398,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>AdminTransferWage</servlet-name>
-        <url-pattern>/admintransferwage</url-pattern>
+        <url-pattern>/admin/admintransferwage</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>TransferBasicIncome</servlet-name>

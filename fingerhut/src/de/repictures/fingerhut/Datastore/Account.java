@@ -375,6 +375,7 @@ public class Account {
      * 7 = Prepaidkonto hinzufügen
      * 8 = Ausweis scanner
      * 9 = Waareneinfuhr
+     * 10 = Lohn auszahlen
      */
 
     public void setFeatures(ArrayList<Long> features, String companynumber){
