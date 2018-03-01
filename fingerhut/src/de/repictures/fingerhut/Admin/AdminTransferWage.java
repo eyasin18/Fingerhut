@@ -1,5 +1,6 @@
 package de.repictures.fingerhut.Admin;
 
+import com.google.appengine.api.datastore.Entity;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
 import de.repictures.fingerhut.Datastore.Tax;
@@ -74,7 +75,10 @@ public class AdminTransferWage extends HttpServlet {
 
             account.setBalance(account.getBalanceDouble() + (netWage));
 
-            Transfer.transferWage(netWage, tax, false, company, account);
+            Entity transferEntity = Transfer.transferWage(netWage, tax, false, company, account);
+            account.addTransfer(transferEntity);
+            fm.addTransfer(transferEntity);
+            company.addTransfer(transferEntity);
             account.saveAll();
             fm.saveAll();
             company.saveAll();
