@@ -22,7 +22,7 @@ public class EditData extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Query accountQuery = new Query("Account");
+        /*Query accountQuery = new Query("Account");
         List<Entity> accountList = DatastoreServiceFactory.getDatastoreService().prepare(accountQuery).asList(FetchOptions.Builder.withDefaults());
         for (Entity accountEntity : accountList){
             Account account = new Account(accountEntity);
@@ -35,7 +35,7 @@ public class EditData extends HttpServlet {
                 }
             }
             account.saveAllAsync();
-        }
+        }*/
     }
 
     private void updateEntities(HttpServletRequest req, HttpServletResponse resp) throws IOException {
