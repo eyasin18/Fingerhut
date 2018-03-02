@@ -1065,4 +1065,16 @@ public class Account {
     public void setWorkedHours(Number hours) {
         account.setProperty("worked_hours", hours);
     }
+
+    public boolean payedWealthTax() {
+        if (account.hasProperty("payed_wealth_tax")){
+            return (boolean) account.getProperty("payed_wealth_tax");
+        } else {
+            return false;
+        }
+    }
+
+    public void setPayedWealthTax(boolean payedWealthTax) {
+        account.setProperty("payed_wealth_tax", payedWealthTax);
+    }
 }
