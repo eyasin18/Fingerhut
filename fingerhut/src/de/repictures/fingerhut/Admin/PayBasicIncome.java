@@ -23,19 +23,27 @@ public class PayBasicIncome extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Company fm = new Company("0098");
         Query query = new Query("Account");
         Query.Filter filter = new Query.FilterPredicate("got_basic_income", Query.FilterOperator.EQUAL, false);
         query.setFilter(filter);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         List<Entity> accountList = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
-        int i = 0;
-        Queue queue = QueueFactory.getDefaultQueue();
+        double basicIncome = Tax.getBasicIncome().doubleValue();
         for (Entity accountEntity : accountList){
-            String receiverAccountnumber = (String) accountEntity.getProperty("accountnumber");
-            queue.add(TaskOptions.Builder.withPayload(new DefferedPayment("0098", receiverAccountnumber, Tax.getBasicIncome().doubleValue(), true)));
-            log.info(i + "");
-            i++;
-            resp.getWriter().println(i);
+            Account receiverAccount = new Account(accountEntity);
+            double payingCompanyBalance = fm.getBalanceDouble();
+            double userBalance = receiverAccount.getBalanceDouble();
+            userBalance += basicIncome;
+            payingCompanyBalance -= basicIncome;
+            fm.setBalance(payingCompanyBalance);
+            receiverAccount.setBalance(userBalance);
+            Entity savedTransfer = Transfer.transferWage(basicIncome, 0, true, fm, receiverAccount);
+            receiverAccount.addTransfer(savedTransfer);
+            fm.addTransfer(savedTransfer);
+            fm.saveAll();
+            receiverAccount.setGotBasicIncome(true);
+            receiverAccount.saveAll();
         }
     }
 }
