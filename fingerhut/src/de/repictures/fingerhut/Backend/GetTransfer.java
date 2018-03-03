@@ -144,6 +144,10 @@ public class GetTransfer extends HttpServlet {
         if (receiverBuilder.account != null && Objects.equals(senderAccountnumber, receiverAccountnumber)){
             resp.getWriter().println("4");
         } else if (receiverBuilder.account != null && senderBalance.compareTo(new BigDecimal(amount)) >= 0 && receiverBuilder.account != null){ //Daten scheinen in Ordnung
+            if (receiverBuilder.getIsPrepaid() || senderBuilder.getIsPrepaid()){
+                resp.getWriter().println("4");
+                return;
+            }
             //Entitäts-Creator wird initialisiert
             Transfer transferCreator = new Transfer(resp.getLocale());
             Entity transfer = transferCreator.createTransaction(f.format(calendar.getTime()));
