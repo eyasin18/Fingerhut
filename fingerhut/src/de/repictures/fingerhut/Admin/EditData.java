@@ -3,6 +3,7 @@ package de.repictures.fingerhut.Admin;
 import com.google.appengine.api.datastore.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import de.repictures.fingerhut.Cryptor;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
@@ -22,20 +23,25 @@ public class EditData extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        /*Company fm = new Company("0098");
-        Query accountQuery = new Query("Account");
+        /*Query accountQuery = new Query("Account");
+        String bestCompany = "";
+        String bestPayedAccount = "";
+        double bestWage = 0;
         List<Entity> accountList = DatastoreServiceFactory.getDatastoreService().prepare(accountQuery).asList(FetchOptions.Builder.withDefaults());
         for (Entity accountEntity : accountList){
             Account account = new Account(accountEntity);
-            if (account.getBalanceDouble() < 0){
-                double basicIncome = Tax.getBasicIncome().doubleValue();
-                basicIncome = basicIncome*5;
-                fm.setBalance(fm.getBalanceDouble() - basicIncome);
-                account.setBalance(account.getBalanceDouble() + basicIncome);
-                account.saveAll();
-                fm.saveAll();
+            List<Entity> companies = account.getCompanies();
+            for (Entity companyEntity : companies){
+                Company company = new Company(companyEntity);
+                double wage = account.getSpecificWage(company.getAccountnumber());
+                if (wage > bestWage){
+                    bestPayedAccount = account.getAccountnumber();
+                    bestCompany = company.getAccountnumber();
+                    bestWage = wage;
+                }
             }
-        }*/
+        }
+        resp.getWriter().println("Best payed Account: " + bestPayedAccount + "; Best paying Company: " + bestCompany + "; Lohn: " + bestWage);*/
     }
 
     private void updateEntities(HttpServletRequest req, HttpServletResponse resp) throws IOException {
