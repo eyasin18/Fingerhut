@@ -5,7 +5,7 @@
         <description>Lohnueberweisung</description>
         <schedule>every 30 minutes from 8:00 to 16:01</schedule>
         <timezone>Europe/Berlin</timezone>
-    </cron>-->
+    </cron>
 
     <cron>
         <url>/admin/resetstats</url>
@@ -19,5 +19,5 @@
         <description>Accountzeiten zuruecksetzen</description>
         <schedule>every day 21:00</schedule>
         <timezone>Europe/Berlin</timezone>
-    </cron>
+    </cron>-->
 </cronentries>
