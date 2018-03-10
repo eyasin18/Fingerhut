@@ -424,6 +424,14 @@
         <servlet-name>TransferWealthTax</servlet-name>
         <url-pattern>/admin/transferwealthtax</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>MakeTable</servlet-name>
+        <jsp-file>jsp/make_table.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MakeTable</servlet-name>
+        <url-pattern>/admin/maketable</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>jsp/index.jsp</welcome-file>
     </welcome-file-list>

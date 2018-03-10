@@ -1,4 +1,6 @@
-<%--
+<%@ page import="java.util.List" %>
+<%@ page import="de.repictures.fingerhut.Datastore.Account" %>
+<%@ page import="de.repictures.fingerhut.Web.MainTools" %><%--
   Created by IntelliJ IDEA.
   User: Fabian Schmid
   Date: 10.03.2018
@@ -14,12 +16,39 @@
 
 </body>
 </html>
+    <%
+        List<Account> prepaidAccounts = MainTools.getPrepaidAccounts();
+        for (Account account : prepaidAccounts){
+    %>
+    <tr>
+        <td><%=account.getAccountnumber()%></td>
+        <td><%=account.getBalance()%></td>
+    </tr>
+    <%
+        }
+    %>
+
+<button onclick="onButtonClick()">Click mich Senpai</button>
 <script>
-    var prepaidArray;
-    for(var i = 0; i < prepaidArray.length; i++) {
-        var amount = prepaidArray.amount;
-        var sender = prepaidArray.number;
-        var uri = "https://fingerhut388.appspot.com/admin/doadmintransfer?sender=" + sender + senderTextField.value.toString() + "&receiver=0098" + "&amount=" + amount;
-        window.location = encodeURI(uri);
+    function onButtonClick() {
+        <%
+        for (Account account : prepaidAccounts){
+        %>
+            var url = "https://fingerhut388.appspot.com/admin/doadmintransfer?sender=<%=account.getAccountnumber()%>&receiver=0098&amount=<%=account.getBalance()%>";
+            httpAsync(url, "GET");
+        <%
+        }
+        %>
+    }
+
+    function httpAsync(theUrl, method) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState === 4 && xmlHttp.status === 200){
+                console.log(xmlHttp.responseText);
+            }
+        };
+        xmlHttp.open(method, theUrl, true); // true for asynchronous
+        xmlHttp.send(null);
     }
 </script>

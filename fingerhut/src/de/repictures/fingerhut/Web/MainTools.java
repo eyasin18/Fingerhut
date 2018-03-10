@@ -1,6 +1,6 @@
 package de.repictures.fingerhut.Web;
 
-import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.*;
 import de.repictures.fingerhut.Datastore.Account;
 import de.repictures.fingerhut.Datastore.Company;
 
@@ -60,5 +60,19 @@ public class MainTools {
 
     public boolean isPrepaid(){
         return accountGetter.getIsPrepaid();
+    }
+
+    public static List<Account> getPrepaidAccounts(){
+        Query query = new Query("Account");
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        List<Entity> accountList = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        List<Account> prepaidAccounts = new ArrayList<>();
+        for (Entity accountEntity : accountList){
+            Account account = new Account(accountEntity);
+            if (account.getIsPrepaid() && account.getBalanceDouble() > 0){
+                prepaidAccounts.add(account);
+            }
+        }
+        return prepaidAccounts;
     }
 }
