@@ -75,4 +75,17 @@ public class MainTools {
         }
         return prepaidAccounts;
     }
+
+    public static List<Company> getCompaniesBySector(int sector){
+        Query query = new Query("Company");
+        Query.Filter sectorFilter = new Query.FilterPredicate("sector", Query.FilterOperator.EQUAL, sector);
+        query.setFilter(sectorFilter);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        List<Company> companies = new ArrayList<>();
+        for (Entity entity : entities){
+            companies.add(new Company(entity));
+        }
+        return companies;
+    }
 }

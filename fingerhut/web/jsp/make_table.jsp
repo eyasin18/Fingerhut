@@ -1,5 +1,6 @@
 <%@ page import="de.repictures.fingerhut.Datastore.Company" %>
 <%@ page import="java.util.List" %>
+<%@ page import="de.repictures.fingerhut.Web.MainTools" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -8,26 +9,28 @@
 <body>
 <table>
     <%
-        Company company = new Company(request.getParameter("num"));
-        List<Number> balanceDates = company.getBalanceDevelopmentTimes();
-        List<Number> balances = company.getBalanceDevelopment();
-        boolean dates = Boolean.parseBoolean(request.getParameter("d"));
-        String value;
-        for (int i = 0; i < balanceDates.size(); i++) {
-    %>
-    <tr>
-        <%
-            if (dates){
-                value = String.valueOf(balanceDates.get(i).intValue()).replace(".", ",");
-            } else {
-                value = String.valueOf(balances.get(i).doubleValue()).replace(".", ",");
+        int myNumber = Integer.valueOf(request.getParameter("n"));
+        int sector = Integer.valueOf(request.getParameter("s"));
+        List<Company> companies = MainTools.getCompaniesBySector(sector);
+        double theNumber = 0;
+        for (Company company : companies){
+            List<Number> dates = company.getBalanceDevelopmentTimes();
+            List<Number> values = company.getBalanceDevelopment();
+            int distance = Math.abs(dates.get(0).intValue() - myNumber);
+            int idx = 0;
+            for(int c = 1; c < dates.size(); c++){
+                int cdistance = Math.abs(dates.get(c).intValue() - myNumber);
+                if(cdistance < distance){
+                    idx = c;
+                    distance = cdistance;
+                }
             }
-        %>
-        <td><%=value%></td>
-    </tr>
-    <%
+            theNumber += values.get(idx).doubleValue();
         }
     %>
+    <tr>
+        <td><%=theNumber%></td>
+    </tr>
 </table>
 </body>
 </html>
