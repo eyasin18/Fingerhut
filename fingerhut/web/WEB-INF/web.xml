@@ -345,6 +345,14 @@
         <url-pattern>/admin/addemployee</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>TransferPrepaid</servlet-name>
+        <jsp-file>jsp/transfer_prepaid.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TransferPrepaid</servlet-name>
+        <url-pattern>/admin/transfer_prepaid.jsp</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>CheckWebstring</servlet-name>
         <servlet-class>de.repictures.fingerhut.Web.CheckWebstring</servlet-class>
     </servlet>
