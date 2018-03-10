@@ -9,6 +9,7 @@
 <body>
 <table>
     <%
+        String value = "";
         int myNumber = Integer.valueOf(request.getParameter("n"));
         int sector = Integer.valueOf(request.getParameter("s"));
         List<Company> companies = MainTools.getCompaniesBySector(sector);
@@ -26,10 +27,11 @@
                 }
             }
             theNumber += values.get(idx).doubleValue();
+            value = String.valueOf(theNumber).replace(".", ",");
         }
     %>
     <tr>
-        <td><%=theNumber%></td>
+        <td><%=value%></td>
     </tr>
 </table>
 </body>
