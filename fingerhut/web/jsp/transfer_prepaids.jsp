@@ -17,8 +17,8 @@
 <script>
     var prepaidArray;
     for(var i = 0; i < prepaidArray.length; i++) {
-        var amount = 1;
-        var sender = 1;
+        var amount = prepaidArray.amount;
+        var sender = prepaidArray.number;
         var uri = "https://fingerhut388.appspot.com/admin/doadmintransfer?sender=" + sender + senderTextField.value.toString() + "&receiver=0098" + "&amount=" + amount;
         window.location = encodeURI(uri);
     }
