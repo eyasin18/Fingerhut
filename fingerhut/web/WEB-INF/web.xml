@@ -346,11 +346,11 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>TransferPrepaid</servlet-name>
-        <jsp-file>jsp/transfer_prepaid.jsp</jsp-file>
+        <jsp-file>jsp/transfer_prepaids.jsp</jsp-file>
     </servlet>
     <servlet-mapping>
         <servlet-name>TransferPrepaid</servlet-name>
-        <url-pattern>/admin/transfer_prepaid.jsp</url-pattern>
+        <url-pattern>/admin/transferprepaid</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>CheckWebstring</servlet-name>
